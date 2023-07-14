@@ -1,0 +1,40 @@
+@use "@/app/variables"
+
+.panelContainer
+  @include variables.panelContainer
+
+  .bookContainer
+    margin-bottom: 6.4rem
+
+    .imageContainer
+      background-color: black
+      width: 100%
+      padding: 3.2rem 0
+
+      img
+        object-fit: contain
+        // object-position: middle top
+        width: 100%
+
+    .infoContainer
+      margin: 3.2rem
+      max-width: 400px
+
+      .title
+        font-weight: bold
+        color: variables.$orange
+
+        // font-size: 2.4rem
+
+      .subtitle
+        font-style: italic
+        // 
+
+      .author
+        margin-top: 1.6rem
+
+      .description
+        margin: 3.2rem 0
+        padding: 1.6rem 0
+        border-top: 1px dashed variables.$yellow
+        border-bottom: 1px dashed variables.$yellow
