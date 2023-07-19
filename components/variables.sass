@@ -1,0 +1,40 @@
+$primary-font: var(--font-Source-Code-Pro)
+$orange: #e06453
+$yellow: #f0c93c
+
+%button
+  cursor: pointer
+
+@mixin splitContainer
+  display: flex
+  height: 100vh
+
+@mixin textButton
+  cursor: pointer
+  width: fit-content
+  min-width: fit-content
+  // user-select: none
+
+  &::before
+    content: "["
+
+  &::after
+    content: "]"
+
+  &:hover
+    font-weight: bold
+    text-decoration: underline
+
+@mixin discreetButton
+  cursor: pointer
+  width: fit-content
+  min-width: fit-content
+
+  &:hover
+    font-style: italic
+    // font-weight: bold
+    // text-decoration: underline
+
+@mixin panelContainer
+  overflow-y: auto
+  height: 100%

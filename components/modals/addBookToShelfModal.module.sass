@@ -1,0 +1,114 @@
+@use "@/components/variables"
+
+.container
+  position: fixed
+  width: 100%
+  height: 100%
+  top: 0
+  left: 0
+
+  display: flex
+  justify-content: center
+  align-items: center
+
+  // cursor: pointer
+  background-color: rgba(255,255,255,0.5)
+  backdrop-filter: blur(4px)
+
+.modal
+  border: 1px solid black
+
+.header
+  display: flex
+  justify-content: space-between
+  padding: 0.8rem
+  border-bottom: 2px solid black
+
+  .title
+    margin-right: 6.4rem
+
+  .headerButtons
+    .button+.button
+      margin-left: 0.8rem
+
+.createShelfContainer
+  // width: 100%
+  display: flex
+  align-items: stretch
+  // border-top: 1px solid black
+  border-bottom: 1px solid black
+
+  .buttonContainer
+    border-bottom: 1px solid black
+
+.shelfItem
+  display: flex
+  align-items: stretch
+  width: 100%
+
+  .shelfName
+    width: 100%
+    padding: 0.8rem
+
+    text-overflow: ellipsis
+    white-space: nowrap
+    overflow: hidden
+
+.shelfItem+.shelfItem
+  border-top: 1px solid black
+
+.buttonContainer
+  display: flex
+  align-items: center
+  padding: 0.8rem
+  min-width: fit-content
+
+.button
+  @include variables.textButton
+
+.postAddButton
+  background-color: variables.$yellow
+  cursor: pointer
+
+  &:hover
+    font-weight: bold
+
+  &::before
+    content: "<"
+    // color: variables.$yellow
+
+  &::after
+    content: ">"
+    // color: variables.$yellow
+
+.input
+  border: 0
+  border-bottom: 1px solid black
+  font-family: variables.$primary-font
+  font-size: 1.6rem
+  width: 100%
+  box-sizing: border-box
+  padding: 0.8rem
+
+  &:focus
+    outline: none
+    // border-bottom: 2px solid black
+
+.shelvesPlaceholder
+  padding: 0.8rem
+
+.paginationControls
+  width: 100%
+  display: flex
+  justify-content: center
+  padding: 0.8rem
+  border-top: 1px solid black
+  box-sizing: border-box
+
+  .pageNum
+    margin: 0 1.6rem
+
+.hidden
+  opacity: 0
+  pointer-events: none
+  user-select: none

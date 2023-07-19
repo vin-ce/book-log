@@ -1,0 +1,23 @@
+@use "@/components/variables"
+
+.container
+  display: flex
+  margin-right: 3.2rem
+
+.label
+  margin-right: 1.6rem
+
+.list
+  max-width: 32rem
+
+  .item
+    @include variables.discreetButton
+
+  .comma
+    margin-right: 1.6rem
+
+.list + .addShelfButton
+  margin-top: 1.6rem
+
+.button, .addShelfButton
+  @include variables.textButton

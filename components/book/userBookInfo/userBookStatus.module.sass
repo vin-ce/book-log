@@ -1,0 +1,22 @@
+@use "@/components/variables"
+
+.container
+  display: flex
+  margin-right: 3.2rem
+
+.label
+  margin-right: 1.6rem
+
+.bookStatus
+  display: flex
+  flex-direction: column
+  // margin-bottom: 3.2rem
+
+  // span + span
+  //   margin-left: 1.6rem
+
+  .selectedStatus
+    background-color: variables.$yellow
+
+.button
+  @include variables.textButton

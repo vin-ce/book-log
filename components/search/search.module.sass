@@ -1,0 +1,33 @@
+@use "@/components/variables"
+
+.panelContainer
+  @include variables.panelContainer
+
+.searchBox, .paginationControls
+  margin: 3.2rem
+
+.searchBox
+  max-width: 32rem
+  display: flex
+  margin-bottom: 6.4rem
+
+.input
+  border: 0
+  border-bottom: 1px solid black
+  font-family: variables.$primary-font
+  font-size: 1.6rem
+  width: 100%
+  margin-right: 1.6rem
+
+  &:focus
+    outline: none
+    border-bottom: 2px solid black
+
+.button
+  @include variables.textButton
+
+.paginationControls
+  margin-bottom: 9.6rem
+
+  span
+    @include variables.textButton
