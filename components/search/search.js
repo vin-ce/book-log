@@ -24,7 +24,7 @@ export default function Search() {
 
   // updates pagination controls on data change
   useEffect(() => {
-    if (searchResultData || paginationData.current.page !== 1) setPaginationControls(createPaginationControls({ paginationData: paginationData.current, setSearchResultData, searchString: searchStringRef, panelRef }))
+    if (searchResultData || paginationData.current.page !== 1) setPaginationControls(createPaginationControls({ paginationData: paginationData.current, setSearchResultData, searchStringRef: searchStringRef, panelRef }))
 
     else setPaginationControls(null)
 
@@ -37,6 +37,7 @@ export default function Search() {
 
     // reset pagination
     searchStringRef.current = searchInput
+
 
     const resultsData = await searchBookByText({ searchInput, startIndex: 0, maxResults: MAX_RESULTS })
 
@@ -64,14 +65,15 @@ export default function Search() {
   )
 }
 
-function createPaginationControls({ paginationData, setSearchResultData, searchString, panelRef }) {
+function createPaginationControls({ paginationData, setSearchResultData, searchStringRef, panelRef }) {
 
 
   const nextPage = async () => {
     paginationData.page++
     paginationData.startIndex += MAX_RESULTS
 
-    const resultsData = await searchBookByText({ searchString, startIndex: paginationData.startIndex, maxResults: MAX_RESULTS })
+    console.log("initial", searchStringRef.current)
+    const resultsData = await searchBookByText({ searchInput: searchStringRef.current, startIndex: paginationData.startIndex, maxResults: MAX_RESULTS })
 
     setSearchResultData(resultsData)
 
@@ -83,7 +85,7 @@ function createPaginationControls({ paginationData, setSearchResultData, searchS
     paginationData.page--
     paginationData.startIndex -= MAX_RESULTS
 
-    const resultsData = await searchBookByText({ searchString, startIndex: paginationData.startIndex, maxResults: MAX_RESULTS })
+    const resultsData = await searchBookByText({ searchInput: searchStringRef.current, startIndex: paginationData.startIndex, maxResults: MAX_RESULTS })
 
     setSearchResultData(resultsData)
   }

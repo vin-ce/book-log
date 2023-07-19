@@ -36,8 +36,8 @@ export default function UserBookInfo() {
     if (!ready) initEl()
 
     async function initEl() {
-      if (selectedBookUserUsername && !selectedBookUserId) {
 
+      if (selectedBookUserUsername && !selectedBookUserId) {
         // the user that we're viewing, not necessarily the logged in user
         const userData = await fetchUserByUsername(selectedBookUserUsername)
         if (userData) {
@@ -47,7 +47,6 @@ export default function UserBookInfo() {
           const userBookData = await fetchUserBookInfo({ bookId: selectedBookId, userId: userData.id })
 
           if (userBookData) {
-            console.log("setting")
             setUserBookStatus(userBookData.status)
             setUserBookShelfIdList(userBookData.shelves)
             // setUserBookNotes(userBookData.notes)
@@ -55,8 +54,9 @@ export default function UserBookInfo() {
 
           setReady(true)
         }
+      } else if (!selectedBookUserUsername || selectedBookUserId) {
+        setReady(true)
       }
-
     }
 
   }, [ready, selectedBookId, selectedBookUserId, selectedBookUserUsername, setSelectedBookUserId, setUserBookShelfIdList, setUserBookStatus])
@@ -64,7 +64,10 @@ export default function UserBookInfo() {
 
   // sets is authorized
   useEffect(() => {
-    if (loggedInUser && selectedBookUserId) if (loggedInUser.id === selectedBookUserId) setIsAuthorized(true)
+    if (loggedInUser && selectedBookUserId)
+      if (loggedInUser.id === selectedBookUserId)
+        setIsAuthorized(true)
+
   }, [loggedInUser, selectedBookUserId])
 
 

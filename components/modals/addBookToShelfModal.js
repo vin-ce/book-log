@@ -15,8 +15,10 @@ export default function AddBookToShelfModal() {
   const userBookShelfIdList = useStore((state) => state.userBookShelfIdList)
   const setUserBookShelfIdList = useStore((state) => state.setUserBookShelfIdList)
 
-  // shelf list
-  // hard capped to 5 results
+  // shelf list, all
+  const [shelfListElArrFull, setShelfListElArrFull] = useState([])
+
+  // hard capped to 5 results, actively displayed
   const [shelfListElArr, setShelfListElArr] = useState([])
   const MAX_SHELF_LIST_NUM = 5
 
@@ -60,50 +62,50 @@ export default function AddBookToShelfModal() {
 
   // pagination
   const [paginationControls, setPaginationControls] = useState(null)
-  const paginationData = useRef({ lastVisible: null, page: 1 })
+  const paginationData = useRef({ prevLastVisible: null, lastVisible: null, page: 1, totalNumOfShelves: null })
 
   useEffect(() => {
-    if ((shelfListElArr && paginationData.current.lastVisible) || paginationData.current.page > 1) setPaginationControls(createPaginationControls({ paginationData: paginationData.current }))
+    if (paginationData.current.page > 1 || (paginationData.current.totalNumOfShelves > 5)) setPaginationControls(createPaginationControls())
 
     else setPaginationControls(null)
 
   }, [shelfListElArr])
 
-  function createPaginationControls({ paginationData }) {
+  function createPaginationControls() {
 
     const nextPage = async () => {
-      paginationData.page++
-      setShelfList(paginationData.lastVisible)
+      paginationData.current.page++
+      setShelfList({ type: "next" })
     }
 
     const prevPage = async () => {
-      paginationData.page--
-      setShelfList(paginationData.lastVisible)
+      paginationData.current.page--
+      setShelfList({ type: "prev" })
     }
 
-    if (paginationData.page > 1 && paginationData.lastVisible) {
+    if (paginationData.current.page > 1 && (paginationData.current.totalNumOfShelves <= paginationData.current.page * 5)) {
       return (
         <div className={styles.paginationControls}>
           <span className={styles.button} onClick={prevPage}>&lt;</span>
-          <span className={styles.pageNum}>{paginationData.page}</span>
-          <span className={styles.button} onClick={nextPage}>&gt;</span>
-        </div>
-      )
-    } else if (paginationData.page > 1 && !paginationData.lastVisible) {
-      return (
-        <div className={styles.paginationControls}>
-          <span className={styles.button} onClick={prevPage}>&lt;</span>
-          <span className={styles.pageNum}>{paginationData.page}</span>
+          <span className={styles.pageNum}>{paginationData.current.page}</span>
           <span className={[styles.hidden, styles.button].join(' ')}>&gt;</span>
         </div>
       )
     }
-
+    else if (paginationData.current.page > 1) {
+      return (
+        <div className={styles.paginationControls}>
+          <span className={styles.button} onClick={prevPage}>&lt;</span>
+          <span className={styles.pageNum}>{paginationData.current.page}</span>
+          <span className={styles.button} onClick={nextPage}>&gt;</span>
+        </div>
+      )
+    }
     else {
       return (
         <div className={styles.paginationControls}>
           <span className={[styles.hidden, styles.button].join(' ')}>&lt;</span>
-          <span className={styles.pageNum}>{paginationData.page}</span>
+          <span className={styles.pageNum}>{paginationData.current.page}</span>
           <span className={styles.button} onClick={nextPage}>&gt;</span>
         </div>
       )
@@ -130,31 +132,81 @@ export default function AddBookToShelfModal() {
     )
   }
 
-  async function setShelfList(lastVisible) {
+  async function setShelfList({ type }) {
     let shelvesData
     let newLastVisible
+    let totalNumOfShelves
 
-    if (lastVisible) ({ shelvesData, newLastVisible } = await fetchShelves({ userId: selectedBookUserId, lastVisible }))
-    else ({ shelvesData, newLastVisible } = await fetchShelves({ userId: selectedBookUserId }))
+    if (type === "init") {
+      ({ shelvesData, newLastVisible, totalNumOfShelves } = await fetchShelves({ userId: selectedBookUserId, page: paginationData.current.page }))
+      updateData({ type })
+    } else {
 
-    let shelvesElArr = []
-    shelvesData.forEach(shelfData => {
-      const shelfEl = createShelfItemEl({
-        shelfId: shelfData.id,
-        shelfName: shelfData.name,
+      let selectRangeStart = (paginationData.current.page - 1) * MAX_SHELF_LIST_NUM
+      let selectRangeEnd = paginationData.current.page * MAX_SHELF_LIST_NUM
+
+      if (type === "prev") {
+        // get el database, gets from index selectRangeStart until index selectRangeEnd minus 1
+        const listArr = shelfListElArrFull.slice(selectRangeStart, selectRangeEnd)
+        setShelfListElArr(listArr)
+      }
+
+      if (type === 'next') {
+        // if list does not contain the full range
+        console.log("updating", shelfListElArrFull.length, paginationData.current.totalNumOfShelves)
+
+        if (shelfListElArrFull.length < paginationData.current.totalNumOfShelves) {
+          ({ shelvesData, newLastVisible, totalNumOfShelves } = await fetchShelves({ userId: selectedBookUserId, lastVisible: paginationData.current.lastVisible, page: paginationData.current.page }))
+
+          updateData({ type })
+
+          // console.log("no change", shelfListElArrFull, shelfListElArrFull.length, totalNumOfShelves)
+          // if (shelfListElArrFull.length == totalNumOfShelves) {
+          //   // no change
+          //   const listArr = shelfListElArrFull.slice(selectRangeStart, selectRangeEnd)
+          //   setShelfListElArr(listArr)
+          // } else {
+          //   // updateData({ type })
+          // }
+
+        } else {
+          const listArr = shelfListElArrFull.slice(selectRangeStart, selectRangeEnd)
+          setShelfListElArr(listArr)
+        }
+      }
+    }
+
+    function updateData({ type }) {
+
+      let shelvesElArr = []
+
+      shelvesData.forEach(shelfData => {
+        const shelfEl = createShelfItemEl({
+          shelfId: shelfData.id,
+          shelfName: shelfData.name,
+        })
+        shelvesElArr.push(shelfEl)
       })
-      shelvesElArr.push(shelfEl)
-    })
 
-    setShelfListElArr(shelvesElArr)
+      let shelfListElArrFullCopy = [...shelfListElArrFull]
 
-    console.log("new last visible", newLastVisible)
-    paginationData.current.lastVisible = newLastVisible
+      // remove old data so it doesn't duplicate
+      if (type === "next" && shelfListElArr.length != 5) shelfListElArrFullCopy.splice(-shelvesElArr.length)
+
+      setShelfListElArr(shelvesElArr)
+      setShelfListElArrFull([...shelfListElArrFullCopy, ...shelvesElArr])
+
+      if (newLastVisible !== "EOD") paginationData.current.lastVisible = newLastVisible
+
+      paginationData.current.totalNumOfShelves = totalNumOfShelves
+    }
+
   }
+
 
   // initial shelf list
   useEffect(() => {
-    if (selectedBookUserId) setShelfList()
+    if (selectedBookUserId) setShelfList({ type: "init" })
   }, [selectedBookUserId])
 
 
@@ -190,7 +242,11 @@ export default function AddBookToShelfModal() {
 
     // add shelf to global state
     let shelfItem = createShelfItemEl({ shelfName, shelfId, hasAdded: true })
+
     setShelfListElArr([shelfItem, ...shelfListElArrCopy])
+    setShelfListElArrFull([shelfItem, ...shelfListElArrFull])
+
+    paginationData.current.totalNumOfShelves++
 
     // turn off add shelf UI
     toggleCreateShelf(false)

@@ -35,13 +35,11 @@ function makeGridEl(data, username) {
   const elArr = []
 
   data.forEach(book => {
-    console.log("book authors: ", book.authors)
     let bookAuthorString
     if (book.authors) bookAuthorString = book.authors.join(', ')
 
     let bookUrl = `/book/${book.id}`
     if (username) bookUrl += `/${username}`
-    console.log("username: ", username)
 
     elArr.push(
       <Link href={bookUrl} key={book.id}>

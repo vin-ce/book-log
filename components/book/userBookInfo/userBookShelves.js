@@ -30,19 +30,24 @@ export default function UserBookShelves({ isAuthorized }) {
           const NUM_OF_SHELVES = shelvesDataArr.length
 
           for (let i = 0; i < NUM_OF_SHELVES; i++) {
-            shelfItemsArr.push(
-              <span key={shelvesDataArr[i].id} className={styles.item}>
-                <Link href={`/shelf/${shelvesDataArr[i].id}`}>
-                  {shelvesDataArr[i].name}
-                </Link>
-              </span>
-            )
-
+            let comma
             if (NUM_OF_SHELVES > 1 && i !== NUM_OF_SHELVES - 1) {
-              shelfItemsArr.push(
+              comma = (
                 <span key={`${shelvesDataArr[i].id}_comma`} className={styles.comma}>,</span>
               )
             }
+
+            shelfItemsArr.push(
+              <span key={shelvesDataArr[i].id}>
+                <span className={styles.item}>
+                  <Link href={`/shelf/${shelvesDataArr[i].id}`}>
+                    {shelvesDataArr[i].name}
+                  </Link>
+                </span>
+                {comma}
+              </span>
+            )
+
           }
 
           shelfListEl = (

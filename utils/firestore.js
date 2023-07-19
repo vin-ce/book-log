@@ -112,6 +112,7 @@ export async function fetchUserByUsername(username) {
   }
 }
 
+// ---------
 // BOOK
 
 async function fetchBookById(bookId) {
@@ -172,6 +173,7 @@ export async function removeBookFromShelf({ bookId, shelfId, userId }) {
 }
 
 
+// ----------
 // SHELF
 
 export async function fetchShelf(shelfId) {
@@ -182,7 +184,7 @@ export async function fetchShelf(shelfId) {
 
 const MAX_NUM_OF_SHELVES = 5
 
-export async function fetchShelves({ userId, lastVisible }) {
+export async function fetchShelves({ userId, lastVisible, page }) {
 
   let q
   if (lastVisible) q = query(collection(db, "shelves"), where("creatorId", "==", userId), orderBy("lastUpdatedTimestamp", "desc"), startAfter(lastVisible), limit(5))
@@ -197,8 +199,6 @@ export async function fetchShelves({ userId, lastVisible }) {
     })
   })
 
-
-
   // does not add lastVisible ref if less or equal to 5, 
   // i.e if no more docs to fetch
   let newLastVisible
@@ -207,11 +207,13 @@ export async function fetchShelves({ userId, lastVisible }) {
   const countSnap = await getCountFromServer(noLimitQuery)
   const totalNumOfShelves = countSnap.data().count
 
-  if (totalNumOfShelves > MAX_NUM_OF_SHELVES) newLastVisible = shelvesSnap.docs[MAX_NUM_OF_SHELVES - 1];
+  // console.log("page", totalNumOfShelves, page)
+  if (totalNumOfShelves > page * MAX_NUM_OF_SHELVES) newLastVisible = shelvesSnap.docs[shelvesSnap.docs.length - 1];
+  else newLastVisible = "EOD"
 
-  console.log('last visible', newLastVisible)
+  // console.log('last visible', newLastVisible)
 
-  return { shelvesData, newLastVisible }
+  return { shelvesData, newLastVisible, totalNumOfShelves }
 }
 
 
