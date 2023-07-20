@@ -2,7 +2,7 @@ import { useStore } from "@/utils/store"
 import styles from "./setBookRatingModal.module.sass"
 import { useEffect, useState } from "react"
 import { updateUserBookRating } from "@/utils/firestore"
-import { StandardModal } from "./modalTemplates"
+import { StandardModal } from "../modalTemplates"
 
 export default function SetBookRatingModal() {
 

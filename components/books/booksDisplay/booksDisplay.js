@@ -3,7 +3,7 @@ import { useEffect, useState } from "react"
 import Image from "next/image"
 import styles from "./booksDisplay.module.sass"
 import Link from "next/link"
-import { useStore } from "../utils/store"
+import { useStore } from "../../../utils/store"
 
 // receives array of book data, parses it to layout
 export default function BooksDisplay({ data, type }) {

@@ -4,7 +4,7 @@ import styles from "./userBookShelves.module.sass"
 import { useStore } from "@/utils/store"
 import { fetchShelvesFromIdList } from "@/utils/firestore"
 import Link from "next/link"
-import AddBookToShelfModal from "@/components/modals/addBookToShelfModal"
+import AddBookToShelfModal from "@/components/modals/addBookToShelfModal/addBookToShelfModal"
 
 export default function UserBookShelves() {
 

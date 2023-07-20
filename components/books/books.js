@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react"
-import BooksDisplay from "../booksDisplay"
-import styles from "./search.module.sass"
+import BooksDisplay from "./booksDisplay/booksDisplay"
+import styles from "./books.module.sass"
 import { searchBookByText } from "../../utils/bookAPI"
 import { useStore } from "@/utils/store"
 
@@ -50,8 +50,6 @@ export default function Search() {
   const handleOnKeyUp = (e) => {
     if (e.keyCode === 13) initSearch()
   }
-
-
 
   return (
     <div className={styles.panelContainer} ref={panelRef}>

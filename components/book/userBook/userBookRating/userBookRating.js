@@ -1,7 +1,7 @@
 import { useStore } from "@/utils/store"
 import styles from "./userBookRating.module.sass"
 import { useEffect, useState } from "react"
-import SetBookRatingModal from "@/components/modals/setBookRatingModal"
+import SetBookRatingModal from "@/components/modals/setBookRatingModal/setBookRatingModal"
 
 export default function UserBookRating() {
   const isAuthorizedForUserBook = useStore((state) => state.isAuthorizedForUserBook)

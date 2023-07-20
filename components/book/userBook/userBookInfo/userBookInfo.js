@@ -2,10 +2,10 @@ import { useEffect, useState } from "react"
 import { useStore } from "@/utils/store"
 import styles from "./userBookInfo.module.sass"
 import { fetchUserBookInfo, fetchUserByUsername } from "@/utils/firestore"
-import UserBookStatus from "./userBookStatus"
-import UserBookShelves from "./userBookShelves"
-import UserBookNotes from "./userBookNotes"
-import UserBookRating from "./userBookRating"
+import UserBookStatus from "../userBookStatus/userBookStatus"
+import UserBookShelves from "../userBookShelves/userBookShelves"
+import UserBookNotes from "../userBookNotes/userBookNotes"
+import UserBookRating from "../userBookRating/userBookRating"
 
 export default function UserBookInfo() {
 

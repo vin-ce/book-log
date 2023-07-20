@@ -1,5 +1,5 @@
 import styles from './index.module.sass'
-import Search from '../components/search/search'
+import Books from '../components/books/books'
 import Dashboard from '../components/dashboard/dashboard'
 import Split from 'react-split'
 
@@ -22,7 +22,7 @@ export default function Home() {
         cursor="col-resize"
         className={styles.splitContainer}
       >
-        <Search />
+        <Books />
         <Dashboard />
       </Split>
     </main>

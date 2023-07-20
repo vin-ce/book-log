@@ -187,7 +187,7 @@ const MAX_NUM_OF_SHELVES = 5
 export async function fetchShelves({ userId, lastVisible, page }) {
 
   let q
-  if (lastVisible) q = query(collection(db, "shelves"), where("creatorId", "==", userId), orderBy("lastUpdatedTimestamp", "desc"), startAfter(lastVisible), limit(5))
+  if (lastVisible) q = query(collection(db, "shelves"), where("creatorId", "==", userId), orderBy("lastUpdatedTimestamp", "desc"), startAfter(lastVisible), limit(MAX_NUM_OF_SHELVES))
   else q = query(collection(db, "shelves"), where("creatorId", "==", userId), orderBy("lastUpdatedTimestamp", "desc"), limit(MAX_NUM_OF_SHELVES))
 
   const shelvesSnap = await getDocs(q)
@@ -313,6 +313,16 @@ async function createTweetNote({ bookId, userId, tweetUrl }) {
     createdTimestamp: serverTimestamp(),
     // tweetId: ,
     type: "tweet",
+  })
+
+}
+
+async function createTextNote({ bookId, userId, content }) {
+
+  const tweetNote = await setDoc(doc(db, "books", bookId, "users", userId, "notes"), {
+    createdTimestamp: serverTimestamp(),
+    type: "text",
+    content,
   })
 
 }

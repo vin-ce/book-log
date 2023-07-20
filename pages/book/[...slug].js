@@ -1,12 +1,12 @@
-import UserBookInfo from "@/components/book/userBookInfo/userBookInfo"
-import BookView from "@/components/book/bookView"
+import UserBookInfo from "@/components/book/userBook/userBookInfo/userBookInfo"
+import BookView from "@/components/book/bookView/bookView"
 import Split from 'react-split'
 import styles from "./book.module.sass"
 import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
 import { useStore } from "@/utils/store"
 
-import AddBookToShelfModal from "@/components/modals/addBookToShelfModal"
+import AddBookToShelfModal from "@/components/modals/addBookToShelfModal/addBookToShelfModal"
 
 // router solution:
 // https://github.com/vercel/next.js/discussions/11484#:~:text=Jun%202%2C%202022-,Here%27s,-my%20workaround.%20In

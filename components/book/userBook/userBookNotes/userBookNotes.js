@@ -1,7 +1,7 @@
 import { useStore } from "@/utils/store"
 import styles from "./userBookNotes.module.sass"
-import { TextNote, TweetNote } from "./userBookNoteModules"
-import { CreateTextNoteModal, CreateTweetNoteModal } from "@/components/modals/createNoteModals"
+import { TextNote, TweetNote } from "./subComponents/userBookNoteModules"
+import { CreateTextNoteModal, CreateTweetNoteModal } from "@/components/modals/createNodeModals/createNoteModals"
 
 
 export default function UserBookNotes() {
@@ -38,7 +38,7 @@ export default function UserBookNotes() {
           }
         </div>
         <div className={styles.notesGrid}>
-          <TweetNote tweetId={"1677871663893848067"} />
+          <TweetNote tweetId={"1682083105580908544"} />
           <TextNote />
           <TweetNote tweetId={"1679271751191089160"} />
           <TextNote />

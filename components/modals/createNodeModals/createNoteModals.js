@@ -1,6 +1,6 @@
 import { useStore } from "@/utils/store"
 import styles from "./createNoteModals.module.sass"
-import { StandardModal } from "./modalTemplates"
+import { StandardModal } from "../modalTemplates"
 import { useEffect, useState } from "react"
 
 export function CreateTweetNoteModal() {

@@ -1,8 +1,8 @@
 
-import styles from "./modalTemplate.module.sass"
+import styles from "./modalTemplates.module.sass"
 
 
-export function StandardModal({ title, setIsModelOpen, children }) {
+export function StandardModal({ title, setIsModelOpen, children, headerButtons }) {
 
   const closeModal = (e) => setIsModelOpen(false)
   const handleWrapperClick = (e) => closeModal()
@@ -13,7 +13,10 @@ export function StandardModal({ title, setIsModelOpen, children }) {
       <div className={styles.modal} onClick={handleModalClick}>
         <div className={styles.header}>
           <span className={styles.title}>{title}</span>
-          <span className={styles.button} onClick={closeModal}>x</span>
+          <div className={styles.headerButtons}>
+            {headerButtons}
+            <span className={styles.button} onClick={closeModal}>x</span>
+          </div>
         </div>
 
         {children}
