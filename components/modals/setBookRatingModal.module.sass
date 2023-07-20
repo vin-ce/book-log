@@ -1,0 +1,49 @@
+@use "@/components/variables"
+
+.wrapper
+  @include variables.modalWrapper
+
+.modal
+  @include variables.modalContainer
+
+.button
+  @include variables.textButton
+
+.header
+  display: flex
+  justify-content: space-between
+  padding: 0.8rem
+  border-bottom: 2px solid black
+
+  .title
+    margin-right: 6.4rem
+
+.ratingContainer
+  display: flex
+  width: 100%
+
+  div
+    width: 100px
+    // flex-grow: 1
+    user-select: none
+    padding: 0.8rem
+
+  div + div
+    border-left: 1px solid black
+
+  .selected
+    background-color: pink
+    font-weight: bold
+    text-decoration: underline
+    background-color: variables.$yellow
+    width: fit-content
+
+  .unselected
+    cursor: pointer
+    width: fit-content
+    min-width: fit-content
+
+    &:hover
+      font-weight: bold
+      text-decoration: underline
+      background-color: variables.$yellow

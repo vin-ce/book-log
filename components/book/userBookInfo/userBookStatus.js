@@ -3,7 +3,7 @@ import { useStore } from "@/utils/store";
 import { useEffect, useState } from "react";
 import styles from "./userBookStatus.module.sass"
 
-export default function UserBookStatus({ isAuthorized }) {
+export default function UserBookStatus() {
 
   const [statusEl, setStatusEl] = useState(null)
 
@@ -13,6 +13,7 @@ export default function UserBookStatus({ isAuthorized }) {
   const selectedBookId = useStore((state) => state.selectedBookId)
   const selectedBookUserId = useStore((state) => state.selectedBookUserId)
 
+  const isAuthorizedForUserBook = useStore((state) => state.isAuthorizedForUserBook)
 
 
   useEffect(() => {
@@ -23,7 +24,7 @@ export default function UserBookStatus({ isAuthorized }) {
     }
 
     if (userBookStatus) {
-      if (isAuthorized) {
+      if (isAuthorizedForUserBook) {
 
         switch (userBookStatus) {
           case "toRead": {
@@ -124,7 +125,7 @@ export default function UserBookStatus({ isAuthorized }) {
 
     } else {
 
-      if (isAuthorized) {
+      if (isAuthorizedForUserBook) {
         setStatusEl(
           <div className={styles.container}>
             <div className={styles.label}>status:</div>
@@ -143,9 +144,9 @@ export default function UserBookStatus({ isAuthorized }) {
 
     }
 
-    // primary dependencies are userBookStatus & isAuthorized
+    // primary dependencies are userBookStatus & isAuthorizedForUserBook
     // other ones shouldn't change without a page reload
-  }, [userBookStatus, isAuthorized, selectedBookId, selectedBookUserId, setUserBookStatus])
+  }, [userBookStatus, isAuthorizedForUserBook, selectedBookId, selectedBookUserId, setUserBookStatus])
 
 
 

@@ -1,22 +1,10 @@
 @use "@/components/variables"
 
-.container
-  position: fixed
-  width: 100%
-  height: 100%
-  top: 0
-  left: 0
-
-  display: flex
-  justify-content: center
-  align-items: center
-
-  // cursor: pointer
-  background-color: rgba(255,255,255,0.5)
-  backdrop-filter: blur(4px)
+.wrapper
+  @include variables.modalWrapper
 
 .modal
-  border: 1px solid black
+  @include variables.modalContainer
 
 .header
   display: flex

@@ -4,13 +4,17 @@ import styles from "./userBookShelves.module.sass"
 import { useStore } from "@/utils/store"
 import { fetchShelvesFromIdList } from "@/utils/firestore"
 import Link from "next/link"
+import AddBookToShelfModal from "@/components/modals/addBookToShelfModal"
 
-export default function UserBookShelves({ isAuthorized }) {
+export default function UserBookShelves() {
 
   const [shelfEl, setShelfEl] = useState(null)
   const userBookShelfIdList = useStore((state) => state.userBookShelfIdList)
 
+  const isAddBookToShelfModal = useStore((state) => state.isAddBookToShelfModal)
   const setIsAddBookToShelfModal = useStore((state) => state.setIsAddBookToShelfModal)
+
+  const isAuthorizedForUserBook = useStore((state) => state.isAuthorizedForUserBook)
 
   useEffect(() => {
 
@@ -61,7 +65,7 @@ export default function UserBookShelves({ isAuthorized }) {
 
       // shelf button
       let addShelfButtonEl
-      if (isAuthorized) addShelfButtonEl = <div className={styles.addShelfButton} onClick={() => setIsAddBookToShelfModal(true)}>+ add</div>
+      if (isAuthorizedForUserBook) addShelfButtonEl = <div className={styles.addShelfButton} onClick={() => setIsAddBookToShelfModal(true)}>+ add</div>
 
       setShelfEl(
         <div className={styles.container}>
@@ -75,12 +79,14 @@ export default function UserBookShelves({ isAuthorized }) {
     }
 
 
-  }, [isAuthorized, userBookShelfIdList])
+  }, [isAuthorizedForUserBook, userBookShelfIdList])
 
 
   return (
     <>
       {shelfEl}
+
+      {isAddBookToShelfModal ? <AddBookToShelfModal /> : null}
     </>
   )
 }

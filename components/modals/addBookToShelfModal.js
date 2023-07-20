@@ -46,18 +46,11 @@ export default function AddBookToShelfModal() {
 
   // modal
 
-  const closeModal = (e) => {
-    // reset all values
-    setIsAddBookToShelfModal(false)
-  }
+  const closeModal = (e) => setIsAddBookToShelfModal(false)
 
-  const handleBackgroundClick = (e) => {
-    closeModal()
-  }
+  const handleWrapperClick = (e) => closeModal()
 
-  const handleModalClick = (e) => {
-    e.stopPropagation()
-  }
+  const handleModalClick = (e) => e.stopPropagation()
 
 
   // pagination
@@ -153,21 +146,10 @@ export default function AddBookToShelfModal() {
 
       if (type === 'next') {
         // if list does not contain the full range
-        console.log("updating", shelfListElArrFull.length, paginationData.current.totalNumOfShelves)
-
         if (shelfListElArrFull.length < paginationData.current.totalNumOfShelves) {
           ({ shelvesData, newLastVisible, totalNumOfShelves } = await fetchShelves({ userId: selectedBookUserId, lastVisible: paginationData.current.lastVisible, page: paginationData.current.page }))
 
           updateData({ type })
-
-          // console.log("no change", shelfListElArrFull, shelfListElArrFull.length, totalNumOfShelves)
-          // if (shelfListElArrFull.length == totalNumOfShelves) {
-          //   // no change
-          //   const listArr = shelfListElArrFull.slice(selectRangeStart, selectRangeEnd)
-          //   setShelfListElArr(listArr)
-          // } else {
-          //   // updateData({ type })
-          // }
 
         } else {
           const listArr = shelfListElArrFull.slice(selectRangeStart, selectRangeEnd)
@@ -227,20 +209,21 @@ export default function AddBookToShelfModal() {
     createShelfInput.trimEnd()
 
     const shelfName = createShelfInput
+
     // create shelf on firebase
     const shelfId = await createShelf({ shelfName, userId: selectedBookUserId, bookId: selectedBookId })
 
     // update in app state
     setUserBookShelfIdList([shelfId, ...userBookShelfIdList])
 
-    // removes last element if overflow
+    // removes last element in modal UI if overflow
     let shelfListElArrCopy = shelfListElArr
 
     if (shelfListElArrCopy.length >= MAX_SHELF_LIST_NUM) {
       shelfListElArrCopy.pop()
     }
 
-    // add shelf to global state
+    // add shelf to elements UI
     let shelfItem = createShelfItemEl({ shelfName, shelfId, hasAdded: true })
 
     setShelfListElArr([shelfItem, ...shelfListElArrCopy])
@@ -282,7 +265,7 @@ export default function AddBookToShelfModal() {
 
 
   return (
-    <div className={styles.container} onClick={handleBackgroundClick}>
+    <div className={styles.wrapper} onClick={handleWrapperClick}>
       <div className={styles.modal} onClick={handleModalClick}>
         <div className={styles.header}>
           <span className={styles.title}>Add Book To Shelf</span>
@@ -291,6 +274,7 @@ export default function AddBookToShelfModal() {
             <span className={styles.button} onClick={closeModal}>x</span>
           </div>
         </div>
+
         {isCreateShelfInput ?
           (
             <div className={styles.createShelfContainer}>
@@ -301,9 +285,9 @@ export default function AddBookToShelfModal() {
             </div>
           )
           :
-          null}
+          null
+        }
 
-        {/*  */}
         <div className={styles.shelfList}>
           {shelfListElArr.length > 0 ?
             (
@@ -312,7 +296,8 @@ export default function AddBookToShelfModal() {
             :
             (
               <div className={styles.shelvesPlaceholder}>No shelves found</div>
-            )}
+            )
+          }
         </div>
         {paginationControls}
       </div>

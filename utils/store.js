@@ -14,6 +14,9 @@ export const useStore = create((set) => ({
   searchData: null,
   setSearchResultData: (data) => set({ searchData: data }),
 
+  isAuthorizedForUserBook: false,
+  setIsAuthorizedForUserBook: (bool) => set({ isAuthorizedForUserBook: bool }),
+
   selectedBookUserUsername: null,
   setSelectedBookUserUsername: (username) => set({ selectedBookUserUsername: username }),
 
@@ -26,13 +29,20 @@ export const useStore = create((set) => ({
   userBookStatus: null,
   setUserBookStatus: (status) => set({ userBookStatus: status }),
 
+  userBookRating: null,
+  setUserBookRating: (status) => set({ userBookRating: status }),
+
   // shelves that the selectedBook is in that's created by the user
   userBookShelfIdList: null,
   setUserBookShelfIdList: (arr) => set({ userBookShelfIdList: arr }),
 
-  userBookNotes: null,
+  // userBookNotes: null,
+  // setUserBook 
 
   isAddBookToShelfModal: false,
   setIsAddBookToShelfModal: (bool) => set({ isAddBookToShelfModal: bool }),
+
+  isSetBookRatingModal: false,
+  setIsSetBookRatingModal: (bool) => set({ isSetBookRatingModal: bool }),
 
 }))

@@ -4,13 +4,13 @@ import styles from "./userBookInfo.module.sass"
 import { fetchUserBookInfo, fetchUserByUsername } from "@/utils/firestore"
 import UserBookStatus from "./userBookStatus"
 import UserBookShelves from "./userBookShelves"
+import UserBookNotes from "./userBookNotes"
+import UserBookRating from "./userBookRating"
 
 export default function UserBookInfo() {
 
   const [contentEl, setContentEl] = useState(<>No user selected.</>)
   const [ready, setReady] = useState(false)
-
-  const [isAuthorized, setIsAuthorized] = useState(false)
 
   const loggedInUser = useStore((state) => state.loggedInUser)
 
@@ -23,8 +23,12 @@ export default function UserBookInfo() {
   const setSelectedBookId = useStore((state) => state.setSelectedBookId)
 
   const setUserBookStatus = useStore((state) => state.setUserBookStatus)
+  const setUserBookRating = useStore((state) => state.setUserBookRating)
 
   const setUserBookShelfIdList = useStore((state) => state.setUserBookShelfIdList)
+
+  const setIsAuthorizedForUserBook = useStore((state) => state.setIsAuthorizedForUserBook)
+
 
   // const userBookNotes = useStore((state) => state.userBookNotes)
   // const setUserBookNotes = useStore((state) => state.setUserBookNotes)
@@ -46,9 +50,11 @@ export default function UserBookInfo() {
 
           const userBookData = await fetchUserBookInfo({ bookId: selectedBookId, userId: userData.id })
 
+          console.log("data", userBookData)
           if (userBookData) {
             setUserBookStatus(userBookData.status)
             setUserBookShelfIdList(userBookData.shelves)
+            setUserBookRating(userBookData.rating)
             // setUserBookNotes(userBookData.notes)
           }
 
@@ -66,9 +72,9 @@ export default function UserBookInfo() {
   useEffect(() => {
     if (loggedInUser && selectedBookUserId)
       if (loggedInUser.id === selectedBookUserId)
-        setIsAuthorized(true)
+        setIsAuthorizedForUserBook(true)
 
-  }, [loggedInUser, selectedBookUserId])
+  }, [loggedInUser, selectedBookUserId, setIsAuthorizedForUserBook])
 
 
   // sets content after data is ready
@@ -79,14 +85,15 @@ export default function UserBookInfo() {
         <>
           <div className={styles.name}>@{selectedBookUserUsername}</div>
           <div className={styles.statusShelvesContainer}>
-            <UserBookStatus isAuthorized={isAuthorized} />
-            <UserBookShelves isAuthorized={isAuthorized} />
+            <UserBookStatus />
+            <UserBookShelves />
+            <UserBookRating />
           </div>
-          {/* {notesEl} */}
+          <UserBookNotes />
         </>
       )
     }
-  }, [ready, isAuthorized, selectedBookUserUsername])
+  }, [ready, selectedBookUserUsername])
 
 
 

@@ -261,6 +261,7 @@ export async function fetchUserBookInfo({ bookId, userId }) {
     // console.log("user book data", userBookSnap.data())
     return {
       status: bookData.status,
+      rating: bookData.rating,
       shelves: bookData.shelves,
       notes: notesData
     }
@@ -271,15 +272,18 @@ export async function fetchUserBookInfo({ bookId, userId }) {
 }
 
 export async function updateUserBookStatus({ bookId, userId, status }) {
-  const auth = getAuth()
-  const user = auth.currentUser
 
-  // if this is true, user is authorized to make change
-  if (user.uid === userId) {
-    await setDoc(doc(db, "books", bookId, "users", userId), {
-      status: status,
-    }, { merge: true })
-  }
+  await setDoc(doc(db, "books", bookId, "users", userId), {
+    status: status,
+  }, { merge: true })
+
+}
+
+export async function updateUserBookRating({ bookId, userId, rating }) {
+
+  await setDoc(doc(db, "books", bookId, "users", userId), {
+    rating,
+  }, { merge: true })
 
 }
 

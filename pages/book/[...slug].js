@@ -15,8 +15,12 @@ export default function Book() {
 
   const setSelectedBookUserUsername = useStore((state) => state.setSelectedBookUserUsername)
   const setSelectedBookId = useStore((state) => state.setSelectedBookId)
-  const isAddBookToShelfModal = useStore((state) => state.isAddBookToShelfModal)
   const loggedInUser = useStore((state) => state.loggedInUser)
+  const setSelectedBookUserId = useStore((state) => state.setSelectedBookUserId)
+  const setUserBookStatus = useStore((state) => state.setUserBookStatus)
+  const setUserBookRating = useStore((state) => state.setUserBookRating)
+  const setUserBookShelfIdList = useStore((state) => state.setUserBookShelfIdList)
+  const setIsAuthorizedForUserBook = useStore(state => state.setIsAuthorizedForUserBook)
 
   const [ready, setReady] = useState(false)
   const router = useRouter()
@@ -32,9 +36,16 @@ export default function Book() {
 
       setSelectedBookId(bookId)
       setSelectedBookUserUsername(username)
+
+      // reset
+      setSelectedBookUserId(null)
+      setUserBookStatus(null)
+      setUserBookRating(null)
+      setUserBookShelfIdList(null)
+      setIsAuthorizedForUserBook(false)
       setReady(true)
     }
-  }, [loggedInUser, router, setSelectedBookId, setSelectedBookUserUsername])
+  }, [loggedInUser, router, setIsAuthorizedForUserBook, setSelectedBookId, setSelectedBookUserId, setSelectedBookUserUsername, setUserBookRating, setUserBookShelfIdList, setUserBookStatus])
 
   return ready && (
     <main>
@@ -54,10 +65,6 @@ export default function Book() {
         <BookView />
         <UserBookInfo />
       </Split>
-      {isAddBookToShelfModal ?
-        (<AddBookToShelfModal />) :
-        null
-      }
     </main>
   )
 }
