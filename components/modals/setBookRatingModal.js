@@ -2,6 +2,7 @@ import { useStore } from "@/utils/store"
 import styles from "./setBookRatingModal.module.sass"
 import { useEffect, useState } from "react"
 import { updateUserBookRating } from "@/utils/firestore"
+import { StandardModal } from "./modalTemplates"
 
 export default function SetBookRatingModal() {
 
@@ -13,20 +14,14 @@ export default function SetBookRatingModal() {
 
   const [ratingEl, setRatingEl] = useState(null)
 
-  const closeModal = (e) => setIsSetBookRatingModal(false)
-
-  const handleWrapperClick = (e) => closeModal()
-
-  const handleModalClick = (e) => e.stopPropagation()
-
-  const onClickRating = (e) => {
-    const rating = e.target.id
-    setUserBookRating(rating)
-    updateUserBookRating({ bookId: selectedBookId, userId: selectedBookUserId, rating })
-  }
-
 
   useEffect(() => {
+    const onClickRating = (e) => {
+      const rating = e.target.id
+      setUserBookRating(rating)
+      updateUserBookRating({ bookId: selectedBookId, userId: selectedBookUserId, rating })
+    }
+
     const ratingNum = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
     let ratingElArr = []
@@ -43,23 +38,21 @@ export default function SetBookRatingModal() {
       ratingElArr.push(el)
     })
 
-    setRatingEl(ratingElArr)
+    setRatingEl(
+      <div className={styles.ratingContainer}>
+        {ratingElArr}
+      </div>
+    )
 
-  }, [userBookRating])
-
+  }, [selectedBookId, selectedBookUserId, setUserBookRating, userBookRating])
 
   return (
-    <div className={styles.wrapper} onClick={handleWrapperClick}>
-      <div className={styles.modal} onClick={handleModalClick}>
-        <div className={styles.header}>
-          <span className={styles.title}>Set Book Rating</span>
-          <span className={styles.button} onClick={closeModal}>x</span>
-        </div>
-        <div className={styles.ratingContainer}>
-          {ratingEl}
-        </div>
-      </div>
-    </div>
+    <StandardModal
+      title={"Set Book Rating"}
+      setIsModelOpen={setIsSetBookRatingModal}
+    >
+      {ratingEl}
+    </StandardModal>
   )
 
 }

@@ -45,4 +45,9 @@ export const useStore = create((set) => ({
   isSetBookRatingModal: false,
   setIsSetBookRatingModal: (bool) => set({ isSetBookRatingModal: bool }),
 
+  isCreateTweetNoteModal: false,
+  setIsCreateTweetNoteModal: (bool) => set({ isCreateTweetNoteModal: bool }),
+  isCreateTextNoteModal: false,
+  setIsCreateTextNoteModal: (bool) => set({ isCreateTextNoteModal: bool }),
+
 }))

@@ -1,0 +1,66 @@
+@use "@/components/variables"
+
+$max-cell-width: 320px
+
+// NOTES
+.container
+  width: $max-cell-width
+  margin-bottom: 3.2rem
+  position: relative
+  z-index: 1
+
+.header
+  display: flex
+  position: relative
+  margin-bottom: 0.8rem
+
+  .date
+    position: absolute
+    left: 0
+
+  .dot
+    border: 1px solid black
+    width: 8px
+    height: 8px
+    border-radius: 100px
+    margin: 0.8rem auto
+    // margin-bottom: 1.6rem
+
+    cursor: pointer
+
+    &:hover
+      background-color: variables.$yellow
+
+  .noteButtonsContainer
+    position: absolute
+    right: 0
+
+    .button + .button
+      margin-left: 0.8rem
+
+.activeText
+  border-bottom: 2px solid variables.$yellow
+
+.button
+  @include variables.textButton
+
+// MODALS
+
+.deleteModalContainer
+  position: absolute
+  top: 3.2rem
+  background-color: white
+  border: 1px solid black
+  right: 0
+  // transform: translate(-50%, 0)
+
+  .deleteModalHeader
+    padding: 0.8rem
+    border-bottom: 2px solid black
+
+  .deleteModalOptions
+    @include variables.modalButtonsContainer(variables.$orange)
+
+    .cancel
+      &:hover
+        background-color: variables.$yellow

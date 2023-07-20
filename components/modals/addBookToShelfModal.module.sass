@@ -7,10 +7,7 @@
   @include variables.modalContainer
 
 .header
-  display: flex
-  justify-content: space-between
-  padding: 0.8rem
-  border-bottom: 2px solid black
+  @include variables.modalHeader
 
   .title
     margin-right: 6.4rem
@@ -70,17 +67,7 @@
     // color: variables.$yellow
 
 .input
-  border: 0
-  border-bottom: 1px solid black
-  font-family: variables.$primary-font
-  font-size: 1.6rem
-  width: 100%
-  box-sizing: border-box
-  padding: 0.8rem
-
-  &:focus
-    outline: none
-    // border-bottom: 2px solid black
+  @include variables.modalInput
 
 .shelvesPlaceholder
   padding: 0.8rem

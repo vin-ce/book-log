@@ -1,0 +1,57 @@
+@use "@/components/variables"
+
+.wrapper
+  @include variables.modalWrapper
+
+.modal
+  @include variables.modalContainer
+
+.header
+  @include variables.modalHeader
+
+  .title
+    margin-right: 6.4rem
+
+  .button
+      // margin-left: 0.8rem
+
+.button
+  @include variables.textButton
+
+.input
+  @include variables.modalInput
+
+.createButton
+  @include variables.modalButton(variables.$yellow)
+
+.createTextNoteContainer
+  display: flex
+  flex-direction: column
+
+.footer
+  display: flex
+
+  div + div
+    border-left: 1px solid black
+
+  .characterCount
+    width: 100%
+    padding: 0.8rem
+    display: flex
+    justify-content: center
+    user-select: none
+    box-sizing: border-box
+
+.textArea
+  resize: none
+  width: 100%
+  box-sizing: border-box
+  border: 0
+  border-bottom: 1px solid black
+  padding: 0.8rem
+
+  font-size: 1.6rem
+  font-family: variables.$primary-font
+
+  &:focus
+    outline: none !important

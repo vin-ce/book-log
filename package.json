@@ -16,9 +16,11 @@
     "firebase": "^10.0.0",
     "next": "13.4.9",
     "react": "18.2.0",
+    "react-contenteditable": "^3.3.7",
     "react-dom": "18.2.0",
     "react-split": "^2.0.14",
     "react-tweet-embed": "^2.0.0",
+    "sanitize-html": "^2.11.0",
     "zustand": "^4.3.9"
   },
   "devDependencies": {

@@ -1,6 +1,8 @@
 import { useStore } from "@/utils/store"
 import styles from "./userBookNotes.module.sass"
-import TweetEmbed from "react-tweet-embed"
+import { TextNote, TweetNote } from "./userBookNoteModules"
+import { CreateTextNoteModal, CreateTweetNoteModal } from "@/components/modals/createNoteModals"
+
 
 export default function UserBookNotes() {
 
@@ -9,38 +11,42 @@ export default function UserBookNotes() {
   const selectedBookId = useStore((state) => state.selectedBookId)
   const isAuthorizedForUserBook = useStore((state) => state.isAuthorizedForUserBook)
 
+  const isCreateTextNoteModal = useStore((state) => state.isCreateTextNoteModal)
+  const setIsCreateTextNoteModal = useStore((state) => state.setIsCreateTextNoteModal)
+
+  const isCreateTweetNoteModal = useStore((state) => state.isCreateTweetNoteModal)
+  const setIsCreateTweetNoteModal = useStore((state) => state.setIsCreateTweetNoteModal)
+
+  const onClickCreateTweetNote = () => setIsCreateTweetNoteModal(true)
+  const onClickCreateTextNote = () => setIsCreateTextNoteModal(true)
 
   return (
-    <div className={styles.container}>
-      <div className={styles.label}>sticky notes:</div>
-      <div className={styles.notesContainer}>
-        <TweetNote tweetId={"1677871663893848067"} />
+    <>
+      <div className={styles.container}>
+        <div className={styles.header}>
+          <div className={styles.label}>sticky notes:</div>
+          {
+            isAuthorizedForUserBook ?
+              (
+                <div className={styles.buttonsContainer}>
+                  <span className={styles.button} onClick={onClickCreateTweetNote}>+ tweet</span>
+                  <span className={styles.button} onClick={onClickCreateTextNote}>+ text</span>
+                </div>
+              )
+              :
+              null
+          }
+        </div>
+        <div className={styles.notesGrid}>
+          <TweetNote tweetId={"1677871663893848067"} />
+          <TextNote />
+          <TweetNote tweetId={"1679271751191089160"} />
+          <TextNote />
+        </div>
       </div>
-      {/* <blockquote class="twitter-tweet" data-dnt="true"><p lang="en" dir="ltr">1860s female archery outfit with a score journal hanging from the belt <a href="https://t.co/XuBuRn0E3W">pic.twitter.com/XuBuRn0E3W</a></p>&mdash; Adrian Black (@MsAdrianBlack) <a href="https://twitter.com/MsAdrianBlack/status/1677871663893848067?ref_src=twsrc%5Etfw">July 9, 2023</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script> */}
-    </div>
+      {isCreateTextNoteModal ? <CreateTextNoteModal /> : null}
+      {isCreateTweetNoteModal ? <CreateTweetNoteModal /> : null}
+    </>
   )
 }
 
-
-function TweetNote({ tweetId }) {
-  const isAuthorizedForUserBook = useStore((state) => state.isAuthorizedForUserBook)
-
-  return (
-    <div className={styles.noteContainer}>
-      <div className={styles.dot}></div>
-      <TweetEmbed tweetId={tweetId} options={{ conversation: "none", dnt: "true" }} />
-    </div>
-  )
-
-}
-
-function TextNote() {
-  const isAuthorizedForUserBook = useStore((state) => state.isAuthorizedForUserBook)
-
-  return (
-    <div className={styles.noteContainer}>
-      <div className={styles.dot}></div>
-      <div></div>
-    </div>
-  )
-}

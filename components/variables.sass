@@ -45,6 +45,7 @@ $yellow: #f0c93c
   height: 100%
   top: 0
   left: 0
+  z-index: 100
 
   display: flex
   justify-content: center
@@ -57,3 +58,46 @@ $yellow: #f0c93c
 @mixin modalContainer
   border: 1px solid black
   background-color: white
+
+@mixin modalHeader
+  display: flex
+  justify-content: space-between
+  padding: 0.8rem
+  border-bottom: 2px solid black
+
+@mixin modalInput
+  border: 0
+  border-bottom: 1px solid black
+  font-family: $primary-font
+  font-size: 1.6rem
+  width: 100%
+  box-sizing: border-box
+  padding: 0.8rem
+
+  &:focus
+    outline: none
+
+@mixin modalButton($hover-background-color)
+  width: 100%
+  padding: 0.8rem
+  display: flex
+  justify-content: center
+  user-select: none
+  cursor: pointer
+  box-sizing: border-box
+
+  &:hover
+    font-weight: bold
+    text-decoration: underline
+
+  &:hover
+    background-color: $hover-background-color
+
+@mixin modalButtonsContainer($hover-background-color)
+  display: flex
+
+  div + div
+    border-left: 1px solid black
+
+  div
+    @include modalButton($hover-background-color)

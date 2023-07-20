@@ -36,7 +36,8 @@ export async function createUser(userData) {
       username: username,
       email: userData.email,
       profileImageURL: userData.profileImageURL,
-      id: userData.id
+      id: userData.id,
+      createdTimestamp: serverTimestamp()
     }, { merge: true })
 
   }
@@ -89,7 +90,6 @@ export async function fetchUserById(userId) {
   // this should always be true
   if (docSnap.exists()) {
     const data = docSnap.data()
-    console.log("user data", data)
     return data
   } else {
     return null
@@ -307,4 +307,12 @@ async function fetchNotes({ bookId, userId }) {
 
 }
 
+async function createTweetNote({ bookId, userId, tweetUrl }) {
 
+  const tweetNote = await setDoc(doc(db, "books", bookId, "users", userId, "notes"), {
+    createdTimestamp: serverTimestamp(),
+    // tweetId: ,
+    type: "tweet",
+  })
+
+}
