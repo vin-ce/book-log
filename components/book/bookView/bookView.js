@@ -3,6 +3,7 @@ import Image from "next/image"
 import { useEffect, useState } from "react"
 import styles from "./bookView.module.sass"
 import { useStore } from "@/utils/store"
+import { checkHasBookData } from "@/utils/firestore"
 
 export default function BookView() {
 
@@ -16,13 +17,12 @@ export default function BookView() {
     async function fetchData() {
       const bookData = await searchBookById(selectedBookId)
       if (!bookData) {
-        setEl(
-          <div className={styles.errorContainer}>Cannot find book!</div>
-        )
-        return
+        setEl(<div className={styles.errorContainer}>Cannot find book!</div>)
+      } else {
+        checkHasBookData({ bookId: selectedBookId, bookData })
+        setEl(createBookEl(bookData))
       }
 
-      setEl(createBookEl(bookData))
 
     }
 

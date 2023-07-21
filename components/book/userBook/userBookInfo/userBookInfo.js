@@ -6,11 +6,13 @@ import UserBookStatus from "../userBookStatus/userBookStatus"
 import UserBookShelves from "../userBookShelves/userBookShelves"
 import UserBookNotes from "../userBookNotes/userBookNotes"
 import UserBookRating from "../userBookRating/userBookRating"
+import { useFreshRef } from "@/hooks/useFreshRef"
 
 export default function UserBookInfo() {
 
   const [contentEl, setContentEl] = useState(<>No user selected.</>)
-  const [ready, setReady] = useState(false)
+
+  const [ready, setReady] = useFreshRef(false)
 
   const loggedInUser = useStore((state) => state.loggedInUser)
 
@@ -29,15 +31,14 @@ export default function UserBookInfo() {
 
   const setIsAuthorizedForUserBook = useStore((state) => state.setIsAuthorizedForUserBook)
 
-
-  // const userBookNotes = useStore((state) => state.userBookNotes)
-  // const setUserBookNotes = useStore((state) => state.setUserBookNotes)
+  const userBookNotes = useStore((state) => state.userBookNotes)
+  const setUserBookNotes = useStore((state) => state.setUserBookNotes)
 
 
   // sets data
   useEffect(() => {
 
-    if (!ready) initEl()
+    if (!ready.current) initEl()
 
     async function initEl() {
 
@@ -55,7 +56,7 @@ export default function UserBookInfo() {
             setUserBookStatus(userBookData.status)
             setUserBookShelfIdList(userBookData.shelves)
             setUserBookRating(userBookData.rating)
-            // setUserBookNotes(userBookData.notes)
+            setUserBookNotes(userBookData.notes)
           }
 
           setReady(true)
@@ -65,7 +66,7 @@ export default function UserBookInfo() {
       }
     }
 
-  }, [ready, selectedBookId, selectedBookUserId, selectedBookUserUsername, setSelectedBookUserId, setUserBookShelfIdList, setUserBookStatus])
+  }, [ready, selectedBookId, selectedBookUserId, selectedBookUserUsername, setReady, setSelectedBookUserId, setUserBookNotes, setUserBookRating, setUserBookShelfIdList, setUserBookStatus])
 
 
   // sets is authorized
@@ -77,10 +78,10 @@ export default function UserBookInfo() {
   }, [loggedInUser, selectedBookUserId, setIsAuthorizedForUserBook])
 
 
-  // sets content after data is ready
+  // sets content after data is ready.current
   // updates if authorization changes
   useEffect(() => {
-    if (ready) {
+    if (ready.current) {
       setContentEl(
         <>
           <div className={styles.name}>@{selectedBookUserUsername}</div>
@@ -93,15 +94,29 @@ export default function UserBookInfo() {
         </>
       )
     }
+    // selectedBookUserId as dependency because ready does not register change
   }, [ready, selectedBookUserUsername])
 
 
 
   return (
     <div className={styles.panelContainer}>
-      <div className={styles.contentContainer}>
-        {contentEl}
-      </div>
+      {
+        ready.current ?
+          (
+            <div className={styles.contentContainer}>
+              <div className={styles.name}>@{selectedBookUserUsername}</div>
+              <div className={styles.statusShelvesContainer}>
+                <UserBookStatus />
+                <UserBookShelves />
+                <UserBookRating />
+              </div>
+              <UserBookNotes />
+            </div>
+          )
+          :
+          null
+      }
     </div>
   )
 }

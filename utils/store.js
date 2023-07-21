@@ -36,8 +36,8 @@ export const useStore = create((set) => ({
   userBookShelfIdList: null,
   setUserBookShelfIdList: (arr) => set({ userBookShelfIdList: arr }),
 
-  // userBookNotes: null,
-  // setUserBook 
+  userBookNotes: null,
+  setUserBookNotes: (arr) => set({ userBookNotes: arr }),
 
   isAddBookToShelfModal: false,
   setIsAddBookToShelfModal: (bool) => set({ isAddBookToShelfModal: bool }),
@@ -49,5 +49,7 @@ export const useStore = create((set) => ({
   setIsCreateTweetNoteModal: (bool) => set({ isCreateTweetNoteModal: bool }),
   isCreateTextNoteModal: false,
   setIsCreateTextNoteModal: (bool) => set({ isCreateTextNoteModal: bool }),
+
+
 
 }))

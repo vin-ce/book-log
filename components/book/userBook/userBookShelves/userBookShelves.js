@@ -8,7 +8,7 @@ import AddBookToShelfModal from "@/components/modals/addBookToShelfModal/addBook
 
 export default function UserBookShelves() {
 
-  const [shelfEl, setShelfEl] = useState(null)
+  const [shelfListEl, setShelfListEl] = useState(null)
   const userBookShelfIdList = useStore((state) => state.userBookShelfIdList)
 
   const isAddBookToShelfModal = useStore((state) => state.isAddBookToShelfModal)
@@ -16,75 +16,72 @@ export default function UserBookShelves() {
 
   const isAuthorizedForUserBook = useStore((state) => state.isAuthorizedForUserBook)
 
+
   useEffect(() => {
+    if (userBookShelfIdList) createShelfListEl()
 
-    initEl()
-
-    async function initEl() {
+    async function createShelfListEl() {
 
       // shelf list / data
-      let shelfListEl
-      if (userBookShelfIdList) {
 
-        let shelfItemsArr = []
-        const shelvesDataArr = await fetchShelvesFromIdList(userBookShelfIdList)
-        console.log("shelf data", shelvesDataArr)
+      let shelfItemsArr = []
+      const shelvesDataArr = await fetchShelvesFromIdList(userBookShelfIdList)
 
-        if (shelvesDataArr.length > 0) {
-          const NUM_OF_SHELVES = shelvesDataArr.length
+      if (shelvesDataArr.length > 0) {
+        const NUM_OF_SHELVES = shelvesDataArr.length
 
-          for (let i = 0; i < NUM_OF_SHELVES; i++) {
-            let comma
-            if (NUM_OF_SHELVES > 1 && i !== NUM_OF_SHELVES - 1) {
-              comma = (
-                <span key={`${shelvesDataArr[i].id}_comma`} className={styles.comma}>,</span>
-              )
-            }
-
-            shelfItemsArr.push(
-              <span key={shelvesDataArr[i].id}>
-                <span className={styles.item}>
-                  <Link href={`/shelf/${shelvesDataArr[i].id}`}>
-                    {shelvesDataArr[i].name}
-                  </Link>
-                </span>
-                {comma}
-              </span>
+        for (let i = 0; i < NUM_OF_SHELVES; i++) {
+          let comma
+          if (NUM_OF_SHELVES > 1 && i !== NUM_OF_SHELVES - 1) {
+            comma = (
+              <span key={`${shelvesDataArr[i].id}_comma`} className={styles.comma}>,</span>
             )
-
           }
 
-          shelfListEl = (
-            <div className={styles.list}>
-              {shelfItemsArr}
-            </div>
+          shelfItemsArr.push(
+            <span key={shelvesDataArr[i].id}>
+              <span className={styles.item}>
+                <Link href={`/shelf/${shelvesDataArr[i].id}`}>
+                  {shelvesDataArr[i].name}
+                </Link>
+              </span>
+              {comma}
+            </span>
           )
+
         }
 
+        setShelfListEl(
+          <div className={styles.list}>
+            {shelfItemsArr}
+          </div>
+        )
       }
 
-      // shelf button
-      let addShelfButtonEl
-      if (isAuthorizedForUserBook) addShelfButtonEl = <div className={styles.addShelfButton} onClick={() => setIsAddBookToShelfModal(true)}>+ add</div>
 
-      setShelfEl(
-        <div className={styles.container}>
-          <div className={styles.label}>shelves:</div>
-          <div className={styles.shelfContainer}>
-            {shelfListEl}
-            {addShelfButtonEl}
-          </div>
-        </div>
-      )
     }
-
-
-  }, [isAuthorizedForUserBook, userBookShelfIdList])
-
+  }, [userBookShelfIdList])
 
   return (
     <>
-      {shelfEl}
+      {
+        userBookShelfIdList ?
+          (
+            <div className={styles.container}>
+              <div className={styles.label}>shelves:</div>
+              <div className={styles.shelfContainer}>
+
+                {shelfListEl}
+
+                {isAuthorizedForUserBook ?
+                  (<div className={styles.addShelfButton} onClick={() => setIsAddBookToShelfModal(true)}>+ add</div>) : null
+                }
+              </div>
+            </div>
+          )
+          :
+          null
+      }
 
       {isAddBookToShelfModal ? <AddBookToShelfModal /> : null}
     </>

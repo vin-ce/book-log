@@ -21,11 +21,11 @@ export default function AddBookToShelfModal() {
 
 
   // hard capped to 5 results, actively displayed list of shelves
-  const [shelfListElArrDisplay, setShelfListElArrDisplay] = useState([])
+  const [shelfListElArr, setShelfListElArrDisplay] = useState([])
   const MAX_SHELF_LIST_NUM = 5
 
   // shelf list, all fetched shelf elements
-  const shelfListElArrFull = useRef([
+  const shelfListAllData = useRef([
     // {
     //  // id: shelfId,
     //  // name: shelfName,
@@ -62,7 +62,6 @@ export default function AddBookToShelfModal() {
 
   // shelf list
 
-
   function createShelfItemEl({ shelfName, shelfId }) {
 
     let buttonClass = styles.button
@@ -94,19 +93,19 @@ export default function AddBookToShelfModal() {
 
       if (type === "prev") {
         // get el database, gets from index selectRangeStart until index selectRangeEnd minus 1
-        const listArr = extractElsFromArr(shelfListElArrFull.current.slice(selectRangeStart, selectRangeEnd))
+        const listArr = extractElsFromArr(shelfListAllData.current.slice(selectRangeStart, selectRangeEnd))
         setShelfListElArrDisplay(listArr)
       }
 
       if (type === 'next') {
         // if list does not contain the full range
-        if (shelfListElArrFull.current.length < paginationData.current.totalNumOfShelves) {
+        if (shelfListAllData.current.length < paginationData.current.totalNumOfShelves) {
           ({ shelvesData, newLastVisible, totalNumOfShelves } = await fetchShelves({ userId: selectedBookUserId, lastVisible: paginationData.current.lastVisible, page: paginationData.current.page }))
 
           updateData({ type })
 
         } else {
-          const listArr = extractElsFromArr(shelfListElArrFull.current.slice(selectRangeStart, selectRangeEnd))
+          const listArr = extractElsFromArr(shelfListAllData.current.slice(selectRangeStart, selectRangeEnd))
           setShelfListElArrDisplay(listArr)
         }
       }
@@ -132,10 +131,10 @@ export default function AddBookToShelfModal() {
       })
 
       // remove old data so it doesn't duplicate
-      if (type === "next" && shelfListElArrDisplay.length != 5) shelfListElArrFull.current.splice(-shelvesElArr.length)
+      if (type === "next" && shelfListElArr.length != 5) shelfListAllData.current.splice(-shelvesElArr.length)
 
       setShelfListElArrDisplay(shelvesElArr)
-      shelfListElArrFull.current = ([...shelfListElArrFull.current, ...shelvesListArr])
+      shelfListAllData.current = ([...shelfListAllData.current, ...shelvesListArr])
 
       if (newLastVisible !== "EOD") paginationData.current.lastVisible = newLastVisible
 
@@ -176,7 +175,7 @@ export default function AddBookToShelfModal() {
     setUserBookIdListFresh([shelfId, ...userBookIdListFresh.current])
 
     // removes last element in modal UI if overflow
-    let shelfListElArrCopy = shelfListElArrDisplay
+    let shelfListElArrCopy = shelfListElArr
 
     if (shelfListElArrCopy.length >= MAX_SHELF_LIST_NUM) {
       shelfListElArrCopy.pop()
@@ -186,7 +185,7 @@ export default function AddBookToShelfModal() {
     let shelfItem = createShelfItemEl({ shelfName, shelfId })
 
     setShelfListElArrDisplay([shelfItem, ...shelfListElArrCopy])
-    shelfListElArrFull.current = ([{ id: shelfId, el: shelfItem, name: shelfName }, ...shelfListElArrFull.current])
+    shelfListAllData.current = ([{ id: shelfId, el: shelfItem, name: shelfName }, ...shelfListAllData.current])
 
     paginationData.current.totalNumOfShelves++
 
@@ -225,12 +224,12 @@ export default function AddBookToShelfModal() {
 
     // update element in full state so classname / element state change is retained when switching pages
 
-    const toUpdateElObj = shelfListElArrFull.current.find(elData => elData.id === shelfId)
-    const toUpdateElObjIndex = shelfListElArrFull.current.indexOf(toUpdateElObj)
+    const toUpdateElObj = shelfListAllData.current.find(elData => elData.id === shelfId)
+    const toUpdateElObjIndex = shelfListAllData.current.indexOf(toUpdateElObj)
 
     const newEl = createShelfItemEl({ shelfName: toUpdateElObj.name, shelfId: toUpdateElObj.id })
 
-    shelfListElArrFull.current[toUpdateElObjIndex].el = newEl
+    shelfListAllData.current[toUpdateElObjIndex].el = newEl
   }
 
 
@@ -254,14 +253,11 @@ export default function AddBookToShelfModal() {
       }
 
       <div className={styles.shelfList}>
-        {shelfListElArrDisplay.length > 0 ?
-          (
-            shelfListElArrDisplay
-          )
+        {shelfListElArr.length > 0
+          ?
+          (shelfListElArr)
           :
-          (
-            <div className={styles.shelvesPlaceholder}>No shelves found</div>
-          )
+          (<div className={styles.shelvesPlaceholder}>No shelves found</div>)
         }
       </div>
       {

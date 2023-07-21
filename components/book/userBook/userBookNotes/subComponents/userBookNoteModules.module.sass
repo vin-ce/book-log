@@ -28,8 +28,12 @@ $max-cell-width: 320px
 
     cursor: pointer
 
+  .dot.active
     &:hover
       background-color: variables.$yellow
+
+  .dot.pinned
+    background-color: variables.$orange
 
   .noteButtonsContainer
     position: absolute
@@ -40,6 +44,8 @@ $max-cell-width: 320px
 
 .activeText
   border-bottom: 2px solid variables.$yellow
+  &:focus
+    outline: none
 
 .button
   @include variables.textButton

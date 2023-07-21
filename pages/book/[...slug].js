@@ -21,12 +21,13 @@ export default function Book() {
   const setUserBookRating = useStore((state) => state.setUserBookRating)
   const setUserBookShelfIdList = useStore((state) => state.setUserBookShelfIdList)
   const setIsAuthorizedForUserBook = useStore(state => state.setIsAuthorizedForUserBook)
+  const setUserBookNotes = useStore(state => state.setUserBookNotes)
 
   const [ready, setReady] = useState(false)
   const router = useRouter()
 
   useEffect(() => {
-    if (router.isReady) {
+    if (router.isReady && !ready) {
       let bookId = router.query.slug[0]
       let username = router.query.slug[1]
 
@@ -43,9 +44,11 @@ export default function Book() {
       setUserBookRating(null)
       setUserBookShelfIdList(null)
       setIsAuthorizedForUserBook(false)
+      setUserBookNotes(null)
+
       setReady(true)
     }
-  }, [loggedInUser, router, setIsAuthorizedForUserBook, setSelectedBookId, setSelectedBookUserId, setSelectedBookUserUsername, setUserBookRating, setUserBookShelfIdList, setUserBookStatus])
+  }, [loggedInUser, ready, router, setIsAuthorizedForUserBook, setSelectedBookId, setSelectedBookUserId, setSelectedBookUserUsername, setUserBookNotes, setUserBookRating, setUserBookShelfIdList, setUserBookStatus])
 
   return ready && (
     <main>

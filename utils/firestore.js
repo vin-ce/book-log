@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
-import { getFirestore, collection, setDoc, doc, getDoc, getDocs, where, query, updateDoc, serverTimestamp, arrayUnion, arrayRemove, orderBy, limit, deleteDoc, startAfter, getCountFromServer } from "firebase/firestore";
+import { getFirestore, collection, setDoc, doc, getDoc, getDocs, where, query, updateDoc, serverTimestamp, arrayUnion, arrayRemove, orderBy, limit, deleteDoc, startAfter, getCountFromServer, addDoc } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCLz-Bk7coVNRtQO8cUyEKGjSPGcTxeLws",
@@ -37,7 +37,12 @@ export async function createUser(userData) {
       email: userData.email,
       profileImageURL: userData.profileImageURL,
       id: userData.id,
-      createdTimestamp: serverTimestamp()
+      createdTimestamp: serverTimestamp(),
+
+      // keeps track of bookId status
+      toRead: [],
+      reading: [],
+      read: [],
     }, { merge: true })
 
   }
@@ -117,19 +122,38 @@ export async function fetchUserByUsername(username) {
 
 async function fetchBookById(bookId) {
   const bookSnap = await getDoc(doc(db, "books", bookId))
+  // specifically select title to check if there's book info
+  // and not just user info attached to book
+  // this is so that database can be relied upon rather than google book api
+  // in larger calls for book info
   if (bookSnap.exists()) {
-    return bookSnap.data()
+    return bookSnap.data().title
   } else {
     return null
   }
 }
 
+// check if book is in database
+export async function checkHasBookData({ bookId, bookData }) {
+  const hasBookData = await fetchBookById(bookId)
+  if (hasBookData) return
+  else await addBookData({ bookId, bookData })
+}
 
+
+function removeNullOrUndefinedProperties(obj) {
+  Object.keys(obj).forEach(key => {
+    if (obj[key] === undefined || obj[key] === null) {
+      delete obj[key];
+    }
+  });
+  return obj
+}
 
 export async function addBookData({ bookId, bookData }) {
-  await setDoc(doc(db, "books", bookId), {
-
-  }, { merge: true })
+  // firebase can't accept values that are undefined 
+  const cleanedBookData = removeNullOrUndefinedProperties(bookData)
+  await updateDoc(doc(db, "books", bookId), cleanedBookData)
 }
 
 export async function addBookToShelf({ bookId, shelfId, userId }) {
@@ -187,7 +211,10 @@ const MAX_NUM_OF_SHELVES = 5
 export async function fetchShelves({ userId, lastVisible, page }) {
 
   let q
+  // query with pagination
   if (lastVisible) q = query(collection(db, "shelves"), where("creatorId", "==", userId), orderBy("lastUpdatedTimestamp", "desc"), startAfter(lastVisible), limit(MAX_NUM_OF_SHELVES))
+
+  // query with first results
   else q = query(collection(db, "shelves"), where("creatorId", "==", userId), orderBy("lastUpdatedTimestamp", "desc"), limit(MAX_NUM_OF_SHELVES))
 
   const shelvesSnap = await getDocs(q)
@@ -199,19 +226,17 @@ export async function fetchShelves({ userId, lastVisible, page }) {
     })
   })
 
-  // does not add lastVisible ref if less or equal to 5, 
-  // i.e if no more docs to fetch
   let newLastVisible
 
+  // gets total num of shelves to know if hit limit
   let noLimitQuery = query(collection(db, "shelves"), where("creatorId", "==", userId))
   const countSnap = await getCountFromServer(noLimitQuery)
   const totalNumOfShelves = countSnap.data().count
 
-  // console.log("page", totalNumOfShelves, page)
+  // if total is still more than the amount i'm fetching, get query cursor
   if (totalNumOfShelves > page * MAX_NUM_OF_SHELVES) newLastVisible = shelvesSnap.docs[shelvesSnap.docs.length - 1];
+  // else return end of document 
   else newLastVisible = "EOD"
-
-  // console.log('last visible', newLastVisible)
 
   return { shelvesData, newLastVisible, totalNumOfShelves }
 }
@@ -257,13 +282,31 @@ export async function fetchUserBookInfo({ bookId, userId }) {
   const userBookSnap = await getDoc(doc(db, "books", bookId, "users", userId))
   if (userBookSnap.exists()) {
     const bookData = userBookSnap.data()
-    const notesData = await fetchNotes({ bookId, userId })
-    // console.log("user book data", userBookSnap.data())
+    let notesData = await fetchBookNotes({ bookId, userId })
+
+    // if there is pinned list
+    if (bookData.pinnedNotes && bookData.pinnedNotes.length > 0) {
+      const tempNotesData = [...notesData]
+
+      // rearranges bookData array to have pinned 
+      bookData.pinnedNotes.forEach((pinnedNoteId, index) => {
+        const currentIndex = notesData.findIndex(obj => obj.id === pinnedNoteId)
+        const newIndex = index
+        const pinnedNoteData = notesData[currentIndex]
+        pinnedNoteData.pinned = true
+
+        tempNotesData.splice(currentIndex, 1)
+        tempNotesData.splice(newIndex, 0, pinnedNoteData)
+      })
+      notesData = tempNotesData
+      console.log("notes pinned", bookData.pinnedNotes, notesData)
+    }
+
     return {
       status: bookData.status,
       rating: bookData.rating,
       shelves: bookData.shelves,
-      notes: notesData
+      notes: notesData,
     }
   } else {
     return null
@@ -276,6 +319,34 @@ export async function updateUserBookStatus({ bookId, userId, status }) {
   await setDoc(doc(db, "books", bookId, "users", userId), {
     status: status,
   }, { merge: true })
+
+  switch (status) {
+    case "toRead": {
+      await updateDoc(doc(db, "users", userId), {
+        toRead: arrayUnion(bookId),
+        reading: arrayRemove(bookId),
+        read: arrayRemove(bookId),
+      })
+      break
+    }
+    case "reading": {
+      await updateDoc(doc(db, "users", userId), {
+        toRead: arrayRemove(bookId),
+        reading: arrayUnion(bookId),
+        read: arrayRemove(bookId),
+      })
+      break
+    }
+    case "read": {
+      await updateDoc(doc(db, "users", userId), {
+        toRead: arrayRemove(bookId),
+        reading: arrayRemove(bookId),
+        read: arrayUnion(bookId),
+      })
+      break
+    }
+  }
+
 
 }
 
@@ -290,13 +361,17 @@ export async function updateUserBookRating({ bookId, userId, rating }) {
 
 // NOTES
 
-async function fetchNotes({ bookId, userId }) {
-  const userBookNotesSnap = await getDocs(collection(db, "books", bookId, "users", userId, "notes"))
-  // ADD ORDER BY CREATION DATE
+async function fetchBookNotes({ bookId, userId }) {
+
+  const userBookNotesCollectionRef = collection(db, "books", bookId, "users", userId, "notes")
+
+  const q = query(userBookNotesCollectionRef, orderBy("createdTimestamp", "desc"))
+
+  const userBookNotesSnap = await getDocs(q)
 
   const userBookNotesData = []
   userBookNotesSnap.forEach((doc) => {
-    userBookNotesData.push({ id: doc.id, data: doc.data() })
+    userBookNotesData.push({ id: doc.id, ...doc.data() })
   })
 
   if (userBookNotesData.length == 0) {
@@ -307,22 +382,76 @@ async function fetchNotes({ bookId, userId }) {
 
 }
 
-async function createTweetNote({ bookId, userId, tweetUrl }) {
 
-  const tweetNote = await setDoc(doc(db, "books", bookId, "users", userId, "notes"), {
-    createdTimestamp: serverTimestamp(),
-    // tweetId: ,
-    type: "tweet",
-  })
+export async function createNote({ bookId, userId, tweetId, content, type }) {
+
+  let creationData
+  if (type === "tweet") {
+
+    creationData = {
+      createdTimestamp: serverTimestamp(),
+      type,
+      tweetId,
+    }
+
+  } else if (type === "text") {
+
+    creationData = {
+      createdTimestamp: serverTimestamp(),
+      type,
+      content,
+    }
+  }
+  const userBookNotesCollectionRef = collection(db, "books", bookId, "users", userId, "notes")
+
+  const docRef = await addDoc(userBookNotesCollectionRef, creationData)
+
+  const docSnap = await getDoc(docRef)
+  const data = docSnap.data()
+
+  return {
+    id: docSnap.id,
+    ...data
+  }
 
 }
 
-async function createTextNote({ bookId, userId, content }) {
-
-  const tweetNote = await setDoc(doc(db, "books", bookId, "users", userId, "notes"), {
-    createdTimestamp: serverTimestamp(),
-    type: "text",
-    content,
+export async function editTextNote({ bookId, userId, noteId, content }) {
+  const userBookNoteRef = doc(db, "books", bookId, "users", userId, "notes", noteId)
+  await updateDoc(userBookNoteRef, {
+    content
   })
+}
 
+export async function deleteNote({ bookId, userId, noteId }) {
+  const userBookNoteRef = doc(db, "books", bookId, "users", userId, "notes", noteId)
+  await deleteDoc(userBookNoteRef)
+}
+
+export async function addPinnedNote({ bookId, userId, noteId }) {
+
+  const userBookRef = doc(db, "books", bookId, "users", userId)
+
+  const docSnap = await getDoc(userBookRef)
+  if (docSnap.exists()) {
+    const docData = docSnap.data()
+    const pinnedNotes = docData.pinnedNotes
+    if (pinnedNotes && pinnedNotes.length > 0) {
+      await updateDoc(userBookRef, {
+        pinnedNotes: [noteId, ...pinnedNotes]
+      })
+    } else {
+      await updateDoc(userBookRef, {
+        pinnedNotes: [noteId]
+      })
+    }
+  }
+}
+
+export async function removePinnedNote({ bookId, userId, noteId }) {
+  const userBookRef = doc(db, "books", bookId, "users", userId)
+
+  await updateDoc(userBookRef, {
+    pinnedNotes: arrayRemove(noteId)
+  })
 }

@@ -1,15 +1,15 @@
 import { useStore } from "@/utils/store"
 import styles from "./userBookNotes.module.sass"
 import { TextNote, TweetNote } from "./subComponents/userBookNoteModules"
-import { CreateTextNoteModal, CreateTweetNoteModal } from "@/components/modals/createNodeModals/createNoteModals"
+import { CreateTextNoteModal, CreateTweetNoteModal } from "@/components/modals/createNoteModals/createNoteModals"
+import React, { useEffect, useState } from "react"
 
 
 export default function UserBookNotes() {
 
-  const loggedInUser = useStore((state) => state.loggedInUser)
-  const selectedBookUserId = useStore((state) => state.selectedBookUserId)
-  const selectedBookId = useStore((state) => state.selectedBookId)
   const isAuthorizedForUserBook = useStore((state) => state.isAuthorizedForUserBook)
+
+  const userBookNotes = useStore((state) => state.userBookNotes)
 
   const isCreateTextNoteModal = useStore((state) => state.isCreateTextNoteModal)
   const setIsCreateTextNoteModal = useStore((state) => state.setIsCreateTextNoteModal)
@@ -20,6 +20,56 @@ export default function UserBookNotes() {
   const onClickCreateTweetNote = () => setIsCreateTweetNoteModal(true)
   const onClickCreateTextNote = () => setIsCreateTextNoteModal(true)
 
+  const [userBookNotesElArr, setUserBookNotesElArr] = useState(null)
+  const [pinnedUserBookNotesElArr, setPinnedUserBookNotesElArr] = useState(null)
+
+  useEffect(() => {
+    if (userBookNotes) {
+
+      const pinnedElArr = []
+      const elArr = []
+
+      console.log("note", userBookNotes)
+      userBookNotes.forEach(note => {
+        if (note.type === "tweet") {
+          if (note.pinned) {
+            elArr.push(
+              <React.Fragment key={note.id}>
+                <TweetNote tweetId={note.tweetId} createdTimestampSeconds={note.createdTimestamp.seconds} id={note.id} pinned={true} />
+              </React.Fragment>
+            )
+          } else {
+            elArr.push(
+              <React.Fragment key={note.id}>
+                <TweetNote tweetId={note.tweetId} createdTimestampSeconds={note.createdTimestamp.seconds} id={note.id} />
+              </React.Fragment>
+            )
+          }
+        } else if (note.type === "text") {
+          if (note.pinned) {
+            elArr.push(
+              <React.Fragment key={note.id}>
+                <TextNote content={note.content} createdTimestampSeconds={note.createdTimestamp.seconds} id={note.id} pinned={true} />
+              </React.Fragment>
+            )
+          } else {
+            elArr.push(
+              <React.Fragment key={note.id}>
+                <TextNote content={note.content} createdTimestampSeconds={note.createdTimestamp.seconds} id={note.id} />
+              </React.Fragment>
+            )
+          }
+        } else {
+          console.log("ERROR: something went wrong in notes")
+        }
+      })
+
+      setPinnedUserBookNotesElArr(pinnedElArr)
+      setUserBookNotesElArr(elArr)
+
+    }
+  }, [userBookNotes])
+
   return (
     <>
       <div className={styles.container}>
@@ -27,21 +77,22 @@ export default function UserBookNotes() {
           <div className={styles.label}>sticky notes:</div>
           {
             isAuthorizedForUserBook ?
-              (
-                <div className={styles.buttonsContainer}>
-                  <span className={styles.button} onClick={onClickCreateTweetNote}>+ tweet</span>
-                  <span className={styles.button} onClick={onClickCreateTextNote}>+ text</span>
-                </div>
-              )
+              <div className={styles.buttonsContainer}>
+                <span className={styles.button} onClick={onClickCreateTweetNote}>+ tweet</span>
+                <span className={styles.button} onClick={onClickCreateTextNote}>+ text</span>
+              </div>
               :
               null
           }
         </div>
         <div className={styles.notesGrid}>
-          <TweetNote tweetId={"1682083105580908544"} />
-          <TextNote />
-          <TweetNote tweetId={"1679271751191089160"} />
-          <TextNote />
+          {userBookNotesElArr || pinnedUserBookNotesElArr ?
+            <>
+              {pinnedUserBookNotesElArr}
+              {userBookNotesElArr}
+            </>
+            :
+            <div>No notes found</div>}
         </div>
       </div>
       {isCreateTextNoteModal ? <CreateTextNoteModal /> : null}
