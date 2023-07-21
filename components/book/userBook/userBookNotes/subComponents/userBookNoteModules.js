@@ -10,7 +10,7 @@ import { addPinnedNote, deleteNote, editTextNote, removePinnedNote } from "@/uti
 import { useFreshRef } from "@/hooks/useFreshRef"
 
 
-function NoteTemplate({ children, createdTimestampSeconds, id, pinned, extraButtons, externalButtonsElRef, setExternalButtonsEl, hideHeaderPartsFuncRef }) {
+function NoteTemplate({ children, createdTimestampSeconds, id, pinned, extraButtons, externalButtonsElRef, setExternalButtonsEl }) {
 
   const isAuthorizedForUserBook = useStore((state) => state.isAuthorizedForUserBook)
 
@@ -22,8 +22,6 @@ function NoteTemplate({ children, createdTimestampSeconds, id, pinned, extraButt
     setInternalButtonsEl = setExternalButtonsEl
   }
 
-  const [dateEl, setDateEl] = useState(null)
-
   const [isDeleteModal, setIsDeleteModal] = useState(false)
 
   const selectedBookUserId = useStore((state) => state.selectedBookUserId)
@@ -32,19 +30,29 @@ function NoteTemplate({ children, createdTimestampSeconds, id, pinned, extraButt
   const userBookNotes = useStore((state) => state.userBookNotes)
   const setUserBookNotes = useStore((state) => state.setUserBookNotes)
 
+  const [userBookNotesFresh, setUserBookNotesFresh] = useFreshRef(userBookNotes, setUserBookNotes)
+
+  useEffect(() => {
+    if (userBookNotes) setUserBookNotesFresh(userBookNotes)
+  }, [userBookNotes])
 
   const onClickPin = async () => {
 
-    const tempNotesData = [...userBookNotes]
+    const tempNotesData = [...userBookNotesFresh.current]
 
     const currentIndex = tempNotesData.findIndex(obj => obj.id === id)
     const pinnedNoteData = tempNotesData[currentIndex]
 
-    if (pinned) {
-      // find it, set pinned = false, can leave it there since it sorts itself out
+    if (pinnedNoteData.pinned) {
+
       await removePinnedNote({ bookId: selectedBookId, userId: selectedBookUserId, noteId: id })
 
       pinnedNoteData.pinned = false
+
+      tempNotesData.splice(currentIndex, 1)
+      // finds first spot where it's not pinned
+      const newIndex = tempNotesData.findIndex(obj => !obj.pinned)
+      tempNotesData.splice(newIndex, 0, pinnedNoteData)
 
     } else {
       // find it, set pinned = true, shift it to top
@@ -56,29 +64,16 @@ function NoteTemplate({ children, createdTimestampSeconds, id, pinned, extraButt
       tempNotesData.unshift(pinnedNoteData)
     }
 
-    console.log("new", JSON.stringify(tempNotesData))
-    console.log("old", JSON.stringify(userBookNotes))
-
-    setUserBookNotes([...tempNotesData])
+    setUserBookNotesFresh([...tempNotesData])
   }
 
   const onClickDelete = () => setIsDeleteModal(true)
 
-  const hideHeaderParts = () => {
-    setDateEl(null)
-    internalButtonsElRef.current = null
-  }
-
-  if (hideHeaderPartsFuncRef) hideHeaderPartsFuncRef.current = hideHeaderParts
-
   const toggleOptions = () => {
     if (isAuthorizedForUserBook) {
       if (internalButtonsElRef.current) {
-        hideHeaderParts()
+        setInternalButtonsEl(null)
       } else {
-        setDateEl(
-          <div className={styles.date}>{secondsToDate(createdTimestampSeconds)}</div>
-        )
         setInternalButtonsEl(
           <div className={styles.noteButtonsContainer}>
             {extraButtons}
@@ -92,19 +87,27 @@ function NoteTemplate({ children, createdTimestampSeconds, id, pinned, extraButt
 
   useEffect(() => {
     if (pinned) document.getElementById(`${id}-dot`).classList.add(styles.pinned)
+    else document.getElementById(`${id}-dot`).classList.remove(styles.pinned)
   }, [pinned])
 
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        {dateEl}
+        {isAuthorizedForUserBook && internalButtonsElRef.current ?
+          <div className={styles.date}>{secondsToDate(createdTimestampSeconds)}</div> : null
+        }
         {
           isAuthorizedForUserBook ?
             <div id={`${id}-dot`} className={[styles.dot, styles.active].join(' ')} onClick={toggleOptions} />
             :
             <div id={`${id}-dot`} className={styles.dot} />
         }
-        {internalButtonsElRef.current}
+        {/* {internalButtonsElRef.current} */}
+        <div className={styles.noteButtonsContainer}>
+          {extraButtons}
+          <span className={styles.button} onClick={onClickPin}>!</span>
+          <span className={styles.button} onClick={onClickDelete}>x</span>
+        </div>
       </div>
       {children}
       {
@@ -150,13 +153,11 @@ export function TextNote({ content, createdTimestampSeconds, id, pinned }) {
 
   const [buttonsElRef, setButtonsEl] = useFreshRef(null)
 
-  const hideHeaderPartsFuncRef = useRef(null)
 
   const onClickCompleteEdit = async () => {
     textElRef.current.classList.remove(styles.activeText)
     setIsDisabled(true)
     setButtonsEl(null)
-    hideHeaderPartsFuncRef.current()
 
     await editTextNote({ bookId: selectedBookId, userId: selectedBookUserId, noteId: id, content: textContent.current })
   }
@@ -179,7 +180,6 @@ export function TextNote({ content, createdTimestampSeconds, id, pinned }) {
       extraButtons={<span className={styles.button} onClick={onClickEdit}>+</span>}
       externalButtonsElRef={buttonsElRef}
       setExternalButtonsEl={setButtonsEl}
-      hideHeaderPartsFuncRef={hideHeaderPartsFuncRef}
     >
       <ContentEditable
         innerRef={textElRef}

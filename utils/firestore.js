@@ -284,15 +284,16 @@ export async function fetchUserBookInfo({ bookId, userId }) {
     const bookData = userBookSnap.data()
     let notesData = await fetchBookNotes({ bookId, userId })
 
+    console.log("notes pre", notesData)
     // if there is pinned list
     if (bookData.pinnedNotes && bookData.pinnedNotes.length > 0) {
       const tempNotesData = [...notesData]
 
       // rearranges bookData array to have pinned 
       bookData.pinnedNotes.forEach((pinnedNoteId, index) => {
-        const currentIndex = notesData.findIndex(obj => obj.id === pinnedNoteId)
+        const currentIndex = tempNotesData.findIndex(obj => obj.id === pinnedNoteId)
         const newIndex = index
-        const pinnedNoteData = notesData[currentIndex]
+        const pinnedNoteData = tempNotesData[currentIndex]
         pinnedNoteData.pinned = true
 
         tempNotesData.splice(currentIndex, 1)

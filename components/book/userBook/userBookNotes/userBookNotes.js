@@ -28,12 +28,12 @@ export default function UserBookNotes() {
 
       const pinnedElArr = []
       const elArr = []
-
-      console.log("note", userBookNotes)
+      console.log("START ===========")
       userBookNotes.forEach(note => {
+        console.log("note", note)
         if (note.type === "tweet") {
           if (note.pinned) {
-            elArr.push(
+            pinnedElArr.push(
               <React.Fragment key={note.id}>
                 <TweetNote tweetId={note.tweetId} createdTimestampSeconds={note.createdTimestamp.seconds} id={note.id} pinned={true} />
               </React.Fragment>
@@ -47,7 +47,7 @@ export default function UserBookNotes() {
           }
         } else if (note.type === "text") {
           if (note.pinned) {
-            elArr.push(
+            pinnedElArr.push(
               <React.Fragment key={note.id}>
                 <TextNote content={note.content} createdTimestampSeconds={note.createdTimestamp.seconds} id={note.id} pinned={true} />
               </React.Fragment>
