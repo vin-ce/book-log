@@ -6,7 +6,6 @@ import { addBookToShelf, createShelf, fetchShelves, removeBookFromShelf } from "
 import { StandardModal } from "../modalTemplates"
 import { useFreshRef } from "@/hooks/useFreshRef"
 
-
 export default function AddBookToShelfModal() {
 
   // store states and funcs
@@ -43,17 +42,14 @@ export default function AddBookToShelfModal() {
 
   const handleCreateShelfChange = e => {
     e.preventDefault()
-    if (createShelfInput.length > 50) return
+
+    if (e.target.value.length > 50) return
 
     let inputString = e.target.value
 
     // Step 1: Replace two or more spaces with a single space
     const regexStep1 = /\s{2,}/g;
-    const step1Result = inputString.replace(regexStep1, " ");
-
-    // Step 2: Remove anything that is not alphanumeric
-    const regexStep2 = /[^a-zA-Z0-9\s]/g;
-    const result = step1Result.replace(regexStep2, "");
+    const result = inputString.replace(regexStep1, " ");
 
     setCreateShelfInput(result)
   }
@@ -162,11 +158,12 @@ export default function AddBookToShelfModal() {
     if (createShelfInput.trimStart() == "") return
     if (createShelfInput.length > 50) return
 
-    // trim white space off start and end
-    createShelfInput.trimStart()
-    createShelfInput.trimEnd()
 
-    const shelfName = createShelfInput
+    let shelfName = createShelfInput
+    // trim white space off start and end
+    shelfName.trimStart()
+    shelfName.trimEnd()
+    // shelfName = DOMPurify.sanitize(shelfName);
 
     // create shelf on firebase
     const shelfId = await createShelf({ shelfName, userId: selectedBookUserId, bookId: selectedBookId })

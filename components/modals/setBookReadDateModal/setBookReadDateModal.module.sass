@@ -1,0 +1,26 @@
+@use "@/components/variables"
+
+.modal
+  width: 24rem
+
+.inputContainer
+  display: flex
+
+  input
+    @include variables.modalInput
+    flex-grow: 1
+    flex-basis: 0
+
+  input + input
+    border-left: 1px solid black
+
+  .day, .month
+    flex-grow: 1
+    flex-basis: 25%
+
+  .year
+    flex-grow: 2
+    flex-basis: 50%
+
+.setButton
+  @include variables.modalButton(variables.$yellow)

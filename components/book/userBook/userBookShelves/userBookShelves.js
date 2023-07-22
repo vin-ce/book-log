@@ -74,7 +74,7 @@ export default function UserBookShelves() {
                 {shelfListEl}
 
                 {isAuthorizedForUserBook ?
-                  (<div className={styles.addShelfButton} onClick={() => setIsAddBookToShelfModal(true)}>+ add</div>) : null
+                  (<div className={styles.addShelfButton} onClick={() => setIsAddBookToShelfModal(true)}>+ shelves</div>) : null
                 }
               </div>
             </div>

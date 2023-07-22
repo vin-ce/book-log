@@ -2,6 +2,7 @@ import { updateUserBookStatus } from "@/utils/firestore";
 import { useStore } from "@/utils/store";
 import { useEffect, useState } from "react";
 import styles from "./userBookStatus.module.sass"
+import ReadDate from "./readDate/readDate";
 
 export default function UserBookStatus() {
 
@@ -29,7 +30,7 @@ export default function UserBookStatus() {
         switch (userBookStatus) {
           case "toRead": {
             setStatusEl(
-              <div className={styles.container}>
+              <div className={styles.statusContainer}>
                 <div className={styles.label}>status:</div>
                 <div className={styles.bookStatus}>
                   <span><span className={styles.selectedStatus}>to read</span></span>
@@ -42,7 +43,7 @@ export default function UserBookStatus() {
           }
           case "reading": {
             setStatusEl(
-              <div className={styles.container}>
+              <div className={styles.statusContainer}>
                 <div className={styles.label}>status:</div>
                 <div className={styles.bookStatus}>
                   <span id="status-toRead" className={styles.button} onClick={onSelectStatus}>
@@ -61,7 +62,7 @@ export default function UserBookStatus() {
           }
           case "read": {
             setStatusEl(
-              <div className={styles.container}>
+              <div className={styles.statusContainer}>
                 <div className={styles.label}>status:</div>
                 <div className={styles.bookStatus}>
                   <span id="status-toRead" className={styles.button} onClick={onSelectStatus}>to read</span>
@@ -83,7 +84,7 @@ export default function UserBookStatus() {
         switch (userBookStatus) {
           case "toRead": {
             setStatusEl(
-              <div className={styles.container}>
+              <div className={styles.statusContainer}>
                 <div className={styles.label}>status:</div>
                 <div className={styles.bookStatus}>
                   <span><span className={styles.selectedStatus}>to read</span></span>
@@ -94,7 +95,7 @@ export default function UserBookStatus() {
           }
           case "reading": {
             setStatusEl(
-              <div className={styles.container}>
+              <div className={styles.statusContainer}>
                 <div className={styles.label}>status:</div>
                 <div className={styles.bookStatus}>
                   <span>
@@ -107,7 +108,7 @@ export default function UserBookStatus() {
           }
           case "read": {
             setStatusEl(
-              <div className={styles.container}>
+              <div className={styles.statusContainer}>
                 <div className={styles.label}>status:</div>
                 <div className={styles.bookStatus}>
                   <span><span className={styles.selectedStatus}>read</span></span>
@@ -127,7 +128,7 @@ export default function UserBookStatus() {
 
       if (isAuthorizedForUserBook) {
         setStatusEl(
-          <div className={styles.container}>
+          <div className={styles.statusContainer}>
             <div className={styles.label}>status:</div>
             <div className={styles.bookStatus}>
               <span id="status-toRead" className={styles.button} onClick={onSelectStatus}>to read</span>
@@ -151,9 +152,12 @@ export default function UserBookStatus() {
 
 
   return (
-    <>
+    <div>
       {statusEl}
-    </>
+      {
+        userBookStatus === "read" ? <ReadDate /> : null
+      }
+    </div>
   )
 
 }

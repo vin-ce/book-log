@@ -18,6 +18,7 @@ export default function Book() {
   const loggedInUser = useStore((state) => state.loggedInUser)
   const setSelectedBookUserId = useStore((state) => state.setSelectedBookUserId)
   const setUserBookStatus = useStore((state) => state.setUserBookStatus)
+  const setUserBookReadDate = useStore((state) => state.setUserBookReadDate)
   const setUserBookRating = useStore((state) => state.setUserBookRating)
   const setUserBookShelfIdList = useStore((state) => state.setUserBookShelfIdList)
   const setIsAuthorizedForUserBook = useStore(state => state.setIsAuthorizedForUserBook)
@@ -41,6 +42,7 @@ export default function Book() {
       // reset
       setSelectedBookUserId(null)
       setUserBookStatus(null)
+      setUserBookReadDate(null)
       setUserBookRating(null)
       setUserBookShelfIdList(null)
       setIsAuthorizedForUserBook(false)

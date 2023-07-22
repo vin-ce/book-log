@@ -284,7 +284,6 @@ export async function fetchUserBookInfo({ bookId, userId }) {
     const bookData = userBookSnap.data()
     let notesData = await fetchBookNotes({ bookId, userId })
 
-    console.log("notes pre", notesData)
     // if there is pinned list
     if (bookData.pinnedNotes && bookData.pinnedNotes.length > 0) {
       const tempNotesData = [...notesData]
@@ -307,6 +306,7 @@ export async function fetchUserBookInfo({ bookId, userId }) {
       status: bookData.status,
       rating: bookData.rating,
       shelves: bookData.shelves,
+      readDate: bookData.readDate,
       notes: notesData,
     }
   } else {
@@ -359,7 +359,15 @@ export async function updateUserBookRating({ bookId, userId, rating }) {
 
 }
 
+export async function updateUserBookReadDate({ bookId, userId, readDate }) {
 
+  await setDoc(doc(db, "books", bookId, "users", userId), {
+    readDate,
+  }, { merge: true })
+
+}
+
+// ==========
 // NOTES
 
 async function fetchBookNotes({ bookId, userId }) {

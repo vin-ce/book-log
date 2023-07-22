@@ -45,7 +45,7 @@ export default function UserBookRating() {
         setRatingEl(
           <div className={styles.container}>
             <div className={styles.label}>rating:</div>
-            <div className={styles.button} onClick={onClickAddRating}>+add rating</div>
+            <div className={styles.button} onClick={onClickAddRating}>+ rating</div>
           </div>
         )
       } else {

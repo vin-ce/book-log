@@ -6,8 +6,10 @@ import styles from "./userBookNoteModules.module.sass"
 import TweetEmbed from "react-tweet-embed"
 import ContentEditable from "react-contenteditable"
 import sanitizeHtml from "sanitize-html"
-import { addPinnedNote, deleteNote, editTextNote, removePinnedNote } from "@/utils/firestore"
+import { addPinnedNote, editTextNote, removePinnedNote } from "@/utils/firestore"
 import { useFreshRef } from "@/hooks/useFreshRef"
+import { DeleteNoteModal } from "@/components/modals/deleteModal/deleteModal"
+import { formatDateFromSeconds } from "@/utils/helpers"
 
 
 function NoteTemplate({ children, createdTimestampSeconds, id, pinned, extraButtons, externalButtonsElRef, setExternalButtonsEl }) {
@@ -91,29 +93,26 @@ function NoteTemplate({ children, createdTimestampSeconds, id, pinned, extraButt
   }, [pinned])
 
   return (
-    <div className={styles.container}>
-      <div className={styles.header}>
-        {isAuthorizedForUserBook && internalButtonsElRef.current ?
-          <div className={styles.date}>{secondsToDate(createdTimestampSeconds)}</div> : null
-        }
-        {
-          isAuthorizedForUserBook ?
-            <div id={`${id}-dot`} className={[styles.dot, styles.active].join(' ')} onClick={toggleOptions} />
-            :
-            <div id={`${id}-dot`} className={styles.dot} />
-        }
-        {/* {internalButtonsElRef.current} */}
-        <div className={styles.noteButtonsContainer}>
-          {extraButtons}
-          <span className={styles.button} onClick={onClickPin}>!</span>
-          <span className={styles.button} onClick={onClickDelete}>x</span>
+    <>
+      <div className={styles.container}>
+        <div className={styles.header}>
+          {isAuthorizedForUserBook && internalButtonsElRef.current ?
+            <div className={styles.date}>{formatDateFromSeconds(createdTimestampSeconds)}</div> : null
+          }
+          {
+            isAuthorizedForUserBook ?
+              <div id={`${id}-dot`} className={[styles.dot, styles.active].join(' ')} onClick={toggleOptions} />
+              :
+              <div id={`${id}-dot`} className={styles.dot} />
+          }
+          {internalButtonsElRef.current ? internalButtonsElRef.current : null}
         </div>
+        {children}
       </div>
-      {children}
       {
-        isDeleteModal ? <ConfirmDeleteModal setIsDeleteModal={setIsDeleteModal} id={id} /> : null
+        isDeleteModal ? <DeleteNoteModal setIsDeleteModal={setIsDeleteModal} id={id} /> : null
       }
-    </div>
+    </>
   )
 }
 
@@ -192,49 +191,3 @@ export function TextNote({ content, createdTimestampSeconds, id, pinned }) {
 }
 
 
-// -----------------
-// DELETE MODAL
-
-function ConfirmDeleteModal({ setIsDeleteModal, id }) {
-  const selectedBookUserId = useStore((state) => state.selectedBookUserId)
-  const selectedBookId = useStore((state) => state.selectedBookId)
-
-  const userBookNotes = useStore((state) => state.userBookNotes)
-  const setUserBookNotes = useStore((state) => state.setUserBookNotes)
-
-  const onClickYes = async () => {
-    // delete from firebase
-    await deleteNote({ bookId: selectedBookId, userId: selectedBookUserId, noteId: id })
-
-    // removes object from data state
-    const toDeleteObj = userBookNotes.find(elData => elData.id === id)
-    const toDeleteObjIndex = userBookNotes.indexOf(toDeleteObj)
-    const userBookNotesCopy = [...userBookNotes]
-    userBookNotesCopy.splice(toDeleteObjIndex, 1)
-    setUserBookNotes(userBookNotesCopy)
-
-    // close modal
-    setIsDeleteModal(false)
-  }
-
-  const onClickCancel = () => setIsDeleteModal(false)
-
-  return (
-    <div className={styles.deleteModalContainer}>
-      <div className={styles.deleteModalHeader}>Delete Note?</div>
-      <div className={styles.deleteModalOptions}>
-        <div className={styles.yes} onClick={onClickYes}>yes</div>
-        <div className={styles.cancel} onClick={onClickCancel}>cancel</div>
-      </div>
-    </div>
-  )
-}
-
-// ----------------
-// HELPER FUNC
-
-function secondsToDate(seconds) {
-  const date = new Date(seconds * 1000);
-  const options = { year: 'numeric', month: 'short', day: 'numeric' };
-  return date.toLocaleDateString(undefined, options);
-}

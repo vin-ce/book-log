@@ -25,6 +25,7 @@ export default function UserBookInfo() {
   const setSelectedBookId = useStore((state) => state.setSelectedBookId)
 
   const setUserBookStatus = useStore((state) => state.setUserBookStatus)
+  const setUserBookReadDate = useStore((state) => state.setUserBookReadDate)
   const setUserBookRating = useStore((state) => state.setUserBookRating)
 
   const setUserBookShelfIdList = useStore((state) => state.setUserBookShelfIdList)
@@ -54,6 +55,7 @@ export default function UserBookInfo() {
           if (userBookData) {
             setUserBookStatus(userBookData.status)
             setUserBookShelfIdList(userBookData.shelves)
+            setUserBookReadDate(userBookData.readDate)
             setUserBookRating(userBookData.rating)
             setUserBookNotes(userBookData.notes)
           }

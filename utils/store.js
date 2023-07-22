@@ -29,6 +29,9 @@ export const useStore = create((set) => ({
   userBookStatus: null,
   setUserBookStatus: (status) => set({ userBookStatus: status }),
 
+  userBookReadDate: null,
+  setUserBookReadDate: (date) => set({ userBookReadDate: date }),
+
   userBookRating: null,
   setUserBookRating: (status) => set({ userBookRating: status }),
 
@@ -45,11 +48,13 @@ export const useStore = create((set) => ({
   isSetBookRatingModal: false,
   setIsSetBookRatingModal: (bool) => set({ isSetBookRatingModal: bool }),
 
+  isSetBookReadDateModal: false,
+  setIsSetBookReadDateModal: (bool) => set({ isSetBookReadDateModal: bool }),
+
   isCreateTweetNoteModal: false,
   setIsCreateTweetNoteModal: (bool) => set({ isCreateTweetNoteModal: bool }),
   isCreateTextNoteModal: false,
   setIsCreateTextNoteModal: (bool) => set({ isCreateTextNoteModal: bool }),
-
 
 
 }))

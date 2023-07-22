@@ -49,24 +49,3 @@ $max-cell-width: 320px
 
 .button
   @include variables.textButton
-
-// MODALS
-
-.deleteModalContainer
-  position: absolute
-  top: 3.2rem
-  background-color: white
-  border: 1px solid black
-  right: 0
-  // transform: translate(-50%, 0)
-
-  .deleteModalHeader
-    padding: 0.8rem
-    border-bottom: 2px solid black
-
-  .deleteModalOptions
-    @include variables.modalButtonsContainer(variables.$orange)
-
-    .cancel
-      &:hover
-        background-color: variables.$yellow
