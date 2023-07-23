@@ -5,16 +5,13 @@ import Split from 'react-split'
 
 export default function Home() {
 
-  // const bookData = await searchBook()
-
   return (
-    // <main className={styles.main}>
     <main >
       <Split
         sizes={[50, 50]}
-        minSize={480}
+        minSize={[464, 480]}
         expandToMin={true}
-        gutterSize={4}
+        gutterSize={2}
         gutterAlign="center"
         snapOffset={30}
         dragInterval={1}

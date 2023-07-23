@@ -1,0 +1,28 @@
+@use "@/components/variables"
+
+.container
+  margin: 3.2rem
+  // width: 100%
+
+.header
+  display: flex
+  justify-content: space-between
+
+  .name
+    // @include variables.textButton
+    color: variables.$orange
+    font-weight: bold
+    margin-bottom: 1.6rem
+
+.button
+  @include variables.textButton
+
+.statusContainer
+  display: flex
+
+  .status
+    margin-right: 3.2rem
+
+.label
+  font-weight: bold
+  margin-right: 0.8rem

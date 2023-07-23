@@ -7,10 +7,9 @@ import UserBookShelves from "../userBookShelves/userBookShelves"
 import UserBookNotes from "../userBookNotes/userBookNotes"
 import UserBookRating from "../userBookRating/userBookRating"
 import { useFreshRef } from "@/hooks/useFreshRef"
+import { Divider } from "@/components/parts/parts"
 
 export default function UserBookInfo() {
-
-  const [contentEl, setContentEl] = useState(<>No user selected.</>)
 
   const [ready, setReady] = useFreshRef(false)
 
@@ -81,25 +80,6 @@ export default function UserBookInfo() {
   }, [isAuthorizedForUserBook, loggedInUser, selectedBookUserId, setIsAuthorizedForUserBook])
 
 
-  // sets content after data is ready.current
-  // updates if authorization changes
-  useEffect(() => {
-    if (ready.current) {
-      setContentEl(
-        <>
-          <div className={styles.name}>@{selectedBookUserUsername}</div>
-          <div className={styles.statusShelvesContainer}>
-            <UserBookStatus />
-            <UserBookShelves />
-            <UserBookRating />
-          </div>
-          <UserBookNotes />
-        </>
-      )
-    }
-    // selectedBookUserId as dependency because ready does not register change
-  }, [ready, selectedBookUserUsername])
-
 
 
   return (
@@ -107,18 +87,21 @@ export default function UserBookInfo() {
       {
         ready.current ?
           (
-            <div className={styles.contentContainer}>
-              <div className={styles.name}>@{selectedBookUserUsername}</div>
-              <div className={styles.statusShelvesContainer}>
-                <UserBookStatus />
-                <UserBookShelves />
-                <UserBookRating />
+            <>
+              <div className={styles.contentContainer}>
+                <div className={styles.name}>@{selectedBookUserUsername}</div>
+                <div className={styles.statusShelvesContainer}>
+                  <UserBookStatus />
+                  <UserBookShelves />
+                  <UserBookRating />
+                </div>
+                <Divider />
+                <UserBookNotes />
               </div>
-              <UserBookNotes />
-            </div>
+            </>
           )
           :
-          null
+          <div className={styles.contentContainer}>No user selected or found</div>
       }
     </div>
   )

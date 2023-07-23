@@ -18,7 +18,7 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 
-// ---------
+// =========
 // USER
 
 export async function createUser(userData) {
@@ -117,7 +117,7 @@ export async function fetchUserByUsername(username) {
   }
 }
 
-// ---------
+// =========
 // BOOK
 
 // check if book is in database
@@ -190,8 +190,46 @@ export async function removeBookFromShelf({ bookId, shelfId, userId }) {
 }
 
 
-// ----------
+// to read / read / reading
+
+export async function fetchBooksWithStatus({ userId }) {
+  const userData = await fetchUserById(userId)
+
+  return (
+    {
+      toRead: userData.toRead,
+      reading: userData.reading,
+      read: userData.read,
+    }
+  )
+
+}
+
+export async function fetchBooksInArray({ }) {
+
+}
+
+// ==========
 // SHELF
+
+
+export async function fetchAllUserShelves({ userId }) {
+
+  const q = query(collection(db, "shelves"), where("creatorId", "==", userId), orderBy("name", "asc"))
+
+  const shelvesSnap = await getDocs(q)
+  const shelvesData = []
+  shelvesSnap.forEach((doc) => {
+    shelvesData.push({
+      id: doc.id,
+      name: doc.data().name
+    })
+  })
+
+  return shelvesData
+
+}
+
 
 export async function fetchShelf(shelfId) {
   const shelfSnap = await getDoc(doc(db, "shelves", shelfId))
@@ -201,7 +239,7 @@ export async function fetchShelf(shelfId) {
 
 const MAX_NUM_OF_SHELVES = 5
 
-export async function fetchShelves({ userId, lastVisible, page }) {
+export async function fetchShelvesPaginated({ userId, lastVisible, page }) {
 
   let q
   // query with pagination
@@ -268,6 +306,10 @@ export async function createShelf({ shelfName, userId, bookId }) {
   return shelfId
 }
 
+
+
+
+// ===================
 // USER BOOK INFO
 
 export async function fetchUserBookInfo({ bookId, userId }) {

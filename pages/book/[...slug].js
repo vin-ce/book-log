@@ -69,9 +69,8 @@ export default function Book() {
       <Split
         sizes={[5, 95]}
         minSize={[464, 480]}
-        // maxSize={[480, Infinity]}
         expandToMin={true}
-        gutterSize={4}
+        gutterSize={2}
         gutterAlign="center"
         snapOffset={30}
         dragInterval={1}

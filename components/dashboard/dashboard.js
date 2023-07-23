@@ -1,12 +1,13 @@
 import styles from './dashboard.module.sass'
 import Link from 'next/link'
 import { useStore } from "../../utils/store"
+import Profile from '../profile/profile'
 
 export default function Dashboard() {
   const loggedInUser = useStore((state) => state.loggedInUser)
 
   return (
-    <div className={styles.container}>
+    <div className={styles.panelContainer}>
       {loggedInUser ? <LoggedInView /> : <LoggedOutView />}
     </div>
   )
@@ -14,12 +15,14 @@ export default function Dashboard() {
 
 function LoggedOutView() {
   return (
-    <div>sign in to see library | shelves</div>
+    <div className={styles.container}>sign in to see your dashboard</div>
   )
 }
 
 function LoggedInView() {
+
+
   return (
-    <Link href="/book/hello/vincent">book</Link>
+    <Profile />
   )
 }

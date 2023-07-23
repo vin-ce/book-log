@@ -1,0 +1,36 @@
+@use "@/components/variables"
+
+.header
+  display: flex
+  justify-content: space-between
+
+  .label
+    font-weight: bold
+    margin-right: 0.8rem
+
+.button
+  @include variables.textButton
+
+.indexContainer
+  margin-top: 1.6rem
+  display: grid
+  grid-template-columns: 1fr 1fr
+
+  // .leftCol, .rightCol 
+
+  .shelfSection
+    margin-bottom: 1.6rem
+    display: flex
+
+    .character
+      width: 3.2rem
+      margin-right: 1.6rem
+
+    .shelfNamesContainer
+      // 
+
+      .shelf
+        @include variables.textButton
+
+      .shelf + .shelf
+        margin-top: 0.4rem

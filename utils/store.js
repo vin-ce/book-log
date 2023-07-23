@@ -56,5 +56,10 @@ export const useStore = create((set) => ({
   isCreateTextNoteModal: false,
   setIsCreateTextNoteModal: (bool) => set({ isCreateTextNoteModal: bool }),
 
+  userAllShelves: null,
+  setUserAllShelves: (data) => set({ userAllShelves: data }),
+
+  isCreateShelfModal: false,
+  setIsCreateShelfModal: (bool) => set({ isCreateShelfModal: bool }),
 
 }))

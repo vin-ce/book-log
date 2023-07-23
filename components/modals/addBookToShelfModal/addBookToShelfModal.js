@@ -2,7 +2,7 @@
 import { useStore } from "@/utils/store"
 import styles from "./addBookToShelfModal.module.sass"
 import { useEffect, useState, useRef } from "react"
-import { addBookToShelf, createShelf, fetchShelves, removeBookFromShelf } from "@/utils/firestore"
+import { addBookToShelf, createShelf, fetchShelvesPaginated, removeBookFromShelf } from "@/utils/firestore"
 import { StandardModal } from "../modalTemplates"
 import { useFreshRef } from "@/hooks/useFreshRef"
 
@@ -80,7 +80,7 @@ export default function AddBookToShelfModal() {
     let totalNumOfShelves
 
     if (type === "init") {
-      ({ shelvesData, newLastVisible, totalNumOfShelves } = await fetchShelves({ userId: selectedBookUserId, page: paginationData.current.page }))
+      ({ shelvesData, newLastVisible, totalNumOfShelves } = await fetchShelvesPaginated({ userId: selectedBookUserId, page: paginationData.current.page }))
 
       // console.log('shelves', shelvesData)
       // if (shelvesData) 
@@ -100,7 +100,7 @@ export default function AddBookToShelfModal() {
       if (type === 'next') {
         // if list does not contain the full range
         if (shelfListAllData.current.length < paginationData.current.totalNumOfShelves) {
-          ({ shelvesData, newLastVisible, totalNumOfShelves } = await fetchShelves({ userId: selectedBookUserId, lastVisible: paginationData.current.lastVisible, page: paginationData.current.page }))
+          ({ shelvesData, newLastVisible, totalNumOfShelves } = await fetchShelvesPaginated({ userId: selectedBookUserId, lastVisible: paginationData.current.lastVisible, page: paginationData.current.page }))
 
           updateShelfListElAndData({ type })
 
