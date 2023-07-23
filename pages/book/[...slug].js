@@ -6,8 +6,6 @@ import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
 import { useStore } from "@/utils/store"
 
-import AddBookToShelfModal from "@/components/modals/addBookToShelfModal/addBookToShelfModal"
-
 // router solution:
 // https://github.com/vercel/next.js/discussions/11484#:~:text=Jun%202%2C%202022-,Here%27s,-my%20workaround.%20In
 
@@ -32,10 +30,6 @@ export default function Book() {
       let bookId = router.query.slug[0]
       let username = router.query.slug[1]
 
-      // if book page has no username and user is logged in
-      // redirect to user's book page
-      if (!username && loggedInUser) router.push(`/book/${bookId}/${loggedInUser.username}`)
-
       setSelectedBookId(bookId)
       setSelectedBookUserUsername(username)
 
@@ -50,7 +44,25 @@ export default function Book() {
 
       setReady(true)
     }
-  }, [loggedInUser, ready, router, setIsAuthorizedForUserBook, setSelectedBookId, setSelectedBookUserId, setSelectedBookUserUsername, setUserBookNotes, setUserBookRating, setUserBookShelfIdList, setUserBookStatus])
+  }, [loggedInUser, ready, router, setIsAuthorizedForUserBook, setSelectedBookId, setSelectedBookUserId, setSelectedBookUserUsername, setUserBookNotes, setUserBookRating, setUserBookReadDate, setUserBookShelfIdList, setUserBookStatus])
+
+  useEffect(() => {
+
+    if (router.isReady) {
+      let bookId = router.query.slug[0]
+      let username = router.query.slug[1]
+
+      // if book page has no username and user is logged in
+      // redirect to user's book page
+      if (!username && loggedInUser) {
+        router.replace(`/book/${bookId}/${loggedInUser.username}`)
+        // this is set here because above userEffect is not going to run again
+        // and it's required for userBookInfo to refresh 
+        setSelectedBookUserUsername(loggedInUser.username)
+      }
+    }
+
+  }, [loggedInUser, router])
 
   return ready && (
     <main>

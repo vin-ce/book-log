@@ -81,7 +81,11 @@ export default function AddBookToShelfModal() {
 
     if (type === "init") {
       ({ shelvesData, newLastVisible, totalNumOfShelves } = await fetchShelves({ userId: selectedBookUserId, page: paginationData.current.page }))
-      updateData({ type })
+
+      // console.log('shelves', shelvesData)
+      // if (shelvesData) 
+      updateShelfListElAndData({ type })
+
     } else {
 
       let selectRangeStart = (paginationData.current.page - 1) * MAX_SHELF_LIST_NUM
@@ -98,7 +102,7 @@ export default function AddBookToShelfModal() {
         if (shelfListAllData.current.length < paginationData.current.totalNumOfShelves) {
           ({ shelvesData, newLastVisible, totalNumOfShelves } = await fetchShelves({ userId: selectedBookUserId, lastVisible: paginationData.current.lastVisible, page: paginationData.current.page }))
 
-          updateData({ type })
+          updateShelfListElAndData({ type })
 
         } else {
           const listArr = extractElsFromArr(shelfListAllData.current.slice(selectRangeStart, selectRangeEnd))
@@ -107,7 +111,7 @@ export default function AddBookToShelfModal() {
       }
     }
 
-    function updateData({ type }) {
+    function updateShelfListElAndData({ type }) {
 
       let shelvesElArr = []
       let shelvesListArr = []
@@ -169,7 +173,8 @@ export default function AddBookToShelfModal() {
     const shelfId = await createShelf({ shelfName, userId: selectedBookUserId, bookId: selectedBookId })
 
     // update in app state
-    setUserBookIdListFresh([shelfId, ...userBookIdListFresh.current])
+    if (userBookIdListFresh.current) setUserBookIdListFresh([shelfId, ...userBookIdListFresh.current])
+    else setUserBookIdListFresh([shelfId])
 
     // removes last element in modal UI if overflow
     let shelfListElArrCopy = shelfListElArr
@@ -264,7 +269,8 @@ export default function AddBookToShelfModal() {
   )
 }
 
-
+// ===============
+// PAGINATION
 
 function PaginationControls({ paginationData, setShelfList }) {
 

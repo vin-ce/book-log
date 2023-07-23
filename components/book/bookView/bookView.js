@@ -49,6 +49,9 @@ function createBookEl(bookData) {
   let publishedDateEl
   if (bookData.publishedDate) publishedDateEl = <div className={styles.publishedDate}>{formatDate(bookData.publishedDate)}</div>
 
+  let publisherEl
+  if (bookData.publisher) publisherEl = <div className={styles.publisher}>{bookData.publisher}</div>
+
   return (
     <div className={styles.bookContainer}>
       <div className={styles.imageContainer}>
@@ -61,6 +64,7 @@ function createBookEl(bookData) {
         <div className={styles.description} dangerouslySetInnerHTML={{ __html: bookData.description }}></div>
         {pageCountEl}
         {publishedDateEl}
+        {publisherEl}
       </div>
     </div>
   )

@@ -120,24 +120,17 @@ export async function fetchUserByUsername(username) {
 // ---------
 // BOOK
 
-async function fetchBookById(bookId) {
-  const bookSnap = await getDoc(doc(db, "books", bookId))
-  // specifically select title to check if there's book info
-  // and not just user info attached to book
-  // this is so that database can be relied upon rather than google book api
-  // in larger calls for book info
-  if (bookSnap.exists()) {
-    return bookSnap.data().title
-  } else {
-    return null
-  }
-}
-
 // check if book is in database
 export async function checkHasBookData({ bookId, bookData }) {
-  const hasBookData = await fetchBookById(bookId)
-  if (hasBookData) return
-  else await addBookData({ bookId, bookData })
+  const bookSnap = await getDoc(doc(db, "books", bookId))
+  const userBookSnap = await getDocs(collection(db, "books", bookId, "users"), limit(1))
+
+  let hasUsers = false
+  userBookSnap.forEach(user => hasUsers = true)
+
+  // if has users but no book data
+  if (hasUsers && !bookSnap.data()) addBookData({ bookId, bookData })
+  else return
 }
 
 
@@ -153,7 +146,7 @@ function removeNullOrUndefinedProperties(obj) {
 export async function addBookData({ bookId, bookData }) {
   // firebase can't accept values that are undefined 
   const cleanedBookData = removeNullOrUndefinedProperties(bookData)
-  await updateDoc(doc(db, "books", bookId), cleanedBookData)
+  await setDoc(doc(db, "books", bookId), cleanedBookData, { merge: true })
 }
 
 export async function addBookToShelf({ bookId, shelfId, userId }) {
@@ -435,6 +428,7 @@ export async function editTextNote({ bookId, userId, noteId, content }) {
 export async function deleteNote({ bookId, userId, noteId }) {
   const userBookNoteRef = doc(db, "books", bookId, "users", userId, "notes", noteId)
   await deleteDoc(userBookNoteRef)
+  removePinnedNote({ bookId, userId, noteId })
 }
 
 export async function addPinnedNote({ bookId, userId, noteId }) {

@@ -28,9 +28,7 @@ export default function UserBookNotes() {
 
       const pinnedElArr = []
       const elArr = []
-      console.log("START ===========")
       userBookNotes.forEach(note => {
-        console.log("note", note)
         if (note.type === "tweet") {
           if (note.pinned) {
             pinnedElArr.push(
@@ -72,29 +70,32 @@ export default function UserBookNotes() {
 
   return (
     <>
-      <div className={styles.container}>
-        <div className={styles.header}>
-          <div className={styles.label}>sticky notes:</div>
-          {
-            isAuthorizedForUserBook ?
-              <div className={styles.buttonsContainer}>
-                <span className={styles.button} onClick={onClickCreateTweetNote}>+ tweet</span>
-                <span className={styles.button} onClick={onClickCreateTextNote}>+ text</span>
-              </div>
-              :
-              null
-          }
-        </div>
-        <div className={styles.notesGrid}>
-          {userBookNotesElArr || pinnedUserBookNotesElArr ?
-            <>
-              {pinnedUserBookNotesElArr}
-              {userBookNotesElArr}
-            </>
-            :
-            <div>No notes found</div>}
-        </div>
-      </div>
+      {
+        !isAuthorizedForUserBook && !userBookNotes ? null :
+          <div className={styles.container}>
+            <div className={styles.header}>
+              <div className={styles.label}>sticky notes:</div>
+              {
+                isAuthorizedForUserBook ?
+                  <div className={styles.buttonsContainer}>
+                    <span className={styles.button} onClick={onClickCreateTweetNote}>+ tweet</span>
+                    <span className={styles.button} onClick={onClickCreateTextNote}>+ text</span>
+                  </div>
+                  :
+                  null
+              }
+            </div>
+            <div className={styles.notesGrid}>
+              {userBookNotesElArr || pinnedUserBookNotesElArr ?
+                <>
+                  {pinnedUserBookNotesElArr}
+                  {userBookNotesElArr}
+                </>
+                :
+                <div>No notes found</div>}
+            </div>
+          </div>
+      }
       {isCreateTextNoteModal ? <CreateTextNoteModal /> : null}
       {isCreateTweetNoteModal ? <CreateTweetNoteModal /> : null}
     </>

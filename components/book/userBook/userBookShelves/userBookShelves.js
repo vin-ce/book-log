@@ -65,7 +65,9 @@ export default function UserBookShelves() {
   return (
     <>
       {
-        userBookShelfIdList ?
+        (!userBookShelfIdList && !isAuthorizedForUserBook) ?
+          null
+          :
           (
             <div className={styles.container}>
               <div className={styles.label}>shelves:</div>
@@ -79,8 +81,6 @@ export default function UserBookShelves() {
               </div>
             </div>
           )
-          :
-          null
       }
 
       {isAddBookToShelfModal ? <AddBookToShelfModal /> : null}

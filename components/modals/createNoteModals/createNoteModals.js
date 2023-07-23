@@ -31,7 +31,8 @@ export function CreateTweetNoteModal() {
     else {
       const tweetNoteData = await createNote({ bookId: selectedBookId, userId: selectedBookUserId, tweetId: res, type: "tweet" })
 
-      setUserBookNotes([tweetNoteData, ...userBookNotes])
+      if (userBookNotes) setUserBookNotes([tweetNoteData, ...userBookNotes])
+      else setUserBookNotes([tweetNoteData])
 
       setIsCreateTweetNoteModal(false)
     }

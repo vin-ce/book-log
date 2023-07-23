@@ -3,7 +3,7 @@
 import Link from "next/link"
 
 import styles from "./nav.module.sass"
-import { LogInOutButtons } from "./logInOutButtons"
+import { LogInOutButtons } from "../logInOutButtons/logInOutButtons"
 
 
 

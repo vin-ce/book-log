@@ -30,6 +30,7 @@ export default function UserBookInfo() {
 
   const setUserBookShelfIdList = useStore((state) => state.setUserBookShelfIdList)
 
+  const isAuthorizedForUserBook = useStore((state) => state.isAuthorizedForUserBook)
   const setIsAuthorizedForUserBook = useStore((state) => state.setIsAuthorizedForUserBook)
 
   const userBookNotes = useStore((state) => state.userBookNotes)
@@ -39,7 +40,7 @@ export default function UserBookInfo() {
   // sets data
   useEffect(() => {
 
-    if (!ready.current) initEl()
+    initEl()
 
     async function initEl() {
 
@@ -62,21 +63,22 @@ export default function UserBookInfo() {
 
           setReady(true)
         }
-      } else if (!selectedBookUserUsername || selectedBookUserId) {
+      } else if (!ready.current && (!selectedBookUserUsername || selectedBookUserId)) {
         setReady(true)
       }
     }
 
-  }, [ready, selectedBookId, selectedBookUserId, selectedBookUserUsername, setReady, setSelectedBookUserId, setUserBookNotes, setUserBookRating, setUserBookShelfIdList, setUserBookStatus])
+  }, [ready, selectedBookId, selectedBookUserId, selectedBookUserUsername, setReady, setSelectedBookUserId, setUserBookNotes, setUserBookRating, setUserBookReadDate, setUserBookShelfIdList, setUserBookStatus])
 
 
   // sets is authorized
   useEffect(() => {
-    if (loggedInUser && selectedBookUserId)
+
+    if (loggedInUser && selectedBookUserId && !isAuthorizedForUserBook)
       if (loggedInUser.id === selectedBookUserId)
         setIsAuthorizedForUserBook(true)
 
-  }, [loggedInUser, selectedBookUserId, setIsAuthorizedForUserBook])
+  }, [isAuthorizedForUserBook, loggedInUser, selectedBookUserId, setIsAuthorizedForUserBook])
 
 
   // sets content after data is ready.current

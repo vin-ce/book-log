@@ -40,7 +40,7 @@ export async function searchBookById(bookId) {
     .then((res) => {
       const id = res.data.id
       const info = res.data.volumeInfo
-      // console.log("search by id res", res.data)
+      console.log("search by id res", res.data)
 
       return {
         id,
@@ -51,6 +51,7 @@ export async function searchBookById(bookId) {
         publishedDate: info.publishedDate,
         pageCount: info.pageCount,
         imageUrl: getBigImageUrl(id),
+        publisher: info.publisher,
       }
 
     }).catch((err) => {

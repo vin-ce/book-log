@@ -1,7 +1,7 @@
 import { useRouter } from "next/navigation";
-import { initLogIn, initLogOut } from '../utils/auth'
-import { useStore } from "../utils/store"
-import styles from "./logButtons.module.sass"
+import { initLogIn, initLogOut } from '@/utils/auth'
+import { useStore } from "@/utils/store"
+import styles from "./logInOutButtons.module.sass"
 
 
 
