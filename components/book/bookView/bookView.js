@@ -3,9 +3,9 @@ import Image from "next/image"
 import { useEffect, useState } from "react"
 import styles from "./bookView.module.sass"
 import { useStore } from "@/utils/store"
-import { checkHasBookData } from "@/utils/firestore"
+import { checkHasBookData, fetchMaterialById } from "@/utils/firestore"
 
-export default function BookView() {
+export default function BookView({ isMaterial }) {
 
   const [el, setEl] = useState(null)
   const selectedBookId = useStore((state) => state.selectedBookId)
@@ -15,18 +15,19 @@ export default function BookView() {
     if (selectedBookId) fetchData()
 
     async function fetchData() {
-      const bookData = await searchBookById(selectedBookId)
+      let bookData
+      if (isMaterial) bookData = await fetchMaterialById(selectedBookId)
+      else bookData = await searchBookById(selectedBookId)
+
       if (!bookData) {
         setEl(<div className={styles.errorContainer}>Cannot find book!</div>)
       } else {
         checkHasBookData({ bookId: selectedBookId, bookData })
         setEl(createBookEl(bookData))
       }
-
-
     }
 
-  }, [selectedBookId])
+  }, [isMaterial, selectedBookId])
 
 
   return (
@@ -37,6 +38,19 @@ export default function BookView() {
 }
 
 function createBookEl(bookData) {
+
+  let imageEl
+  if (bookData.imageUrl) imageEl = (
+    <div className={styles.imageContainer}>
+      <Image src={bookData.imageUrl} alt={"Book cover."} width={480} height={480} priority={true} />
+    </div>
+  )
+
+  let linkEl
+  if (bookData.link) linkEl = (
+    <div className={styles.link}><a href={bookData.link} target={'_blank'}>{`link ->`}</a></div>
+  )
+
   let bookAuthorEl
   if (bookData.authors) bookAuthorEl = <div className={styles.author}>by {bookData.authors.join(', ')}</div>
 
@@ -54,13 +68,12 @@ function createBookEl(bookData) {
 
   return (
     <div className={styles.bookContainer}>
-      <div className={styles.imageContainer}>
-        <Image src={bookData.imageUrl} alt={"Book cover."} width={480} height={480} priority={true} />
-      </div>
+      {imageEl}
       <div className={styles.infoContainer}>
         <div className={styles.title}>{bookData.title}</div>
         {subtitleEl}
         {bookAuthorEl}
+        {linkEl}
         <div className={styles.description} dangerouslySetInnerHTML={{ __html: bookData.description }}></div>
         {pageCountEl}
         {publishedDateEl}

@@ -13,9 +13,13 @@ export const metadata = {
 export default function Layout({ children }) {
 
   return (
-    <div className={source_code_pro.className}>
-      <Nav />
-      <main>{children}</main>
-    </div>
+    <>
+      <div className={source_code_pro.className}>
+        <Nav />
+        <main>
+          {children}
+        </main>
+      </div>
+    </>
   )
 }

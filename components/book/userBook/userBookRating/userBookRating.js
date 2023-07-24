@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import SetBookRatingModal from "@/components/modals/setBookRatingModal/setBookRatingModal"
 
 export default function UserBookRating() {
-  const isAuthorizedForUserBook = useStore((state) => state.isAuthorizedForUserBook)
+  const isAuthorizedForSelectedUser = useStore((state) => state.isAuthorizedForSelectedUser)
   const userBookRating = useStore((state) => state.userBookRating)
 
   const isSetBookRatingModal = useStore((state) => state.isSetBookRatingModal)
@@ -20,7 +20,7 @@ export default function UserBookRating() {
     // userBookRating = 0 -> this counts as false
     if (userBookRating) {
 
-      if (isAuthorizedForUserBook) {
+      if (isAuthorizedForSelectedUser) {
 
         setRatingEl(
           <div className={styles.container}>
@@ -41,7 +41,7 @@ export default function UserBookRating() {
 
 
     } else {
-      if (isAuthorizedForUserBook) {
+      if (isAuthorizedForSelectedUser) {
         setRatingEl(
           <div className={styles.container}>
             <div className={styles.label}>rating:</div>
@@ -54,9 +54,9 @@ export default function UserBookRating() {
 
     }
 
-    // primary dependencies are userBookStatus & isAuthorizedForUserBook
+    // primary dependencies are userBookStatus & isAuthorizedForSelectedUser
     // other ones shouldn't change without a page reload
-  }, [isAuthorizedForUserBook, userBookRating])
+  }, [isAuthorizedForSelectedUser, userBookRating])
 
 
   return (

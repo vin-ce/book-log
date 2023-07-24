@@ -14,7 +14,7 @@ import { formatDateFromSeconds } from "@/utils/helpers"
 
 function NoteTemplate({ children, createdTimestampSeconds, id, pinned, extraButtons, externalButtonsElRef, setExternalButtonsEl }) {
 
-  const isAuthorizedForUserBook = useStore((state) => state.isAuthorizedForUserBook)
+  const isAuthorizedForSelectedUser = useStore((state) => state.isAuthorizedForSelectedUser)
 
   let [internalButtonsElRef, setInternalButtonsEl] = useFreshRef(null)
 
@@ -26,7 +26,7 @@ function NoteTemplate({ children, createdTimestampSeconds, id, pinned, extraButt
 
   const [isDeleteModal, setIsDeleteModal] = useState(false)
 
-  const selectedBookUserId = useStore((state) => state.selectedBookUserId)
+  const selectedUserId = useStore((state) => state.selectedUserId)
   const selectedBookId = useStore((state) => state.selectedBookId)
 
   const userBookNotes = useStore((state) => state.userBookNotes)
@@ -47,7 +47,7 @@ function NoteTemplate({ children, createdTimestampSeconds, id, pinned, extraButt
 
     if (pinnedNoteData.pinned) {
 
-      await removePinnedNote({ bookId: selectedBookId, userId: selectedBookUserId, noteId: id })
+      await removePinnedNote({ bookId: selectedBookId, userId: selectedUserId, noteId: id })
 
       pinnedNoteData.pinned = false
 
@@ -58,7 +58,7 @@ function NoteTemplate({ children, createdTimestampSeconds, id, pinned, extraButt
 
     } else {
       // find it, set pinned = true, shift it to top
-      await addPinnedNote({ bookId: selectedBookId, userId: selectedBookUserId, noteId: id })
+      await addPinnedNote({ bookId: selectedBookId, userId: selectedUserId, noteId: id })
 
       pinnedNoteData.pinned = true
 
@@ -72,7 +72,7 @@ function NoteTemplate({ children, createdTimestampSeconds, id, pinned, extraButt
   const onClickDelete = () => setIsDeleteModal(true)
 
   const toggleOptions = () => {
-    if (isAuthorizedForUserBook) {
+    if (isAuthorizedForSelectedUser) {
       if (internalButtonsElRef.current) {
         setInternalButtonsEl(null)
       } else {
@@ -96,11 +96,11 @@ function NoteTemplate({ children, createdTimestampSeconds, id, pinned, extraButt
     <>
       <div className={styles.container}>
         <div className={styles.header}>
-          {isAuthorizedForUserBook && internalButtonsElRef.current ?
+          {isAuthorizedForSelectedUser && internalButtonsElRef.current ?
             <div className={styles.date}>{formatDateFromSeconds(createdTimestampSeconds)}</div> : null
           }
           {
-            isAuthorizedForUserBook ?
+            isAuthorizedForSelectedUser ?
               <div id={`${id}-dot`} className={[styles.dot, styles.active].join(' ')} onClick={toggleOptions} />
               :
               <div id={`${id}-dot`} className={styles.dot} />
@@ -143,7 +143,7 @@ export function TextNote({ content, createdTimestampSeconds, id, pinned }) {
   const [isDisabled, setIsDisabled] = useState(true)
   const textElRef = useRef(null)
 
-  const selectedBookUserId = useStore((state) => state.selectedBookUserId)
+  const selectedUserId = useStore((state) => state.selectedUserId)
   const selectedBookId = useStore((state) => state.selectedBookId)
 
   const handleOnTextChange = (e) => {
@@ -158,7 +158,7 @@ export function TextNote({ content, createdTimestampSeconds, id, pinned }) {
     setIsDisabled(true)
     setButtonsEl(null)
 
-    await editTextNote({ bookId: selectedBookId, userId: selectedBookUserId, noteId: id, content: textContent.current })
+    await editTextNote({ bookId: selectedBookId, userId: selectedUserId, noteId: id, content: textContent.current })
   }
 
   const onClickEdit = () => {

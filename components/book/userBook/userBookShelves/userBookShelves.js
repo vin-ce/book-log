@@ -14,7 +14,7 @@ export default function UserBookShelves() {
   const isAddBookToShelfModal = useStore((state) => state.isAddBookToShelfModal)
   const setIsAddBookToShelfModal = useStore((state) => state.setIsAddBookToShelfModal)
 
-  const isAuthorizedForUserBook = useStore((state) => state.isAuthorizedForUserBook)
+  const isAuthorizedForSelectedUser = useStore((state) => state.isAuthorizedForSelectedUser)
 
 
   useEffect(() => {
@@ -65,7 +65,7 @@ export default function UserBookShelves() {
   return (
     <>
       {
-        (!userBookShelfIdList && !isAuthorizedForUserBook) ?
+        (!userBookShelfIdList && !isAuthorizedForSelectedUser) ?
           null
           :
           (
@@ -75,7 +75,7 @@ export default function UserBookShelves() {
 
                 {shelfListEl}
 
-                {isAuthorizedForUserBook ?
+                {isAuthorizedForSelectedUser ?
                   (<div className={styles.addShelfButton} onClick={() => setIsAddBookToShelfModal(true)}>+ shelves</div>) : null
                 }
               </div>

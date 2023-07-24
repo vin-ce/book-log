@@ -134,9 +134,9 @@ export async function checkHasBookData({ bookId, bookData }) {
 }
 
 
-function removeNullOrUndefinedProperties(obj) {
+function removeEmptyProperties(obj) {
   Object.keys(obj).forEach(key => {
-    if (obj[key] === undefined || obj[key] === null) {
+    if (obj[key] === undefined || obj[key] === null || obj[key] === '') {
       delete obj[key];
     }
   });
@@ -145,7 +145,7 @@ function removeNullOrUndefinedProperties(obj) {
 
 export async function addBookData({ bookId, bookData }) {
   // firebase can't accept values that are undefined 
-  const cleanedBookData = removeNullOrUndefinedProperties(bookData)
+  const cleanedBookData = removeEmptyProperties(bookData)
   await setDoc(doc(db, "books", bookId), cleanedBookData, { merge: true })
 }
 
@@ -207,6 +207,25 @@ export async function fetchBooksWithStatus({ userId }) {
 
 export async function fetchBooksInArray({ }) {
 
+}
+
+
+// MATERIAL
+
+export async function createMaterial({ userId, materialData, status }) {
+  const cleanedMaterialData = removeEmptyProperties(materialData)
+  const newBookRef = doc(collection(db, "books"))
+  await setDoc(newBookRef, {
+    ...cleanedMaterialData,
+    id: newBookRef.id
+  })
+  await updateUserBookStatus({ bookId: newBookRef.id, userId, status })
+  return newBookRef.id
+}
+
+export async function fetchMaterialById(materialId) {
+  const materialSnap = await getDoc(doc(db, "books", materialId))
+  if (materialSnap.exists()) return materialSnap.data()
 }
 
 // ==========
@@ -323,7 +342,7 @@ export async function fetchUserBookInfo({ bookId, userId }) {
     if (bookData.pinnedNotes && bookData.pinnedNotes.length > 0) {
       const tempNotesData = [...notesData]
 
-      // rearranges bookData array to have pinned 
+      // rearranges bookData array to have pinned at top
       bookData.pinnedNotes.forEach((pinnedNoteId, index) => {
         const currentIndex = tempNotesData.findIndex(obj => obj.id === pinnedNoteId)
         const newIndex = index

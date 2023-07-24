@@ -1,23 +1,30 @@
 import { useStore } from "@/utils/store"
 import styles from "./profile.module.sass"
 import { useEffect, useState } from "react"
-import { fetchAllUserShelves, fetchBooksWithStatus } from "@/utils/firestore"
+import { fetchAllUserShelves, fetchBooksWithStatus, fetchUserById } from "@/utils/firestore"
 import { Divider } from "../parts/parts"
 import ShelvesIndex from "./shelvesIndex/shelvesIndex"
+import CreateMaterialModal from "../modals/createMaterialModal/createMaterialModal"
 
-export default function Profile() {
-  const loggedInUser = useStore((state) => state.loggedInUser)
+export default function Profile({ userId }) {
+
   const [booksWithStatusData, setBooksWithStatusData] = useState(null)
 
+  const selectedUserId = useStore(state => state.selectedUserId)
+  const selectedUserUsername = useStore(state => state.selectedUserUsername)
+  const isAuthorizedForSelectedUser = useStore(state => state.isAuthorizedForSelectedUser)
+
+  const isCreateMaterialModal = useStore(state => state.isCreateMaterialModal)
+  const setIsCreateMaterialModal = useStore(state => state.setIsCreateMaterialModal)
 
 
   useEffect(() => {
-    if (!booksWithStatusData && loggedInUser) initData()
+    if (!booksWithStatusData && selectedUserId) initData()
     async function initData() {
-      const data = await fetchBooksWithStatus({ userId: loggedInUser.id })
+      const data = await fetchBooksWithStatus({ userId: selectedUserId })
       setBooksWithStatusData(data)
     }
-  }, [booksWithStatusData, loggedInUser])
+  }, [booksWithStatusData, selectedUserId])
 
   const createStatusEl = (type) => {
 
@@ -37,28 +44,33 @@ export default function Profile() {
         }
       </div >
     )
-
   }
 
-
   return (
-    <div className={styles.container}>
-      <div className={styles.header}>
-        <div className={styles.name}>@{loggedInUser.username}</div>
-        <div className={styles.button}>+ add link</div>
+    <>
+      <div className={styles.container}>
+        <div className={styles.header}>
+          <div className={styles.name}>@{selectedUserUsername}</div>
+          {
+            isAuthorizedForSelectedUser ? <div className={styles.button} onClick={() => setIsCreateMaterialModal(true)}>+ add link</div> : null
+          }
 
+        </div>
+        {
+          booksWithStatusData ?
+            <div className={styles.statusContainer}>
+              {createStatusEl("toRead")}
+              {createStatusEl("reading")}
+              {createStatusEl("read")}
+            </div>
+            : null
+        }
+        <Divider />
+        <ShelvesIndex />
       </div>
       {
-        booksWithStatusData ?
-          <div className={styles.statusContainer}>
-            {createStatusEl("toRead")}
-            {createStatusEl("reading")}
-            {createStatusEl("read")}
-          </div>
-          : null
+        isCreateMaterialModal ? <CreateMaterialModal /> : null
       }
-      <Divider />
-      <ShelvesIndex />
-    </div>
+    </>
   )
 }

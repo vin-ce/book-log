@@ -11,7 +11,7 @@ export default function Home() {
         sizes={[50, 50]}
         minSize={[464, 480]}
         expandToMin={true}
-        gutterSize={2}
+        gutterSize={4}
         gutterAlign="center"
         snapOffset={30}
         dragInterval={1}

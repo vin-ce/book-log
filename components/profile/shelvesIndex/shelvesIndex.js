@@ -8,13 +8,14 @@ import Link from "next/link"
 import CreateShelfModal from "@/components/modals/createShelfModal/createShelfModal"
 
 export default function ShelvesIndex() {
-  const loggedInUser = useStore((state) => state.loggedInUser)
+  const selectedUserId = useStore((state) => state.selectedUserId)
   const userAllShelves = useStore((state) => state.userAllShelves)
   const setUserAllShelves = useStore((state) => state.setUserAllShelves)
 
   const isCreateShelfModal = useStore((state) => state.isCreateShelfModal)
   const setIsCreateShelfModal = useStore((state) => state.setIsCreateShelfModal)
 
+  const isAuthorizedForSelectedUser = useStore(state => state.isAuthorizedForSelectedUser)
 
   const [shelvesIndexData, setShelvesIndexData] = useState(null)
   // structure of data in shelvesIndexData 
@@ -35,19 +36,18 @@ export default function ShelvesIndex() {
 
   // init data
   useEffect(() => {
-    if (loggedInUser) initShelvesData()
+    if (selectedUserId) initShelvesData()
     async function initShelvesData() {
-      const shelvesData = await fetchAllUserShelves({ userId: loggedInUser.id })
+      const shelvesData = await fetchAllUserShelves({ userId: selectedUserId })
       setUserAllShelves(shelvesData)
     }
-  }, [loggedInUser, setUserAllShelves])
+  }, [selectedUserId, setUserAllShelves])
 
   // create organised index data
   useEffect(() => {
     if (userAllShelves) {
       const organisedShelvesData = groupObjectsByFirstCharacter(userAllShelves)
       setShelvesIndexData(organisedShelvesData)
-      console.log("org", organisedShelvesData)
     }
   }, [userAllShelves])
 
@@ -64,7 +64,9 @@ export default function ShelvesIndex() {
       <div className={styles.shelvesContainer}>
         <div className={styles.header}>
           <div className={styles.label}>shelves:</div>
-          <div className={styles.button} onClick={() => setIsCreateShelfModal(true)}>+ create shelf</div>
+          {
+            isAuthorizedForSelectedUser ? <div className={styles.button} onClick={() => setIsCreateShelfModal(true)}>+ create shelf</div> : null
+          }
         </div>
         <div className={styles.indexContainer}>
           {
@@ -131,7 +133,7 @@ const groupObjectsByFirstCharacter = (arr) => {
 
   const characterSets = []
   const middleIndex = Math.floor(arr.length / 2) - 1
-  console.log("middle inex", middleIndex)
+
   sortedArray.forEach((obj, index) => {
     // gets first character
     const firstChar = Array.from(obj.name)[0].toLowerCase();

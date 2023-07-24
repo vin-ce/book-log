@@ -12,7 +12,7 @@ export default function SetBookReadDateModal() {
   const setIsSetBookReadDateModal = useStore((state) => state.setIsSetBookReadDateModal)
 
   const selectedBookId = useStore((state) => state.selectedBookId)
-  const selectedBookUserId = useStore((state) => state.selectedBookUserId)
+  const selectedUserId = useStore((state) => state.selectedUserId)
 
   const [dayInput, setDayInput] = useState('')
   const [monthInput, setMonthInput] = useState('')
@@ -70,7 +70,7 @@ export default function SetBookReadDateModal() {
       // set app state
       setUserBookReadDate(readDate)
       // update in firebase
-      await updateUserBookReadDate({ bookId: selectedBookId, userId: selectedBookUserId, readDate })
+      await updateUserBookReadDate({ bookId: selectedBookId, userId: selectedUserId, readDate })
       // close modal
       setIsSetBookReadDateModal(false)
     }

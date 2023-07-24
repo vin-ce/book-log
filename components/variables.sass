@@ -1,6 +1,8 @@
 $primary-font: var(--font-Source-Code-Pro)
 $orange: #e06453
-$yellow: #f0c93c
+$yellow: #f7c81e
+$green: #58893a
+$dark-blue: #272e48
 
 %button
   cursor: pointer
@@ -76,6 +78,21 @@ $yellow: #f0c93c
 
   &:focus
     outline: none
+
+@mixin modalTextArea
+  resize: none
+  width: 100%
+  box-sizing: border-box
+  border: 0
+  border-bottom: 1px solid black
+  padding: 0.8rem
+
+  font-size: 1.6rem
+  font-family: $primary-font
+  line-height: 1.5
+
+  &:focus
+    outline: none !important
 
 @mixin modalButton($hover-background-color)
   width: 100%

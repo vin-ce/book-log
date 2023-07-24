@@ -31,16 +31,4 @@
     box-sizing: border-box
 
 .textArea
-  resize: none
-  width: 100%
-  box-sizing: border-box
-  border: 0
-  border-bottom: 1px solid black
-  padding: 0.8rem
-
-  font-size: 1.6rem
-  font-family: variables.$primary-font
-  line-height: 1.5
-
-  &:focus
-    outline: none !important
+  @include variables.modalTextArea

@@ -6,7 +6,7 @@ import { deleteNote } from "@/utils/firestore"
 
 export function DeleteNoteModal({ setIsDeleteModal, id }) {
 
-  const selectedBookUserId = useStore((state) => state.selectedBookUserId)
+  const selectedUserId = useStore((state) => state.selectedUserId)
   const selectedBookId = useStore((state) => state.selectedBookId)
 
   const userBookNotes = useStore((state) => state.userBookNotes)
@@ -15,7 +15,7 @@ export function DeleteNoteModal({ setIsDeleteModal, id }) {
 
   const onClickYes = async () => {
     // delete from firebase
-    await deleteNote({ bookId: selectedBookId, userId: selectedBookUserId, noteId: id })
+    await deleteNote({ bookId: selectedBookId, userId: selectedUserId, noteId: id })
 
     // removes object from data state
     const toDeleteObj = userBookNotes.find(elData => elData.id === id)

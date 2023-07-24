@@ -8,7 +8,7 @@ import sanitizeHtml from "sanitize-html"
 export function CreateTweetNoteModal() {
   const setIsCreateTweetNoteModal = useStore((state) => state.setIsCreateTweetNoteModal)
   const selectedBookId = useStore((state) => state.selectedBookId)
-  const selectedBookUserId = useStore((state) => state.selectedBookUserId)
+  const selectedUserId = useStore((state) => state.selectedUserId)
 
   const userBookNotes = useStore((state) => state.userBookNotes)
   const setUserBookNotes = useStore((state) => state.setUserBookNotes)
@@ -29,7 +29,7 @@ export function CreateTweetNoteModal() {
       inputRef.current.placeholder = "Invalid ID"
     }
     else {
-      const tweetNoteData = await createNote({ bookId: selectedBookId, userId: selectedBookUserId, tweetId: res, type: "tweet" })
+      const tweetNoteData = await createNote({ bookId: selectedBookId, userId: selectedUserId, tweetId: res, type: "tweet" })
 
       if (userBookNotes) setUserBookNotes([tweetNoteData, ...userBookNotes])
       else setUserBookNotes([tweetNoteData])
@@ -69,7 +69,7 @@ function extractTweetId(tweetUrl) {
 
 export function CreateTextNoteModal() {
   const selectedBookId = useStore((state) => state.selectedBookId)
-  const selectedBookUserId = useStore((state) => state.selectedBookUserId)
+  const selectedUserId = useStore((state) => state.selectedUserId)
 
   const setIsCreateTextNoteModal = useStore((state) => state.setIsCreateTextNoteModal)
 
@@ -81,7 +81,7 @@ export function CreateTextNoteModal() {
 
   const handleInputChange = (e) => {
     e.preventDefault()
-    let inputString = sanitizeHtml(e.target.value)
+    let inputString = e.target.value
     setTextInput(inputString)
     setNumOfChar(inputString.length)
   }
@@ -89,7 +89,7 @@ export function CreateTextNoteModal() {
   const handleCreateTweetNote = async () => {
     let inputString = sanitizeHtml(textInput)
 
-    const textNoteData = await createNote({ bookId: selectedBookId, userId: selectedBookUserId, content: inputString, type: "text" })
+    const textNoteData = await createNote({ bookId: selectedBookId, userId: selectedUserId, content: inputString, type: "text" })
 
     setUserBookNotes([textNoteData, ...userBookNotes])
 

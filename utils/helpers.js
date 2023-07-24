@@ -1,3 +1,6 @@
+import { useEffect } from "react";
+import { useStore } from "./store";
+
 export function formatDateFromDash(dateString) {
   const [day, month, year] = dateString.split('/');
   const dateObject = new Date(`${month}/${day}/${year}`);
@@ -14,4 +17,57 @@ export function formatDateFromSeconds(seconds) {
 export function extractPartsFromDashDate(date) {
   const [day, month, year] = date.split('/');
   return { day, month, year };
+}
+
+
+export function ResetStates({ type }) {
+
+  const setSelectedUserId = useStore((state) => state.setSelectedUserId)
+  const setUserBookStatus = useStore((state) => state.setUserBookStatus)
+  const setUserBookReadDate = useStore((state) => state.setUserBookReadDate)
+  const setUserBookRating = useStore((state) => state.setUserBookRating)
+  const setUserBookShelfIdList = useStore((state) => state.setUserBookShelfIdList)
+  const setIsAuthorizedForSelectedUser = useStore(state => state.setIsAuthorizedForSelectedUser)
+  const setUserBookNotes = useStore(state => state.setUserBookNotes)
+  const setSelectedUserUsername = useStore((state) => state.setSelectedUserUsername)
+  const setSelectedBookId = useStore((state) => state.setSelectedBookId)
+
+  useEffect(() => {
+    // this is not reset in book view
+    // because info is required for e.g 
+    // redirecting from /bookId -> /bookId/username
+    if (type === "full") {
+      setSelectedUserUsername(null)
+      setSelectedBookId(null)
+    }
+
+    setSelectedUserId(null)
+
+    setIsAuthorizedForSelectedUser(false)
+
+    setUserBookStatus(null)
+    setUserBookReadDate(null)
+    setUserBookRating(null)
+    setUserBookShelfIdList(null)
+    setUserBookNotes(null)
+
+  }, [setIsAuthorizedForSelectedUser, setSelectedBookId, setSelectedUserId, setSelectedUserUsername, setUserBookNotes, setUserBookRating, setUserBookReadDate, setUserBookShelfIdList, setUserBookStatus, type])
+
+
+  // sets is authorized
+  const loggedInUser = useStore((state) => state.loggedInUser)
+  const selectedUserId = useStore((state) => state.selectedUserId)
+  const isAuthorizedForSelectedUser = useStore((state) => state.isAuthorizedForSelectedUser)
+
+  useEffect(() => {
+
+    if (loggedInUser && selectedUserId && !isAuthorizedForSelectedUser)
+      if (loggedInUser.id === selectedUserId)
+        setIsAuthorizedForSelectedUser(true)
+
+  }, [isAuthorizedForSelectedUser, loggedInUser, selectedUserId, setIsAuthorizedForSelectedUser])
+
+  return (
+    <></>
+  )
 }

@@ -12,20 +12,20 @@ export default function UserBookStatus() {
   const setUserBookStatus = useStore((state) => state.setUserBookStatus)
 
   const selectedBookId = useStore((state) => state.selectedBookId)
-  const selectedBookUserId = useStore((state) => state.selectedBookUserId)
+  const selectedUserId = useStore((state) => state.selectedUserId)
 
-  const isAuthorizedForUserBook = useStore((state) => state.isAuthorizedForUserBook)
+  const isAuthorizedForSelectedUser = useStore((state) => state.isAuthorizedForSelectedUser)
 
 
   useEffect(() => {
     const onSelectStatus = (e) => {
       const selectedStatus = e.target.id.replace(/^status-/, "");
-      updateUserBookStatus({ bookId: selectedBookId, userId: selectedBookUserId, status: selectedStatus })
+      updateUserBookStatus({ bookId: selectedBookId, userId: selectedUserId, status: selectedStatus })
       setUserBookStatus(selectedStatus)
     }
 
     if (userBookStatus) {
-      if (isAuthorizedForUserBook) {
+      if (isAuthorizedForSelectedUser) {
 
         switch (userBookStatus) {
           case "toRead": {
@@ -126,7 +126,7 @@ export default function UserBookStatus() {
 
     } else {
 
-      if (isAuthorizedForUserBook) {
+      if (isAuthorizedForSelectedUser) {
         setStatusEl(
           <div className={styles.statusContainer}>
             <div className={styles.label}>status:</div>
@@ -145,9 +145,9 @@ export default function UserBookStatus() {
 
     }
 
-    // primary dependencies are userBookStatus & isAuthorizedForUserBook
+    // primary dependencies are userBookStatus & isAuthorizedForSelectedUser
     // other ones shouldn't change without a page reload
-  }, [userBookStatus, isAuthorizedForUserBook, selectedBookId, selectedBookUserId, setUserBookStatus])
+  }, [userBookStatus, isAuthorizedForSelectedUser, selectedBookId, selectedUserId, setUserBookStatus])
 
 
 

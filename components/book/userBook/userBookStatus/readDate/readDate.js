@@ -5,7 +5,7 @@ import styles from "./readDate.module.sass"
 import { formatDateFromDash } from "@/utils/helpers"
 
 export default function ReadDate() {
-  const isAuthorizedForUserBook = useStore((state) => state.isAuthorizedForUserBook)
+  const isAuthorizedForSelectedUser = useStore((state) => state.isAuthorizedForSelectedUser)
 
   const userBookReadDate = useStore((state) => state.userBookReadDate)
 
@@ -24,7 +24,7 @@ export default function ReadDate() {
 
       const formattedReadDate = formatDateFromDash(userBookReadDate)
 
-      if (isAuthorizedForUserBook) {
+      if (isAuthorizedForSelectedUser) {
 
         setReadDateEl(
           <div className={styles.container}>
@@ -45,7 +45,7 @@ export default function ReadDate() {
 
 
     } else {
-      if (isAuthorizedForUserBook) {
+      if (isAuthorizedForSelectedUser) {
         setReadDateEl(
           <div className={styles.container}>
             <div className={styles.label}>read:</div>
@@ -58,9 +58,9 @@ export default function ReadDate() {
 
     }
 
-    // primary dependencies are userBookStatus & isAuthorizedForUserBook
+    // primary dependencies are userBookStatus & isAuthorizedForSelectedUser
     // other ones shouldn't change without a page reload
-  }, [isAuthorizedForUserBook, userBookReadDate, setIsSetBookReadDateModal])
+  }, [isAuthorizedForSelectedUser, userBookReadDate, setIsSetBookReadDateModal])
 
 
   return (

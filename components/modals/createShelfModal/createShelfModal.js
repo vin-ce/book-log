@@ -3,6 +3,7 @@ import { StandardModal } from "../modalTemplates";
 import styles from "./createShelfModal.module.sass"
 import { createShelf } from "@/utils/firestore";
 import { useState } from "react";
+import sanitize from "sanitize-html";
 
 export default function CreateShelfModal() {
   const userAllShelves = useStore((state) => state.userAllShelves)
@@ -32,8 +33,7 @@ export default function CreateShelfModal() {
     if (shelfInput.trimStart() == "") return
     if (shelfInput.length > 50) return
 
-
-    let shelfName = shelfInput
+    let shelfName = sanitize(shelfInput)
     // trim white space off start and end
     shelfName.trimStart()
     shelfName.trimEnd()

@@ -7,7 +7,7 @@ import React, { useEffect, useState } from "react"
 
 export default function UserBookNotes() {
 
-  const isAuthorizedForUserBook = useStore((state) => state.isAuthorizedForUserBook)
+  const isAuthorizedForSelectedUser = useStore((state) => state.isAuthorizedForSelectedUser)
 
   const userBookNotes = useStore((state) => state.userBookNotes)
 
@@ -71,12 +71,12 @@ export default function UserBookNotes() {
   return (
     <>
       {
-        !isAuthorizedForUserBook && !userBookNotes ? null :
+        !isAuthorizedForSelectedUser && !userBookNotes ? null :
           <div className={styles.container}>
             <div className={styles.header}>
               <div className={styles.label}>sticky notes:</div>
               {
-                isAuthorizedForUserBook ?
+                isAuthorizedForSelectedUser ?
                   <div className={styles.buttonsContainer}>
                     <span className={styles.button} onClick={onClickCreateTweetNote}>+ tweet</span>
                     <span className={styles.button} onClick={onClickCreateTextNote}>+ text</span>

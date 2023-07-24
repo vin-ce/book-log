@@ -9,60 +9,45 @@ import { useStore } from "@/utils/store"
 // router solution:
 // https://github.com/vercel/next.js/discussions/11484#:~:text=Jun%202%2C%202022-,Here%27s,-my%20workaround.%20In
 
-export default function Book() {
+export default function Book({ isMaterial }) {
 
-  const setSelectedBookUserUsername = useStore((state) => state.setSelectedBookUserUsername)
+  const setSelectedUserUsername = useStore((state) => state.setSelectedUserUsername)
   const setSelectedBookId = useStore((state) => state.setSelectedBookId)
   const loggedInUser = useStore((state) => state.loggedInUser)
-  const setSelectedBookUserId = useStore((state) => state.setSelectedBookUserId)
-  const setUserBookStatus = useStore((state) => state.setUserBookStatus)
-  const setUserBookReadDate = useStore((state) => state.setUserBookReadDate)
-  const setUserBookRating = useStore((state) => state.setUserBookRating)
-  const setUserBookShelfIdList = useStore((state) => state.setUserBookShelfIdList)
-  const setIsAuthorizedForUserBook = useStore(state => state.setIsAuthorizedForUserBook)
-  const setUserBookNotes = useStore(state => state.setUserBookNotes)
 
   const [ready, setReady] = useState(false)
   const router = useRouter()
 
+  // reads router / slug info and sets state
   useEffect(() => {
     if (router.isReady && !ready) {
       let bookId = router.query.slug[0]
       let username = router.query.slug[1]
 
       setSelectedBookId(bookId)
-      setSelectedBookUserUsername(username)
-
-      // reset
-      setSelectedBookUserId(null)
-      setUserBookStatus(null)
-      setUserBookReadDate(null)
-      setUserBookRating(null)
-      setUserBookShelfIdList(null)
-      setIsAuthorizedForUserBook(false)
-      setUserBookNotes(null)
+      setSelectedUserUsername(username)
 
       setReady(true)
     }
-  }, [loggedInUser, ready, router, setIsAuthorizedForUserBook, setSelectedBookId, setSelectedBookUserId, setSelectedBookUserUsername, setUserBookNotes, setUserBookRating, setUserBookReadDate, setUserBookShelfIdList, setUserBookStatus])
+  }, [ready, router.isReady, router.query.slug, setSelectedBookId, setSelectedUserUsername])
 
+  // if book page has no username and user is logged in
+  // redirect to user's book page
   useEffect(() => {
 
     if (router.isReady) {
       let bookId = router.query.slug[0]
       let username = router.query.slug[1]
 
-      // if book page has no username and user is logged in
-      // redirect to user's book page
       if (!username && loggedInUser) {
         router.replace(`/book/${bookId}/${loggedInUser.username}`)
         // this is set here because above userEffect is not going to run again
         // and it's required for userBookInfo to refresh 
-        setSelectedBookUserUsername(loggedInUser.username)
+        setSelectedUserUsername(loggedInUser.username)
       }
     }
 
-  }, [loggedInUser, router])
+  }, [loggedInUser, router, setSelectedUserUsername])
 
   return ready && (
     <main>
@@ -78,7 +63,7 @@ export default function Book() {
         cursor="col-resize"
         className={styles.splitContainer}
       >
-        <BookView />
+        <BookView isMaterial={isMaterial} />
         <UserBookInfo />
       </Split>
     </main>

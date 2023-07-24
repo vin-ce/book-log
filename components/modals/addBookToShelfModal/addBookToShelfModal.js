@@ -10,7 +10,7 @@ export default function AddBookToShelfModal() {
 
   // store states and funcs
   const setIsAddBookToShelfModal = useStore((state) => state.setIsAddBookToShelfModal)
-  const selectedBookUserId = useStore((state) => state.selectedBookUserId)
+  const selectedUserId = useStore((state) => state.selectedUserId)
   const selectedBookId = useStore((state) => state.selectedBookId)
 
   const userBookShelfIdList = useStore((state) => state.userBookShelfIdList)
@@ -80,7 +80,7 @@ export default function AddBookToShelfModal() {
     let totalNumOfShelves
 
     if (type === "init") {
-      ({ shelvesData, newLastVisible, totalNumOfShelves } = await fetchShelvesPaginated({ userId: selectedBookUserId, page: paginationData.current.page }))
+      ({ shelvesData, newLastVisible, totalNumOfShelves } = await fetchShelvesPaginated({ userId: selectedUserId, page: paginationData.current.page }))
 
       // console.log('shelves', shelvesData)
       // if (shelvesData) 
@@ -100,7 +100,7 @@ export default function AddBookToShelfModal() {
       if (type === 'next') {
         // if list does not contain the full range
         if (shelfListAllData.current.length < paginationData.current.totalNumOfShelves) {
-          ({ shelvesData, newLastVisible, totalNumOfShelves } = await fetchShelvesPaginated({ userId: selectedBookUserId, lastVisible: paginationData.current.lastVisible, page: paginationData.current.page }))
+          ({ shelvesData, newLastVisible, totalNumOfShelves } = await fetchShelvesPaginated({ userId: selectedUserId, lastVisible: paginationData.current.lastVisible, page: paginationData.current.page }))
 
           updateShelfListElAndData({ type })
 
@@ -146,8 +146,8 @@ export default function AddBookToShelfModal() {
 
   // initial shelf list
   useEffect(() => {
-    if (selectedBookUserId) setShelfList({ type: "init" })
-  }, [selectedBookUserId])
+    if (selectedUserId) setShelfList({ type: "init" })
+  }, [selectedUserId])
 
 
 
@@ -170,7 +170,7 @@ export default function AddBookToShelfModal() {
     // shelfName = DOMPurify.sanitize(shelfName);
 
     // create shelf on firebase
-    const shelfId = await createShelf({ shelfName, userId: selectedBookUserId, bookId: selectedBookId })
+    const shelfId = await createShelf({ shelfName, userId: selectedUserId, bookId: selectedBookId })
 
     // update in app state
     if (userBookIdListFresh.current) setUserBookIdListFresh([shelfId, ...userBookIdListFresh.current])
@@ -206,7 +206,7 @@ export default function AddBookToShelfModal() {
       // add book
       el.classList.remove(styles.button)
       el.classList.add(styles.postAddButton)
-      addBookToShelf({ bookId: selectedBookId, shelfId: shelfId, userId: selectedBookUserId })
+      addBookToShelf({ bookId: selectedBookId, shelfId: shelfId, userId: selectedUserId })
 
       // add shelf to book list state
       setUserBookIdListFresh([shelfId, ...userBookIdListFresh.current])
@@ -216,7 +216,7 @@ export default function AddBookToShelfModal() {
       // remove book
       el.classList.remove(styles.postAddButton)
       el.classList.add(styles.button)
-      removeBookFromShelf({ bookId: selectedBookId, shelfId: shelfId, userId: selectedBookUserId })
+      removeBookFromShelf({ bookId: selectedBookId, shelfId: shelfId, userId: selectedUserId })
 
       // removes shelf from book list state
       const indexToRemove = userBookIdListFresh.current.indexOf(shelfId);

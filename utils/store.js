@@ -14,14 +14,14 @@ export const useStore = create((set) => ({
   searchData: null,
   setSearchResultData: (data) => set({ searchData: data }),
 
-  isAuthorizedForUserBook: false,
-  setIsAuthorizedForUserBook: (bool) => set({ isAuthorizedForUserBook: bool }),
+  isAuthorizedForSelectedUser: false,
+  setIsAuthorizedForSelectedUser: (bool) => set({ isAuthorizedForSelectedUser: bool }),
 
-  selectedBookUserUsername: null,
-  setSelectedBookUserUsername: (username) => set({ selectedBookUserUsername: username }),
+  selectedUserUsername: null,
+  setSelectedUserUsername: (username) => set({ selectedUserUsername: username }),
 
-  selectedBookUserId: null,
-  setSelectedBookUserId: (id) => set({ selectedBookUserId: id }),
+  selectedUserId: null,
+  setSelectedUserId: (id) => set({ selectedUserId: id }),
 
   selectedBookId: null,
   setSelectedBookId: (id) => set({ selectedBookId: id }),
@@ -61,5 +61,8 @@ export const useStore = create((set) => ({
 
   isCreateShelfModal: false,
   setIsCreateShelfModal: (bool) => set({ isCreateShelfModal: bool }),
+
+  isCreateMaterialModal: false,
+  setIsCreateMaterialModal: (bool) => set({ isCreateMaterialModal: bool }),
 
 }))

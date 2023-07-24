@@ -8,6 +8,8 @@ import UserBookNotes from "../userBookNotes/userBookNotes"
 import UserBookRating from "../userBookRating/userBookRating"
 import { useFreshRef } from "@/hooks/useFreshRef"
 import { Divider } from "@/components/parts/parts"
+import { ResetStates } from "@/utils/helpers"
+import Link from "next/link"
 
 export default function UserBookInfo() {
 
@@ -15,10 +17,10 @@ export default function UserBookInfo() {
 
   const loggedInUser = useStore((state) => state.loggedInUser)
 
-  const selectedBookUserUsername = useStore((state) => state.selectedBookUserUsername)
+  const selectedUserUsername = useStore((state) => state.selectedUserUsername)
 
-  const selectedBookUserId = useStore((state) => state.selectedBookUserId)
-  const setSelectedBookUserId = useStore((state) => state.setSelectedBookUserId)
+  const selectedUserId = useStore((state) => state.selectedUserId)
+  const setSelectedUserId = useStore((state) => state.setSelectedUserId)
 
   const selectedBookId = useStore((state) => state.selectedBookId)
   const setSelectedBookId = useStore((state) => state.setSelectedBookId)
@@ -29,12 +31,13 @@ export default function UserBookInfo() {
 
   const setUserBookShelfIdList = useStore((state) => state.setUserBookShelfIdList)
 
-  const isAuthorizedForUserBook = useStore((state) => state.isAuthorizedForUserBook)
-  const setIsAuthorizedForUserBook = useStore((state) => state.setIsAuthorizedForUserBook)
+  const isAuthorizedForSelectedUser = useStore((state) => state.isAuthorizedForSelectedUser)
+  const setIsAuthorizedForSelectedUser = useStore((state) => state.setIsAuthorizedForSelectedUser)
 
   const userBookNotes = useStore((state) => state.userBookNotes)
   const setUserBookNotes = useStore((state) => state.setUserBookNotes)
 
+  const [isNoUserData, setIsNoUserData] = useState(false)
 
   // sets data
   useEffect(() => {
@@ -43,12 +46,12 @@ export default function UserBookInfo() {
 
     async function initEl() {
 
-      if (selectedBookUserUsername && !selectedBookUserId) {
+      if (selectedUserUsername && !selectedUserId) {
         // the user that we're viewing, not necessarily the logged in user
-        const userData = await fetchUserByUsername(selectedBookUserUsername)
+        const userData = await fetchUserByUsername(selectedUserUsername)
         if (userData) {
 
-          setSelectedBookUserId(userData.id)
+          setSelectedUserId(userData.id)
 
           const userBookData = await fetchUserBookInfo({ bookId: selectedBookId, userId: userData.id })
 
@@ -58,52 +61,48 @@ export default function UserBookInfo() {
             setUserBookReadDate(userBookData.readDate)
             setUserBookRating(userBookData.rating)
             setUserBookNotes(userBookData.notes)
+          } else {
+            setIsNoUserData(true)
           }
 
           setReady(true)
         }
-      } else if (!ready.current && (!selectedBookUserUsername || selectedBookUserId)) {
+      } else if (!ready.current && (!selectedUserUsername || selectedUserId)) {
         setReady(true)
       }
     }
 
-  }, [ready, selectedBookId, selectedBookUserId, selectedBookUserUsername, setReady, setSelectedBookUserId, setUserBookNotes, setUserBookRating, setUserBookReadDate, setUserBookShelfIdList, setUserBookStatus])
-
-
-  // sets is authorized
-  useEffect(() => {
-
-    if (loggedInUser && selectedBookUserId && !isAuthorizedForUserBook)
-      if (loggedInUser.id === selectedBookUserId)
-        setIsAuthorizedForUserBook(true)
-
-  }, [isAuthorizedForUserBook, loggedInUser, selectedBookUserId, setIsAuthorizedForUserBook])
-
-
+  }, [ready, selectedBookId, selectedUserId, selectedUserUsername, setReady, setSelectedUserId, setUserBookNotes, setUserBookRating, setUserBookReadDate, setUserBookShelfIdList, setUserBookStatus])
 
 
   return (
-    <div className={styles.panelContainer}>
-      {
-        ready.current ?
-          (
-            <>
-              <div className={styles.contentContainer}>
-                <div className={styles.name}>@{selectedBookUserUsername}</div>
-                <div className={styles.statusShelvesContainer}>
-                  <UserBookStatus />
-                  <UserBookShelves />
-                  <UserBookRating />
+    <>
+      <div className={styles.panelContainer}>
+        {
+          ready.current && !isNoUserData ?
+            (
+              <>
+                <div className={styles.contentContainer}>
+                  <Link href={`/user/${selectedUserUsername}`}>
+                    <div className={styles.name}>@{selectedUserUsername}</div>
+                  </Link>
+                  <div className={styles.statusShelvesContainer}>
+                    <UserBookStatus />
+                    <UserBookShelves />
+                    <UserBookRating />
+                  </div>
+                  <Divider />
+                  <UserBookNotes />
                 </div>
-                <Divider />
-                <UserBookNotes />
-              </div>
-            </>
-          )
-          :
-          <div className={styles.contentContainer}>No user selected or found</div>
-      }
-    </div>
+              </>
+            )
+            :
+            <div className={styles.contentContainer}>~+#+~</div>
+        }
+
+      </div>
+      <ResetStates />
+    </>
   )
 }
 

@@ -9,7 +9,7 @@ export default function SetBookRatingModal() {
   const userBookRating = useStore((state) => state.userBookRating)
   const setUserBookRating = useStore((state) => state.setUserBookRating)
   const setIsSetBookRatingModal = useStore((state) => state.setIsSetBookRatingModal)
-  const selectedBookUserId = useStore((state) => state.selectedBookUserId)
+  const selectedUserId = useStore((state) => state.selectedUserId)
   const selectedBookId = useStore((state) => state.selectedBookId)
 
   const [ratingEl, setRatingEl] = useState(null)
@@ -19,7 +19,7 @@ export default function SetBookRatingModal() {
     const onClickRating = (e) => {
       const rating = e.target.id
       setUserBookRating(rating)
-      updateUserBookRating({ bookId: selectedBookId, userId: selectedBookUserId, rating })
+      updateUserBookRating({ bookId: selectedBookId, userId: selectedUserId, rating })
     }
 
     const ratingNum = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
@@ -44,7 +44,7 @@ export default function SetBookRatingModal() {
       </div>
     )
 
-  }, [selectedBookId, selectedBookUserId, setUserBookRating, userBookRating])
+  }, [selectedBookId, selectedUserId, setUserBookRating, userBookRating])
 
   return (
     <StandardModal
