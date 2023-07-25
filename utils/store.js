@@ -65,4 +65,12 @@ export const useStore = create((set) => ({
   isCreateMaterialModal: false,
   setIsCreateMaterialModal: (bool) => set({ isCreateMaterialModal: bool }),
 
+
+  selectedShelfInfo: null,
+  setSelectedShelfInfo: (data) => set({ selectedShelfInfo: data }),
+
+  selectedShelfBookIds: null,
+  setSelectedShelfBookIds: (books) => set({ selectedShelfBookIds: books }),
+
+
 }))

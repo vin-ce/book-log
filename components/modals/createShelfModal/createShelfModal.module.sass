@@ -1,8 +1,13 @@
 @use "@/components/variables"
 
-.inputContainer
-  input
-    @include variables.modalInput
+.container
+  width: 32rem
+
+.input
+  @include variables.modalInput
+
+.textArea
+  @include variables.modalTextArea
 
 .modalButton
   @include variables.modalButton(variables.$yellow)

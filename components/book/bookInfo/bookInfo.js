@@ -1,11 +1,11 @@
 import { searchBookById } from "@/utils/bookAPI"
 import Image from "next/image"
 import { useEffect, useState } from "react"
-import styles from "./bookView.module.sass"
+import styles from "./bookInfo.module.sass"
 import { useStore } from "@/utils/store"
 import { checkHasBookData, fetchMaterialById } from "@/utils/firestore"
 
-export default function BookView({ isMaterial }) {
+export default function BookInfo({ isMaterial }) {
 
   const [el, setEl] = useState(null)
   const selectedBookId = useStore((state) => state.selectedBookId)

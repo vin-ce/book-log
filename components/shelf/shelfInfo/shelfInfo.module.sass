@@ -1,0 +1,23 @@
+@use "@/components/variables"
+
+.panelContainer
+  @include variables.panelContainer
+
+.container
+  margin: 3.2rem
+
+.name
+  font-weight: bold
+  color: variables.$orange
+.creator
+  @include variables.textButton
+
+.description
+  margin-bottom: 3.2rem
+  border-top: 1px dashed variables.$yellow
+  border-bottom: 1px dashed variables.$yellow
+  padding: 1.6rem 0
+  margin: 1.6rem 0
+
+.dates
+  margin-top: 6.4rem

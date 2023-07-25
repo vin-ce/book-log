@@ -13,7 +13,7 @@ export default function CreateShelfModal() {
   const setIsCreateShelfModal = useStore((state) => state.setIsCreateShelfModal)
 
 
-  const [shelfInput, setShelfInput] = useState('')
+  const [nameInput, setNameInput] = useState('')
 
   const handleShelfNameChange = e => {
     e.preventDefault()
@@ -26,20 +26,31 @@ export default function CreateShelfModal() {
     const regexStep1 = /\s{2,}/g;
     const result = inputString.replace(regexStep1, " ");
 
-    setShelfInput(result)
+    setNameInput(result)
   }
 
-  const handleCreateShelf = async () => {
-    if (shelfInput.trimStart() == "") return
-    if (shelfInput.length > 50) return
+  const [descriptionInput, setDescriptionInput] = useState('')
+  const handleDescriptionInputChange = (e) => setDescriptionInput(e.target.value.trimStart())
 
-    let shelfName = sanitize(shelfInput)
+
+  const handleCreateShelf = async () => {
+    if (nameInput.trimStart() == "") return
+    if (nameInput.length > 50) return
+
+    let shelfName = sanitize(nameInput)
     // trim white space off start and end
     shelfName.trimStart()
     shelfName.trimEnd()
 
+    let description = sanitize(descriptionInput)
+
     // create shelf on firebase
-    const shelfId = await createShelf({ shelfName, userId: loggedInUser.id, })
+    const shelfId = await createShelf({
+      shelfData: {
+        name: shelfName,
+        description
+      }, userId: loggedInUser.id,
+    })
     setUserAllShelves([...userAllShelves, { id: shelfId, name: shelfName }])
 
     setIsCreateShelfModal(false)
@@ -50,10 +61,11 @@ export default function CreateShelfModal() {
       title="Create Shelf"
       setIsModelOpen={setIsCreateShelfModal}
     >
-      <div className={styles.inputContainer}>
-        <input type="text" placeholder={"Shelf name..."} onChange={handleShelfNameChange} value={shelfInput} />
+      <div className={styles.container}>
+        <input type="text" placeholder={"Shelf name..."} onChange={handleShelfNameChange} value={nameInput} className={styles.input} />
+        <textarea className={styles.textArea} value={descriptionInput} onChange={handleDescriptionInputChange} placeholder={"description"} rows={5} maxLength={500} />
+        <div className={styles.modalButton} onClick={handleCreateShelf}>+ create shelf</div>
       </div>
-      <div className={styles.modalButton} onClick={handleCreateShelf}>+ create shelf</div>
     </StandardModal>
   )
 }

@@ -1,5 +1,5 @@
 import UserBookInfo from "@/components/book/userBook/userBookInfo/userBookInfo"
-import BookView from "@/components/book/bookView/bookView"
+import BookInfo from "@/components/book/bookInfo/bookInfo"
 import Split from 'react-split'
 import styles from "./book.module.sass"
 import { useRouter } from "next/router"
@@ -63,7 +63,7 @@ export default function Book({ isMaterial }) {
         cursor="col-resize"
         className={styles.splitContainer}
       >
-        <BookView isMaterial={isMaterial} />
+        <BookInfo isMaterial={isMaterial} />
         <UserBookInfo />
       </Split>
     </main>

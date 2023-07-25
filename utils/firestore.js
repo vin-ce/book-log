@@ -256,6 +256,20 @@ export async function fetchShelf(shelfId) {
   else return null
 }
 
+export async function fetchShelfBookIds(shelfId) {
+  const shelfBooksSnap = await getDocs(collection(db, "shelves", shelfId, "books"),)
+  const shelfBookIds = []
+  shelfBooksSnap.forEach((doc) => {
+    const data = doc.data()
+    shelfBookIds.push({
+      id: data.id,
+      addedTimestamp: data.addedTimestamp
+    })
+  })
+
+  return shelfBookIds
+}
+
 const MAX_NUM_OF_SHELVES = 5
 
 export async function fetchShelvesPaginated({ userId, lastVisible, page }) {
@@ -303,14 +317,14 @@ export async function fetchShelvesFromIdList(shelfIdArray) {
   return shelvesData
 }
 
-export async function createShelf({ shelfName, userId, bookId }) {
+export async function createShelf({ data, userId, bookId }) {
 
   // create shelf
   const shelfRef = doc(collection(db, "shelves"))
   const shelfId = shelfRef.id
 
   await setDoc(shelfRef, {
-    name: shelfName,
+    ...data,
     id: shelfId,
     creatorId: userId,
     createdTimestamp: serverTimestamp(),

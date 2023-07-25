@@ -5,6 +5,7 @@ import { fetchAllUserShelves, fetchBooksWithStatus, fetchUserById } from "@/util
 import { Divider } from "../parts/parts"
 import ShelvesIndex from "./shelvesIndex/shelvesIndex"
 import CreateMaterialModal from "../modals/createMaterialModal/createMaterialModal"
+import Link from "next/link"
 
 export default function Profile({ userId }) {
 
@@ -38,7 +39,9 @@ export default function Profile({ userId }) {
         <span className={styles.label}>{label}</span>
         {
           dataLength > 0 ?
-            <span className={styles.button}>{booksWithStatusData[type].length}</span>
+            <Link href={`/shelf/${type}`}>
+              <span className={styles.button}>{booksWithStatusData[type].length}</span>
+            </Link>
             :
             <span>{booksWithStatusData[type].length}</span>
         }
