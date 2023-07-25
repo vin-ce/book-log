@@ -22,6 +22,7 @@ export default function User() {
     async function init() {
       let username = router.query.username
       let userData = await fetchUserByUsername(username)
+      if (!userData) return
       setSelectedUserUsername(username)
       setSelectedUserId(userData.id)
 
@@ -33,9 +34,8 @@ export default function User() {
   return (
     <div className={styles.background}>
       <div className={styles.container}>
-        {ready ? <Profile /> : null}
+        {ready ? <Profile /> : <div>user not found</div>}
         <ResetStates type={"full"} />
-
       </div>
     </div>
   )

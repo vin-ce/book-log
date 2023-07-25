@@ -6,7 +6,7 @@ import Split from "react-split"
 import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
 import { useStore } from "@/utils/store"
-import { fetchShelf, fetchShelfBookIds } from "@/utils/firestore"
+import { fetchShelf, fetchBooksForShelf } from "@/utils/firestore"
 
 export default function Shelf() {
 
@@ -15,7 +15,9 @@ export default function Shelf() {
   const router = useRouter()
 
   const setSelectedShelfInfo = useStore((state) => state.setSelectedShelfInfo)
-  const setSelectedShelfBookIds = useStore((state) => state.setSelectedShelfBookIds)
+  const setSelectedShelfBooksData = useStore((state) => state.setSelectedShelfBooksData)
+
+  const setSelectedUserId = useStore((state) => state.setSelectedUserId)
 
   // reads router / slug info and sets state
   useEffect(() => {
@@ -29,13 +31,16 @@ export default function Shelf() {
 
       setSelectedShelfInfo(shelfInfo)
 
-      const shelfBookIds = await fetchShelfBookIds(shelfId)
-      setSelectedShelfBookIds(shelfBookIds)
+      setSelectedUserId(shelfInfo.creatorId)
+
+      const shelfBooksData = await fetchBooksForShelf({ shelfId, userId: shelfInfo.creatorId })
+
+      setSelectedShelfBooksData(shelfBooksData)
 
       setReady(true)
 
     }
-  }, [ready, router.isReady, router.query.slug, setSelectedShelfBookIds, setSelectedShelfInfo])
+  }, [ready, router.isReady, router.query.slug, setSelectedShelfBooksData, setSelectedShelfInfo, setSelectedUserId])
 
 
   return (

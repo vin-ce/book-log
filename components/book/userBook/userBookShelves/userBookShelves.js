@@ -56,6 +56,8 @@ export default function UserBookShelves() {
             {shelfItemsArr}
           </div>
         )
+      } else {
+        setShelfListEl(null)
       }
 
 

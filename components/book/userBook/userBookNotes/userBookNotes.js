@@ -92,7 +92,7 @@ export default function UserBookNotes() {
                   {userBookNotesElArr}
                 </>
                 :
-                <div>No notes found</div>}
+                <div>no notes found</div>}
             </div>
           </div>
       }

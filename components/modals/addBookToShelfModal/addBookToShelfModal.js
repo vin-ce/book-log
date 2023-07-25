@@ -62,7 +62,8 @@ export default function AddBookToShelfModal() {
 
     let buttonClass = styles.button
     // it's in the id list i.e already added
-    if (userBookIdListFresh.current.indexOf(shelfId) !== -1) buttonClass = styles.postAddButton
+    if (userBookIdListFresh.current)
+      if (userBookIdListFresh.current.indexOf(shelfId) !== -1) buttonClass = styles.postAddButton
 
     return (
       <div key={shelfId} className={styles.shelfItem}>
@@ -209,7 +210,10 @@ export default function AddBookToShelfModal() {
       addBookToShelf({ bookId: selectedBookId, shelfId: shelfId, userId: selectedUserId })
 
       // add shelf to book list state
-      setUserBookIdListFresh([shelfId, ...userBookIdListFresh.current])
+      if (userBookIdListFresh.current)
+        setUserBookIdListFresh([shelfId, ...userBookIdListFresh.current])
+      else
+        setUserBookIdListFresh([shelfId])
 
 
     } else {

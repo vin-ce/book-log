@@ -32,7 +32,7 @@ export function ResetStates({ type }) {
   const setSelectedUserUsername = useStore((state) => state.setSelectedUserUsername)
   const setSelectedBookId = useStore((state) => state.setSelectedBookId)
   const setSelectedShelfInfo = useStore((state) => state.setSelectedShelfInfo)
-  const setSelectedShelfBookIds = useStore((state) => state.setSelectedShelfBookIds)
+  const setSelectedShelfBooksData = useStore((state) => state.setSelectedShelfBooksData)
 
   useEffect(() => {
     // this is not reset in book view
@@ -54,9 +54,9 @@ export function ResetStates({ type }) {
     setUserBookNotes(null)
 
     setSelectedShelfInfo(null)
-    setSelectedShelfBookIds(null)
+    setSelectedShelfBooksData(null)
 
-  }, [setIsAuthorizedForSelectedUser, setSelectedBookId, setSelectedShelfBookIds, setSelectedShelfInfo, setSelectedUserId, setSelectedUserUsername, setUserBookNotes, setUserBookRating, setUserBookReadDate, setUserBookShelfIdList, setUserBookStatus, type])
+  }, [setIsAuthorizedForSelectedUser, setSelectedBookId, setSelectedShelfBooksData, setSelectedShelfInfo, setSelectedUserId, setSelectedUserUsername, setUserBookNotes, setUserBookRating, setUserBookReadDate, setUserBookShelfIdList, setUserBookStatus, type])
 
 
   // sets is authorized

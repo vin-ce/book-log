@@ -69,8 +69,7 @@ export const useStore = create((set) => ({
   selectedShelfInfo: null,
   setSelectedShelfInfo: (data) => set({ selectedShelfInfo: data }),
 
-  selectedShelfBookIds: null,
-  setSelectedShelfBookIds: (books) => set({ selectedShelfBookIds: books }),
-
+  selectedShelfBooksData: null,
+  setSelectedShelfBooksData: (books) => set({ selectedShelfBooksData: books }),
 
 }))

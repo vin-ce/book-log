@@ -9,8 +9,8 @@ export function StandardModal({ title, setIsModelOpen, children, headerButtons, 
   const handleModalClick = (e) => e.stopPropagation()
 
   return (
-    <div className={styles.wrapper} onClick={handleWrapperClick}>
-      <div className={[styles.modal, modalClass].join(' ')} onClick={handleModalClick}>
+    <div className={styles.wrapper} onMouseDown={handleWrapperClick}>
+      <div className={[styles.modal, modalClass].join(' ')} onMouseDown={handleModalClick}>
         <div className={styles.header}>
           <span className={styles.title}>{title}</span>
           <div className={styles.headerButtons}>

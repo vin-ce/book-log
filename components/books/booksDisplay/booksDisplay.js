@@ -47,7 +47,6 @@ function makeGridEl(data, username) {
           <div className={styles.title}>{book.title}</div>
           <Image src={book.imageUrl} alt={"Book cover."} width={160} height={160} />
           <div className={styles.author}>{bookAuthorString}</div>
-          {/* <div className={styles.description}>{book.description}</div> */}
         </div>
       </Link>
     )

@@ -3,6 +3,7 @@ import styles from "./shelfInfo.module.sass"
 import { useStore } from "@/utils/store"
 import { useEffect, useState } from "react"
 import { fetchUserById } from "@/utils/firestore"
+import Link from "next/link"
 
 export default function ShelfInfo() {
 
@@ -25,7 +26,12 @@ export default function ShelfInfo() {
       <div className={styles.container}>
         <div className={styles.name}>{selectedShelfInfo.name}</div>
         <div>
-          by <span className={styles.creator}>{selectedCreatorUsername}</span>
+          by
+          <span className={styles.creator}>
+            <Link href={`/user/${selectedCreatorUsername}`}>
+              {selectedCreatorUsername}
+            </Link>
+          </span>
         </div>
         {
           selectedShelfInfo.description ?

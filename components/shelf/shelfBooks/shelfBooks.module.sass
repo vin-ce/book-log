@@ -2,3 +2,47 @@
 
 .panelContainer
   @include variables.panelContainer
+
+.container
+  margin: 3.2rem
+
+.header
+  display: flex
+  justify-content: space-between
+
+  .sortContainer
+    .label
+      font-weight: bold
+      margin-right: 0.8rem
+
+.button
+  @include variables.textButton
+
+.bookList
+
+.bookRowContainer
+  display: flex
+  justify-content: stretch
+  width: 100%
+  gap: 3.2rem
+
+  .imageContainer
+    // background-color: black
+    max-width: 16rem
+
+    img
+      object-fit: contain
+      // object-position: middle top
+      width: 100%
+
+  .titleAuthorContainer
+    max-width: 32rem
+    flex-grow: 2
+
+  .rating, .unrated
+    flex-grow: 1
+  .unrated
+    color: grey
+
+  .note
+    flex-grow: 3

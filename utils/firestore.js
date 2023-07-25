@@ -205,7 +205,26 @@ export async function fetchBooksWithStatus({ userId }) {
 
 }
 
-export async function fetchBooksInArray({ }) {
+
+async function fetchBookById(bookId) {
+  const bookSnap = await getDoc(doc(db, "books", bookId))
+  if (bookSnap.exists()) return bookSnap.data()
+  else return null
+}
+
+
+export async function fetchBooksFromIdList(arr) {
+
+  const booksData = []
+
+  arr.forEach(bookId)
+  for (let i = 0; i < arr.length; i++) {
+    const bookData = await fetchBookById(arr[i]
+    )
+    if (bookData) booksData.push(bookData)
+  }
+
+  return booksData
 
 }
 
@@ -256,18 +275,28 @@ export async function fetchShelf(shelfId) {
   else return null
 }
 
-export async function fetchShelfBookIds(shelfId) {
-  const shelfBooksSnap = await getDocs(collection(db, "shelves", shelfId, "books"),)
-  const shelfBookIds = []
-  shelfBooksSnap.forEach((doc) => {
-    const data = doc.data()
-    shelfBookIds.push({
-      id: data.id,
-      addedTimestamp: data.addedTimestamp
+
+export async function fetchBooksForShelf({ shelfId, userId }) {
+  // books in shelf
+  const shelfBooksSnap = await getDocs(collection(db, "shelves", shelfId, "books"))
+
+  const shelfBooksData = []
+  shelfBooksSnap.forEach(async (doc) => {
+    const bookData = doc.data()
+
+    const fullBookData = await fetchBookById(bookData.id)
+    const bookUserData = await fetchUserBookInfo({ bookId: bookData.id, userId })
+
+    shelfBooksData.push({
+      addedTimestamp: bookData.addedTimestamp,
+      status: bookUserData.status,
+      rating: bookUserData.rating,
+      notes: bookUserData.notes,
+      ...fullBookData,
     })
   })
 
-  return shelfBookIds
+  return shelfBooksData
 }
 
 const MAX_NUM_OF_SHELVES = 5

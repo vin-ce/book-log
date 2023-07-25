@@ -79,7 +79,7 @@ export default function UserBookInfo() {
     <>
       <div className={styles.panelContainer}>
         {
-          ready.current && !isNoUserData ?
+          ready.current && (!isNoUserData || isAuthorizedForSelectedUser) ?
             (
               <>
                 <div className={styles.contentContainer}>
