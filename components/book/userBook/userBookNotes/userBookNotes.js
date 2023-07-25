@@ -1,6 +1,6 @@
 import { useStore } from "@/utils/store"
 import styles from "./userBookNotes.module.sass"
-import { TextNote, TweetNote } from "./subComponents/userBookNoteModules"
+import { TextNote, TweetNote } from "../../../noteModules/noteModules"
 import { CreateTextNoteModal, CreateTweetNoteModal } from "@/components/modals/createNoteModals/createNoteModals"
 import React, { useEffect, useState } from "react"
 

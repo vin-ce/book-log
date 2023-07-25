@@ -276,27 +276,36 @@ export async function fetchShelf(shelfId) {
 }
 
 
-export async function fetchBooksForShelf({ shelfId, userId }) {
+export async function fetchBooksInShelf({ shelfId, userId }) {
   // books in shelf
   const shelfBooksSnap = await getDocs(collection(db, "shelves", shelfId, "books"))
 
   const shelfBooksData = []
-  shelfBooksSnap.forEach(async (doc) => {
+
+  shelfBooksSnap.forEach(doc => {
     const bookData = doc.data()
+    shelfBooksData.push(bookData)
+  })
 
-    const fullBookData = await fetchBookById(bookData.id)
-    const bookUserData = await fetchUserBookInfo({ bookId: bookData.id, userId })
+  const updatedBooksData = [];
 
-    shelfBooksData.push({
-      addedTimestamp: bookData.addedTimestamp,
+  await Promise.all(shelfBooksData.map(async (book) => {
+
+    const fullBookData = await fetchBookById(book.id)
+    const bookUserData = await fetchUserBookInfo({ bookId: book.id, userId })
+
+    updatedBooksData.push({
+      ...book,
       status: bookUserData.status,
       rating: bookUserData.rating,
       notes: bookUserData.notes,
       ...fullBookData,
     })
-  })
 
-  return shelfBooksData
+  }));
+
+
+  return updatedBooksData
 }
 
 const MAX_NUM_OF_SHELVES = 5
@@ -368,7 +377,17 @@ export async function createShelf({ data, userId, bookId }) {
   return shelfId
 }
 
+export async function pinBookNoteInShelf({ shelfId, bookId, noteData }) {
+  await updateDoc(doc(db, "shelves", shelfId, "books", bookId), {
+    pinnedNote: noteData,
+  })
+}
 
+export async function unpinBookNoteInShelf({ shelfId, bookId }) {
+  await updateDoc(doc(db, "shelves", shelfId, "books", bookId), {
+    pinnedNote: null,
+  })
+}
 
 
 // ===================

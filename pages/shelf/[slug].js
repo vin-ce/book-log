@@ -6,7 +6,7 @@ import Split from "react-split"
 import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
 import { useStore } from "@/utils/store"
-import { fetchShelf, fetchBooksForShelf } from "@/utils/firestore"
+import { fetchShelf, fetchBooksInShelf } from "@/utils/firestore"
 
 export default function Shelf() {
 
@@ -33,8 +33,9 @@ export default function Shelf() {
 
       setSelectedUserId(shelfInfo.creatorId)
 
-      const shelfBooksData = await fetchBooksForShelf({ shelfId, userId: shelfInfo.creatorId })
+      const shelfBooksData = await fetchBooksInShelf({ shelfId, userId: shelfInfo.creatorId })
 
+      console.log("shelf books data", shelfBooksData.length)
       setSelectedShelfBooksData(shelfBooksData)
 
       setReady(true)
@@ -49,7 +50,7 @@ export default function Shelf() {
         ready ?
           <Split
             sizes={[5, 95]}
-            minSize={[400, 480]}
+            minSize={[320, 480]}
             expandToMin={true}
             gutterSize={2}
             gutterAlign="center"

@@ -10,6 +10,10 @@
   display: flex
   justify-content: space-between
 
+  margin-bottom: 1.6rem
+  padding-bottom: 1.6rem
+  border-bottom: 2px solid black
+
   .sortContainer
     .label
       font-weight: bold
@@ -19,6 +23,12 @@
   @include variables.textButton
 
 .bookList
+  margin-bottom: 9.6rem
+
+.bookRowContainer + .bookRowContainer
+  margin-top: 1.6rem
+  padding-top: 1.6rem
+  border-top: 1px dashed variables.$yellow
 
 .bookRowContainer
   display: flex
@@ -26,23 +36,36 @@
   width: 100%
   gap: 3.2rem
 
+  height: 16rem
+  overflow-y: hidden
+
   .imageContainer
     // background-color: black
-    max-width: 16rem
+    flex: 0 0 16rem
 
     img
       object-fit: contain
-      // object-position: middle top
-      width: 100%
+      object-position: left top
+      width: 16rem
 
   .titleAuthorContainer
-    max-width: 32rem
-    flex-grow: 2
+    flex: 0 1 32rem
+
+    .title
+      font-weight: bold
+      margin-bottom: 0.8rem
+
+      @include variables.textButton
 
   .rating, .unrated
-    flex-grow: 1
+    flex: 0 0 8rem
+
   .unrated
     color: grey
 
-  .note
-    flex-grow: 3
+  .noteContainer
+    flex: 2 0 32rem
+    margin-bottom: 1.6rem
+
+  .rightColButtonsContainer
+    width: 16rem

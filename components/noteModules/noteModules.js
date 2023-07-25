@@ -1,7 +1,7 @@
 import { useStore } from "@/utils/store"
 import { useEffect, useRef, useState } from "react"
 
-import styles from "./userBookNoteModules.module.sass"
+import styles from "./noteModules.module.sass"
 
 import TweetEmbed from "react-tweet-embed"
 import ContentEditable from "react-contenteditable"
@@ -117,6 +117,7 @@ function NoteTemplate({ children, createdTimestampSeconds, id, pinned, extraButt
 }
 
 
+
 // ---------------
 // TWEET NOTE
 
@@ -132,6 +133,7 @@ export function TweetNote({ tweetId, createdTimestampSeconds, id, pinned }) {
     </NoteTemplate>
   )
 }
+
 
 // --------------
 // TEXT NOTE
@@ -190,4 +192,89 @@ export function TextNote({ content, createdTimestampSeconds, id, pinned }) {
   )
 }
 
+
+// ================
+// SHELF NOTES
+
+
+
+function ShelfNoteTemplate({ children, id, pinned, handleUpdatePinnedNote, createdTimestampSeconds }) {
+
+  let [hasButtons, setHasButtons] = useState(null)
+  let [isPinned, setIsPinned] = useFreshRef(pinned)
+
+  const onClickPin = async () => {
+    if (isPinned.current) handleUpdatePinnedNote({ type: "remove", id })
+    else handleUpdatePinnedNote({ type: "add", id })
+
+    setIsPinned(!isPinned.current)
+    setDotPinnedStyles()
+  }
+
+  const toggleOptions = () => setHasButtons(!hasButtons)
+
+  function setDotPinnedStyles() {
+    if (isPinned.current) document.getElementById(`${id}-dot`).classList.add(styles.pinned)
+    else document.getElementById(`${id}-dot`).classList.remove(styles.pinned)
+  }
+
+  useEffect(() => {
+    setIsPinned(pinned)
+    setDotPinnedStyles(pinned)
+  }, [pinned])
+
+  return (
+    <div className={styles.container}>
+      <div className={styles.header}>
+        {hasButtons ?
+          <div className={styles.date}>{formatDateFromSeconds(createdTimestampSeconds)}</div> : null
+        }
+
+        <div id={`${id}-dot`} className={[styles.dot, styles.active].join(' ')} onClick={toggleOptions} />
+
+        {hasButtons ?
+          <div className={styles.noteButtonsContainer}>
+            <span className={styles.button} onClick={onClickPin}>
+              {isPinned.current ? `! unpin` : `! pin`}
+            </span>
+          </div>
+          : null}
+      </div>
+
+      {children}
+
+    </div>
+
+  )
+}
+
+
+export function ShelfTweetNote({ tweetId, id, createdTimestampSeconds, handleUpdatePinnedNote, pinned }) {
+
+  return (
+    <ShelfNoteTemplate
+      id={id}
+      pinned={pinned}
+      createdTimestampSeconds={createdTimestampSeconds}
+      handleUpdatePinnedNote={handleUpdatePinnedNote}
+    >
+      <TweetEmbed tweetId={tweetId} options={{ conversation: "none", dnt: "true" }} />
+    </ShelfNoteTemplate>
+  )
+}
+
+
+export function ShelfTextNote({ content, createdTimestampSeconds, id, pinned, handleUpdatePinnedNote }) {
+
+  return (
+    <ShelfNoteTemplate
+      id={id}
+      pinned={pinned}
+      createdTimestampSeconds={createdTimestampSeconds}
+      handleUpdatePinnedNote={handleUpdatePinnedNote}
+    >
+      {content}
+    </ShelfNoteTemplate>
+  )
+}
 

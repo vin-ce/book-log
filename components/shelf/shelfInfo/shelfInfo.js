@@ -10,6 +10,8 @@ export default function ShelfInfo() {
   const selectedShelfInfo = useStore((state) => state.selectedShelfInfo)
   const isAuthorizedForSelectedUser = useStore((state) => state.isAuthorizedForSelectedUser)
 
+  const selectedShelfBooksData = useStore((state) => state.selectedShelfBooksData)
+
   const [selectedCreatorUsername, setSelectedCreatorUsername] = useState(null)
 
   useEffect(() => {
@@ -38,9 +40,10 @@ export default function ShelfInfo() {
             <div className={styles.description}>{selectedShelfInfo.description}</div> : null
         }
 
-        <div className={styles.dates}>
-          <div>last updated: {formatDateFromSeconds(selectedShelfInfo.lastUpdatedTimestamp.seconds)}</div>
-          <div>created on: {formatDateFromSeconds(selectedShelfInfo.createdTimestamp.seconds)}</div>
+        <div className={styles.colophon}>
+          <div className={styles.count}>{selectedShelfBooksData.length} items</div>
+          <div>* {formatDateFromSeconds(selectedShelfInfo.lastUpdatedTimestamp.seconds)}</div>
+          <div>+ {formatDateFromSeconds(selectedShelfInfo.createdTimestamp.seconds)}</div>
 
         </div>
 

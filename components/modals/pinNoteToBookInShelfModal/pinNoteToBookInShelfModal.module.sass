@@ -1,0 +1,21 @@
+@use "@/components/variables"
+
+$max-cell-width: 320px
+
+.modal
+  // width: 320px * 3 + 16px * 3
+  // max-height: 56rem
+  // overflow-y: auto
+  width: fit-content
+
+.notesGrid
+
+  max-height: 32rem
+  overflow-y: auto
+
+  padding: 1.6rem
+  display: grid
+  grid-template-columns: repeat(2, minmax($max-cell-width, $max-cell-width))
+  column-gap: 1.6rem
+  row-gap: 1.6rem
+  justify-items: start

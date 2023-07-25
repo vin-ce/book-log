@@ -2,7 +2,7 @@
 import styles from "./modalTemplates.module.sass"
 
 
-export function StandardModal({ title, setIsModelOpen, children, headerButtons, modalClass }) {
+export function StandardModal({ title, setIsModelOpen, headerButtons, modalClass, children, }) {
 
   const closeModal = (e) => setIsModelOpen(false)
   const handleWrapperClick = (e) => closeModal()
