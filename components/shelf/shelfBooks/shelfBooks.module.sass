@@ -10,7 +10,7 @@
   display: flex
   justify-content: space-between
 
-  margin-bottom: 1.6rem
+  margin-bottom: 3.2rem
   padding-bottom: 1.6rem
   border-bottom: 2px solid black
 
@@ -26,8 +26,8 @@
   margin-bottom: 9.6rem
 
 .bookRowContainer + .bookRowContainer
-  margin-top: 1.6rem
-  padding-top: 1.6rem
+  margin-top: 3.2rem
+  padding-top: 3.2rem
   border-top: 1px dashed variables.$yellow
 
 .bookRowContainer
@@ -38,6 +38,8 @@
 
   height: 16rem
   overflow-y: hidden
+
+  transition: height 250ms ease-in-out
 
   .imageContainer
     // background-color: black
@@ -64,8 +66,26 @@
     color: grey
 
   .noteContainer
-    flex: 2 0 32rem
+    flex: 0 0 32rem
     margin-bottom: 1.6rem
 
+    .note
+      width: 32rem
+
+    .note.tweet
+      // just so expand / collapse registers the tweet as overflowing
+      // because tweet itself takes a minute to load
+      min-height: 18rem
+
   .rightColButtonsContainer
-    width: 16rem
+    flex: 1 0 8rem
+    // width: 8rem
+    display: flex
+    flex-direction: column
+    justify-content: space-between
+    align-items: flex-end
+
+    .topButtonsContainer
+      display: flex
+      flex-direction: column
+      align-items: flex-end

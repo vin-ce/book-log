@@ -1,10 +1,11 @@
 import { useStore } from "@/utils/store"
 import styles from "./shelfBooks.module.sass"
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import PinNoteToBookInShelfModal from "@/components/modals/pinNoteToBookInShelfModal/pinNoteToBookInShelfModal"
 import TweetEmbed from "react-tweet-embed"
+import { useFreshRef } from "@/hooks/useFreshRef"
 
 export default function ShelfBooks() {
   const selectedShelfBooksData = useStore((state) => state.selectedShelfBooksData)
@@ -35,7 +36,7 @@ export default function ShelfBooks() {
 
 function BookRow({ bookData }) {
 
-  const [isPinNoteModalOpen, setIsPinNoteModalOpen] = useState(false)
+  const [isPinNoteToBookInShelfModal, setIsPinNoteToBookInShelfModal] = useState(false)
   const [pinnedNoteEl, setPinnedNoteEl] = useState(null)
   const [pinnedNoteData, setPinnedNoteData] = useState(null)
 
@@ -56,10 +57,11 @@ function BookRow({ bookData }) {
     if (pinnedNoteData) {
       setPinnedNoteEl(
         <div className={styles.noteContainer}>
-          <Note data={pinnedNoteData} />
+          <Note data={pinnedNoteData} pinnedNoteRef={pinnedNoteRef} />
         </div>
       )
     } else if (bookData.notes) {
+      // empty container to still hold the space
       setPinnedNoteEl(
         <div className={styles.noteContainer}>
         </div>
@@ -68,9 +70,48 @@ function BookRow({ bookData }) {
   }, [bookData.notes, isAuthorizedForSelectedUser, pinnedNoteData])
 
 
+  // EXPAND / COLLAPSE ROW
+
+  const bookRowContainerRef = useRef(null)
+  const pinnedNoteRef = useRef(null)
+  const [isRowExpanded, setIsRowExpanded] = useFreshRef(false)
+  const toggleExpandRow = (isExpandRow) => {
+
+    // if it isn't expand row or the row is currently already expanded
+    if (!isExpandRow || isRowExpanded.current) {
+      bookRowContainerRef.current.style.height = "160px"
+      setIsRowExpanded(false)
+    } else {
+      bookRowContainerRef.current.style.height = `${pinnedNoteRef.current.offsetHeight}px`
+      setIsRowExpanded(true)
+    }
+  }
+
+  const [isExpandContractRow, setIsExpandContractRow] = useState(false)
+  useEffect(() => {
+
+    if (pinnedNoteEl && pinnedNoteRef.current)
+      if (pinnedNoteRef.current.offsetHeight > 160) setIsExpandContractRow(true)
+      else setIsExpandContractRow(false)
+
+  }, [pinnedNoteEl])
+
+
+
+
+  const handleOpenNotesModal = () => {
+    setIsPinNoteToBookInShelfModal(true)
+    toggleExpandRow(false)
+  }
+
+  const handleDeleteShelf = () => {
+
+  }
+
+
   return (
     <>
-      <div className={styles.bookRowContainer}>
+      <div className={styles.bookRowContainer} ref={bookRowContainerRef}>
         {
           bookData.imageUrl ?
             <div className={styles.imageContainer}>
@@ -98,7 +139,7 @@ function BookRow({ bookData }) {
           {
             bookData.rating ?
               `${bookData.rating}/10` :
-              <span className={styles.unrated}>unrated</span>
+              <span className={styles.unrated}>~#~</span>
           }
         </div>
 
@@ -106,40 +147,51 @@ function BookRow({ bookData }) {
 
         <div className={styles.rightColButtonsContainer}>
           {
+            isExpandContractRow ?
+              <div className={styles.button} onClick={toggleExpandRow}>
+                {isRowExpanded.current ? `- collapse` : `+ expand`}
+              </div>
+              : null
+          }
+          {
             isAuthorizedForSelectedUser && bookData.notes ?
-              <div className={styles.button} onClick={() => setIsPinNoteModalOpen(true)}>+ pin note</div> : null
+              <div className={styles.bottomButtonsContainer}>
+                <div className={styles.button} onClick={handleOpenNotesModal}>! note</div>
+                <div className={styles.button} onClick={handleDeleteShelf}>x shelf</div>
+              </div>
+              : null
           }
         </div>
 
+        {
+          isPinNoteToBookInShelfModal ?
+            <PinNoteToBookInShelfModal
+              setIsPinNoteToBookInShelfModal={setIsPinNoteToBookInShelfModal}
+              pinnedNoteData={pinnedNoteData}
+              setPinnedNoteData={setPinnedNoteData}
+              bookData={bookData}
+            />
+            : null
+        }
       </div>
-      {
-        isPinNoteModalOpen ?
-          <PinNoteToBookInShelfModal
-            setIsPinNoteModalOpen={setIsPinNoteModalOpen}
-            pinnedNoteData={pinnedNoteData}
-            setPinnedNoteData={setPinnedNoteData}
-            bookData={bookData}
-          />
-          : null
-      }
     </>
   )
 
 }
 
 
-function Note({ data }) {
+function Note({ data, pinnedNoteRef }) {
 
   if (data.type === "tweet") {
     return (
-      <div className={styles.note}>
+      <div className={[styles.note, styles.tweet].join(' ')} ref={pinnedNoteRef}>
         <TweetEmbed tweetId={data.tweetId} options={{ conversation: "none", dnt: "true" }} />
       </div>
     )
 
   } else if (data.type === "text") {
     return (
-      <div className={styles.note}>
+      <div className={styles.note} ref={pinnedNoteRef}>
         {data.content}
       </div>
     )

@@ -5,7 +5,7 @@ import { ShelfTextNote, ShelfTweetNote } from "@/components/noteModules/noteModu
 import React, { useEffect, useState } from "react"
 import { pinBookNoteInShelf, unpinBookNoteInShelf } from "@/utils/firestore"
 
-export default function PinNoteToBookInShelfModal({ setIsPinNoteModalOpen, bookData, pinnedNoteData, setPinnedNoteData }) {
+export default function PinNoteToBookInShelfModal({ setIsPinNoteToBookInShelfModal, bookData, pinnedNoteData, setPinnedNoteData }) {
 
   const selectedUserId = useStore((state) => state.selectedUserId)
   const selectedShelfInfo = useStore((state) => state.selectedShelfInfo)
@@ -89,7 +89,7 @@ export default function PinNoteToBookInShelfModal({ setIsPinNoteModalOpen, bookD
   return (
     <StandardModal
       title={'Pin Note'}
-      setIsModelOpen={setIsPinNoteModalOpen}
+      setIsModelOpen={setIsPinNoteToBookInShelfModal}
       modalClass={styles.modal}
     >
       <div className={styles.notesGrid}>

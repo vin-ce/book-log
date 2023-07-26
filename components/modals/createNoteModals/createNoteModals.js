@@ -91,7 +91,8 @@ export function CreateTextNoteModal() {
 
     const textNoteData = await createNote({ bookId: selectedBookId, userId: selectedUserId, content: inputString, type: "text" })
 
-    setUserBookNotes([textNoteData, ...userBookNotes])
+    if (userBookNotes) setUserBookNotes([textNoteData, ...userBookNotes])
+    else setUserBookNotes([textNoteData])
 
     setIsCreateTextNoteModal(false)
   }
