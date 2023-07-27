@@ -1,6 +1,6 @@
 import styles from "./createMaterialModal.module.sass"
 
-import { StandardModal } from "../modalTemplates"
+import { StandardModal } from "../../modalTemplates"
 import { useStore } from "@/utils/store"
 import { useRef, useState } from "react"
 import sanitize from "sanitize-html"
@@ -14,7 +14,6 @@ export default function CreateMaterialModal() {
   const setIsCreateMaterialModal = useStore((state) => state.setIsCreateMaterialModal)
 
   const router = useRouter()
-
 
 
   const [titleInput, setTitleInput] = useState('')

@@ -30,9 +30,6 @@
       font-style: italic
       // 
 
-    .author
-      margin-top: 1.6rem
-
     .link
       @include variables.textButton
       margin-top: 0.8rem
@@ -52,8 +49,11 @@
       border-top: 1px dashed variables.$yellow
       border-bottom: 1px dashed variables.$yellow
 
-    .publisher
-      margin-top: 1.6rem
+    .extraInfo
+      margin: 3.2rem 0 9.6rem 0
+
+      .publishedDate + .publisher
+        margin-top: 1.6rem
 
 .errorContainer
   margin: 3.2rem

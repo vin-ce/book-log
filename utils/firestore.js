@@ -167,9 +167,9 @@ export async function addBookToShelf({ bookId, shelfId, userId }) {
 
 
   // add shelf to user's book data
-  await updateDoc(doc(db, "books", bookId, "users", userId), {
+  await setDoc(doc(db, "books", bookId, "users", userId), {
     shelves: arrayUnion(shelfId)
-  })
+  }, { merge: true })
 
   return
 }
@@ -217,7 +217,6 @@ export async function fetchBooksFromIdList(arr) {
 
   const booksData = []
 
-  arr.forEach(bookId)
   for (let i = 0; i < arr.length; i++) {
     const bookData = await fetchBookById(arr[i]
     )
@@ -227,6 +226,69 @@ export async function fetchBooksFromIdList(arr) {
   return booksData
 
 }
+
+
+export async function fetchBooksOfStatus({ userId, status }) {
+  const userSnap = await getDoc(doc(db, "users", userId))
+  if (userSnap.exists()) {
+    const userData = userSnap.data()
+
+    let booksIdList = []
+
+    switch (status) {
+      case "toRead": {
+        booksIdList = [...userData.toRead]
+        break
+      }
+      case "reading": {
+        booksIdList = [...userData.reading]
+        break
+      }
+      case "read": {
+        booksIdList = [...userData.read]
+        break
+      }
+      default: {
+        console.log("ERROR: sorting books of status")
+        break
+      }
+    }
+
+    const booksData = await fetchBooksFromIdList(booksIdList)
+
+
+    const shelfBooksData = []
+
+    booksData.forEach(bookData => {
+      shelfBooksData.push(bookData)
+    })
+
+    const updatedBooksData = [];
+
+    await Promise.all(shelfBooksData.map(async (book) => {
+      const fullBookData = await fetchBookById(book.id)
+      const bookUserData = await fetchUserBookInfo({ bookId: book.id, userId })
+
+      updatedBooksData.push({
+        ...book,
+        status: bookUserData.status,
+        rating: bookUserData.rating,
+        notes: bookUserData.notes,
+        ...fullBookData,
+      })
+
+    }));
+
+
+    return updatedBooksData
+
+
+  } else {
+    return null
+  }
+  // await getDocs(collection(db, "books"))
+}
+
 
 
 // MATERIAL
@@ -355,14 +417,16 @@ export async function fetchShelvesFromIdList(shelfIdArray) {
   return shelvesData
 }
 
-export async function createShelf({ data, userId, bookId }) {
+
+
+export async function createShelf({ shelfData, userId, bookId }) {
 
   // create shelf
   const shelfRef = doc(collection(db, "shelves"))
   const shelfId = shelfRef.id
 
   await setDoc(shelfRef, {
-    ...data,
+    ...shelfData,
     id: shelfId,
     creatorId: userId,
     createdTimestamp: serverTimestamp(),
@@ -372,9 +436,47 @@ export async function createShelf({ data, userId, bookId }) {
 
 
   // add book to shelf and shelf to book's shelves array
-  if (bookId) await addBookToShelf({ bookId, shelfId, userId })
+  if (bookId) {
+    await addBookToShelf({ bookId, shelfId, userId })
+  }
 
   return shelfId
+}
+
+export async function updateShelf({ shelfData, shelfId }) {
+  await updateDoc(doc(db, "shelves", shelfId), shelfData)
+}
+
+export async function deleteShelf(shelfId) {
+
+  // get list of books that is in shelf
+  const booksInShelfSnap = await getDocs(collection(db, "shelves", shelfId, "books"))
+
+  const booksIdList = []
+  booksInShelfSnap.forEach((book) => {
+    booksIdList.push(book.id)
+  })
+
+  // get creatorId of shelf
+  const shelfSnap = await getDoc(doc(db, "shelves", shelfId))
+  const creatorId = shelfSnap.data().creatorId
+
+
+  await Promise.all(booksIdList.map(async (bookId) => {
+
+    // remove shelf from the shelf arrays
+    await updateDoc(doc(db, "books", bookId, "users", creatorId), {
+      shelves: arrayRemove(shelfId)
+    })
+
+    // delete books collection from shelf
+    await deleteDoc(doc(db, "shelves", shelfId, "books", bookId))
+
+  }));
+
+  await deleteDoc(doc(db, "shelves", shelfId))
+
+  // delete shelf from shelves
 }
 
 export async function pinBookNoteInShelf({ shelfId, bookId, noteData }) {
@@ -388,6 +490,7 @@ export async function unpinBookNoteInShelf({ shelfId, bookId }) {
     pinnedNote: null,
   })
 }
+
 
 
 // ===================

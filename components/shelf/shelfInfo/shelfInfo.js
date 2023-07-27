@@ -4,6 +4,7 @@ import { useStore } from "@/utils/store"
 import { useEffect, useState } from "react"
 import { fetchUserById } from "@/utils/firestore"
 import Link from "next/link"
+import UpdateShelfModal from "@/components/modals/shelfModals/updateShelfModal/updateShelfModal"
 
 export default function ShelfInfo() {
 
@@ -13,6 +14,10 @@ export default function ShelfInfo() {
   const selectedShelfBooksData = useStore((state) => state.selectedShelfBooksData)
 
   const [selectedCreatorUsername, setSelectedCreatorUsername] = useState(null)
+
+  const isUpdateShelfModal = useStore((state) => state.isUpdateShelfModal)
+  const setIsUpdateShelfModal = useStore((state) => state.setIsUpdateShelfModal)
+
 
   useEffect(() => {
 
@@ -44,10 +49,14 @@ export default function ShelfInfo() {
           <div className={styles.count}>{selectedShelfBooksData.length} items</div>
           <div>* {formatDateFromSeconds(selectedShelfInfo.lastUpdatedTimestamp.seconds)}</div>
           <div>+ {formatDateFromSeconds(selectedShelfInfo.createdTimestamp.seconds)}</div>
-
         </div>
 
+        <div className={styles.shelfSettings} onClick={() => setIsUpdateShelfModal(true)}>+ edit shelf</div>
+
       </div>
+
+      {isUpdateShelfModal ? <UpdateShelfModal /> : null}
+
     </div>
   )
 }

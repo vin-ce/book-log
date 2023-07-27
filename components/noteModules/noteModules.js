@@ -8,7 +8,7 @@ import ContentEditable from "react-contenteditable"
 import sanitizeHtml from "sanitize-html"
 import { addPinnedNote, editTextNote, removePinnedNote } from "@/utils/firestore"
 import { useFreshRef } from "@/hooks/useFreshRef"
-import { DeleteNoteModal } from "@/components/modals/deleteModal/deleteModal"
+import { DeleteNoteModal } from "@/components/modals/deleteModals/deleteModals"
 import { formatDateFromSeconds } from "@/utils/helpers"
 
 

@@ -5,7 +5,7 @@ import { useStore } from "@/utils/store"
 import styles from "./shelvesIndex.module.sass"
 import { useEffect, useState } from "react"
 import Link from "next/link"
-import CreateShelfModal from "@/components/modals/createShelfModal/createShelfModal"
+import CreateShelfModal from "@/components/modals/shelfModals/createShelfModal/createShelfModal"
 
 export default function ShelvesIndex() {
   const selectedUserId = useStore((state) => state.selectedUserId)
@@ -132,7 +132,8 @@ const groupObjectsByFirstCharacter = (arr) => {
   const sortedArray = sortSpecialCharacterToTop(arr)
 
   const characterSets = []
-  const middleIndex = Math.floor(arr.length / 2) - 1
+  const middleIndex = Math.ceil(arr.length / 2) - 1
+
 
   sortedArray.forEach((obj, index) => {
     // gets first character

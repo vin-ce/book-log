@@ -1,5 +1,5 @@
 import { useStore } from "@/utils/store";
-import { StandardModal } from "../modalTemplates";
+import { StandardModal } from "../../modalTemplates";
 import styles from "./createShelfModal.module.sass"
 import { createShelf } from "@/utils/firestore";
 import { useState } from "react";
@@ -62,7 +62,7 @@ export default function CreateShelfModal() {
       setIsModelOpen={setIsCreateShelfModal}
     >
       <div className={styles.container}>
-        <input type="text" placeholder={"Shelf name..."} onChange={handleShelfNameChange} value={nameInput} className={styles.input} />
+        <input type="text" placeholder={"name"} onChange={handleShelfNameChange} value={nameInput} className={styles.input} />
         <textarea className={styles.textArea} value={descriptionInput} onChange={handleDescriptionInputChange} placeholder={"description"} rows={5} maxLength={500} />
         <div className={styles.modalButton} onClick={handleCreateShelf}>+ create shelf</div>
       </div>

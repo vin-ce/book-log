@@ -1,12 +1,13 @@
 import { ResetStates, sortBooksByRating } from "@/utils/helpers"
-import styles from "./shelf.module.sass"
+import styles from "./statusShelf.module.sass"
 import ShelfInfo from "@/components/shelf/shelfInfo/shelfInfo"
 import ShelfBooks from "@/components/shelf/shelfBooks/shelfBooks"
 import Split from "react-split"
 import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
 import { useStore } from "@/utils/store"
-import { fetchShelf, fetchBooksInShelf } from "@/utils/firestore"
+import { fetchBooksOfStatus, fetchUserByUsername } from "@/utils/firestore"
+import StatusShelfInfo from "@/components/shelf/statusShelfInfo/statusShelfInfo"
 
 export default function Shelf() {
 
@@ -14,28 +15,66 @@ export default function Shelf() {
   const [ready, setReady] = useState(false)
   const router = useRouter()
 
-  const selectedShelfInfo = useStore((state) => state.selectedShelfInfo)
   const setSelectedShelfInfo = useStore((state) => state.setSelectedShelfInfo)
   const setSelectedShelfBooksData = useStore((state) => state.setSelectedShelfBooksData)
 
   const setSelectedUserId = useStore((state) => state.setSelectedUserId)
+  const setSelectedUserUsername = useStore((state) => state.setSelectedUserUsername)
+
+  const [hasData, setHasData] = useState(true)
+
+  const [selectedStatus, setSelectedStatus] = useState(null)
 
   // reads router / slug info and sets state
   useEffect(() => {
 
     if (router.isReady && !ready) init()
-
     async function init() {
-      let shelfId = router.query.slug
+      let status = router.query.slug[0]
+      let username = router.query.slug[1]
 
-      const shelfInfo = await fetchShelf(shelfId)
-      if (!shelfInfo) return
+      if (username) setSelectedUserUsername(username)
+      else {
+        setHasData(false)
+        return
+      }
 
-      setSelectedShelfInfo(shelfInfo)
 
-      setSelectedUserId(shelfInfo.creatorId)
+      const user = await fetchUserByUsername(username)
+      if (user) setSelectedUserId(user.id)
+      else {
+        setHasData(false)
+        return
+      }
 
-      let shelfBooksData = await fetchBooksInShelf({ shelfId, userId: shelfInfo.creatorId })
+      let shelfBooksData
+      switch (status) {
+
+        case "toRead": {
+          shelfBooksData = await fetchBooksOfStatus({ userId: user.id, status: "toRead" })
+          break
+        }
+
+        case "reading": {
+          shelfBooksData = await fetchBooksOfStatus({ userId: user.id, status: "reading" })
+          break
+        }
+
+        case "read": {
+          shelfBooksData = await fetchBooksOfStatus({ userId: user.id, status: "read" })
+          break
+        }
+
+        default: {
+          setHasData(false)
+          return
+        }
+
+      }
+
+      setSelectedStatus(status)
+
+      if (!shelfBooksData || shelfBooksData.length === 0) return
 
       // sort by rating
       shelfBooksData = sortBooksByRating([...shelfBooksData])
@@ -45,7 +84,6 @@ export default function Shelf() {
       setReady(true)
 
     }
-
   }, [ready, router.isReady, router.query.slug, setSelectedShelfBooksData, setSelectedShelfInfo, setSelectedUserId])
 
 
@@ -53,7 +91,7 @@ export default function Shelf() {
     <>
       {
         ready ?
-          selectedShelfInfo ?
+          hasData ?
             <Split
               sizes={[5, 95]}
               minSize={[320, 480]}
@@ -66,7 +104,7 @@ export default function Shelf() {
               cursor="col-resize"
               className={styles.splitContainer}
             >
-              <ShelfInfo />
+              <StatusShelfInfo status={selectedStatus} />
               <ShelfBooks />
             </Split>
             :

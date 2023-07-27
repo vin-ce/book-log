@@ -6,6 +6,7 @@ import Link from "next/link"
 import PinNoteToBookInShelfModal from "@/components/modals/pinNoteToBookInShelfModal/pinNoteToBookInShelfModal"
 import TweetEmbed from "react-tweet-embed"
 import { useFreshRef } from "@/hooks/useFreshRef"
+import { RemoveBookFromShelfModal } from "@/components/modals/deleteModals/deleteModals"
 
 export default function ShelfBooks() {
   const selectedShelfBooksData = useStore((state) => state.selectedShelfBooksData)
@@ -16,13 +17,13 @@ export default function ShelfBooks() {
         {
           selectedShelfBooksData.length !== 0 ?
             <>
-              <div className={styles.header}>
+              {/* <div className={styles.header}>
                 <div className={styles.sortContainer}>
                   <span className={styles.label}>sort:</span>
                   <span className={styles.button}>rating desc</span>
                 </div>
                 <div className={styles.button}>+ edit shelf</div>
-              </div>
+              </div> */}
 
               <BookList />
             </>
@@ -34,14 +35,46 @@ export default function ShelfBooks() {
   )
 }
 
+
+function BookList() {
+
+  const selectedShelfBooksData = useStore((state) => state.selectedShelfBooksData)
+  const [rows, setRows] = useState(null)
+
+  useEffect(() => {
+    if (selectedShelfBooksData.length !== 0) {
+      // console.log('data', selectedShelfBooksData)
+      let rowsArr = []
+      selectedShelfBooksData.forEach(bookData => {
+        rowsArr.push(
+          <React.Fragment key={`book-row_${bookData.id}`}>
+            <BookRow bookData={bookData} />
+          </React.Fragment>
+        )
+      })
+      setRows(rowsArr)
+    }
+  }, [selectedShelfBooksData])
+
+
+  return (
+    <div className={styles.bookList}>
+      {rows}
+    </div>
+  )
+
+}
+
+
 function BookRow({ bookData }) {
 
   const [isPinNoteToBookInShelfModal, setIsPinNoteToBookInShelfModal] = useState(false)
   const [pinnedNoteEl, setPinnedNoteEl] = useState(null)
   const [pinnedNoteData, setPinnedNoteData] = useState(null)
 
-  const isAuthorizedForSelectedUser = useStore((state) => state.isAuthorizedForSelectedUser)
+  const [isRemoveBookFromShelfModal, setIsRemoveBookFromShelfModal] = useState(false)
 
+  const isAuthorizedForSelectedUser = useStore((state) => state.isAuthorizedForSelectedUser)
 
   let bookLink = `/book/${bookData.id}`
   if (bookData.type === "material") bookLink = `/material/${bookData.id}`
@@ -104,9 +137,7 @@ function BookRow({ bookData }) {
     toggleExpandRow(false)
   }
 
-  const handleDeleteShelf = () => {
-
-  }
+  const handleRemoveBookFromShelf = () => setIsRemoveBookFromShelfModal(true)
 
 
   return (
@@ -117,7 +148,8 @@ function BookRow({ bookData }) {
             <div className={styles.imageContainer}>
               <Image src={bookData.imageUrl} alt={"Book cover."} width={160} height={160} priority={true} />
             </div>
-            : null
+            :
+            <div className={styles.imageContainer} />
         }
 
         <div className={styles.titleAuthorContainer}>
@@ -132,7 +164,6 @@ function BookRow({ bookData }) {
               </div>
               : null
           }
-
         </div>
 
         <div className={styles.rating}>
@@ -149,19 +180,35 @@ function BookRow({ bookData }) {
           {
             isExpandContractRow ?
               <div className={styles.button} onClick={toggleExpandRow}>
-                {isRowExpanded.current ? `- collapse` : `+ expand`}
+                {isRowExpanded.current ? `-` : `+`}
               </div>
               : null
           }
           {
-            isAuthorizedForSelectedUser && bookData.notes ?
+            isAuthorizedForSelectedUser ?
               <div className={styles.bottomButtonsContainer}>
-                <div className={styles.button} onClick={handleOpenNotesModal}>! note</div>
-                <div className={styles.button} onClick={handleDeleteShelf}>x shelf</div>
+                {
+                  bookData.notes ?
+                    <div className={styles.button} onClick={handleOpenNotesModal}>!</div>
+                    : null
+                }
+                <div className={styles.button} onClick={handleRemoveBookFromShelf}>x</div>
               </div>
               : null
           }
         </div>
+
+
+        {/* MODALS */}
+
+        {
+          isRemoveBookFromShelfModal ?
+            <RemoveBookFromShelfModal
+              bookId={bookData.id}
+              setIsRemoveBookFromShelfModal={setIsRemoveBookFromShelfModal}
+            />
+            : null
+        }
 
         {
           isPinNoteToBookInShelfModal ?
@@ -199,34 +246,5 @@ function Note({ data, pinnedNoteRef }) {
   } else {
     return (<div>something went wrong</div>)
   }
-
-}
-
-function BookList() {
-
-  const selectedShelfBooksData = useStore((state) => state.selectedShelfBooksData)
-  const [rows, setRows] = useState(null)
-
-  useEffect(() => {
-    if (selectedShelfBooksData.length !== 0) {
-      console.log('data', selectedShelfBooksData)
-      let rowsArr = []
-      selectedShelfBooksData.forEach(bookData => {
-        rowsArr.push(
-          <React.Fragment key={`book-row_${bookData.id}`}>
-            <BookRow bookData={bookData} />
-          </React.Fragment>
-        )
-      })
-      setRows(rowsArr)
-    }
-  }, [selectedShelfBooksData])
-
-
-  return (
-    <div className={styles.bookList}>
-      {rows}
-    </div>
-  )
 
 }

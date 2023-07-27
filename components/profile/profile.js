@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import { fetchAllUserShelves, fetchBooksWithStatus, fetchUserById } from "@/utils/firestore"
 import { Divider } from "../parts/parts"
 import ShelvesIndex from "./shelvesIndex/shelvesIndex"
-import CreateMaterialModal from "../modals/createMaterialModal/createMaterialModal"
+import CreateMaterialModal from "../modals/materialModals/createMaterialModal/createMaterialModal"
 import Link from "next/link"
 
 export default function Profile({ userId }) {
@@ -39,7 +39,7 @@ export default function Profile({ userId }) {
         <span className={styles.label}>{label}</span>
         {
           dataLength > 0 ?
-            <Link href={`/shelf/${type}`}>
+            <Link href={`/status/${type}/${selectedUserUsername}`}>
               <span className={styles.button}>{booksWithStatusData[type].length}</span>
             </Link>
             :
@@ -55,7 +55,7 @@ export default function Profile({ userId }) {
         <div className={styles.header}>
           <div className={styles.name}>@{selectedUserUsername}</div>
           {
-            isAuthorizedForSelectedUser ? <div className={styles.button} onClick={() => setIsCreateMaterialModal(true)}>+ add link</div> : null
+            isAuthorizedForSelectedUser ? <div className={styles.button} onClick={() => setIsCreateMaterialModal(true)}>+ create material</div> : null
           }
 
         </div>

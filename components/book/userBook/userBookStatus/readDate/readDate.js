@@ -2,7 +2,7 @@ import SetBookReadDateModal from "@/components/modals/setBookReadDateModal/setBo
 import { useStore } from "@/utils/store"
 import { useEffect, useState } from "react"
 import styles from "./readDate.module.sass"
-import { formatDateFromDash } from "@/utils/helpers"
+import { formatDateFromSlash } from "@/utils/helpers"
 
 export default function ReadDate() {
   const isAuthorizedForSelectedUser = useStore((state) => state.isAuthorizedForSelectedUser)
@@ -22,7 +22,7 @@ export default function ReadDate() {
     // userBookRating = 0 -> this counts as false
     if (userBookReadDate) {
 
-      const formattedReadDate = formatDateFromDash(userBookReadDate)
+      const formattedReadDate = formatDateFromSlash(userBookReadDate)
 
       if (isAuthorizedForSelectedUser) {
 

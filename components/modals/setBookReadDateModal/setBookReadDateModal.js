@@ -3,7 +3,7 @@ import { useStore } from "@/utils/store"
 import { useEffect, useState } from "react"
 import { updateUserBookRating, updateUserBookReadDate } from "@/utils/firestore"
 import { StandardModal } from "../modalTemplates"
-import { extractPartsFromDashDate } from "@/utils/helpers"
+import { extractPartsFromDashDate, validateDate } from "@/utils/helpers"
 
 export default function SetBookReadDateModal() {
 
@@ -20,7 +20,7 @@ export default function SetBookReadDateModal() {
 
   const [dayPlaceholder, setDayPlaceholder] = useState('dd')
   const [monthPlaceholder, setMonthPlaceholder] = useState('mm')
-  const [yearPlaceholder, setYearPlaceholder] = useState('yyyy')
+  const [yearPlaceholder, setYearPlaceholder] = useState('yyyy (*)')
 
   const handleDayChange = (e) => {
     let input = e.target.value
@@ -56,6 +56,7 @@ export default function SetBookReadDateModal() {
 
   const handleSetReadDate = async () => {
     const isDateInputValid = validateDate(dayInput, monthInput, yearInput)
+
     if (!isDateInputValid) {
       // reset input
       setDayInput('')
@@ -100,35 +101,3 @@ const checkIsNumberOrBlank = (input) => {
   const numberOrBlankRegex = /^(\d+)?$/;
   return numberOrBlankRegex.test(input)
 }
-
-const isValidDay = (day) => {
-  // Check if the day is a valid number and falls within 1 to 31 range
-  return /^\d{1,2}$/.test(day) && parseInt(day, 10) >= 1 && parseInt(day, 10) <= 31;
-};
-
-const isValidMonth = (month) => {
-  // Check if the month is a valid number and falls within 1 to 12 range
-  return /^\d{1,2}$/.test(month) && parseInt(month, 10) >= 1 && parseInt(month, 10) <= 12;
-};
-
-const isValidYear = (year) => {
-  // Check if the year is a valid number and falls within a reasonable range
-  return /^\d{4}$/.test(year) && parseInt(year, 10) >= 1900 && parseInt(year, 10) <= 2100;
-};
-
-const validateDate = (day, month, year) => {
-  if (!isValidDay(day)) {
-    return false;
-  }
-
-  if (!isValidMonth(month)) {
-    return false;
-  }
-
-  if (!isValidYear(year)) {
-    return false;
-  }
-
-  // All checks passed, date is valid
-  return true;
-};

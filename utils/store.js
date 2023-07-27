@@ -72,4 +72,8 @@ export const useStore = create((set) => ({
   selectedShelfBooksData: null,
   setSelectedShelfBooksData: (books) => set({ selectedShelfBooksData: books }),
 
+  isUpdateShelfModal: false,
+  setIsUpdateShelfModal: (bool) => set({ isUpdateShelfModal: bool }),
+
+
 }))

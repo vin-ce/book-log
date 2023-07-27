@@ -171,7 +171,7 @@ export default function AddBookToShelfModal() {
     // shelfName = DOMPurify.sanitize(shelfName);
 
     // create shelf on firebase
-    const shelfId = await createShelf({ shelfName, userId: selectedUserId, bookId: selectedBookId })
+    const shelfId = await createShelf({ shelfData: { name: shelfName }, userId: selectedUserId, bookId: selectedBookId })
 
     // update in app state
     if (userBookIdListFresh.current) setUserBookIdListFresh([shelfId, ...userBookIdListFresh.current])
