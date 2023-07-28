@@ -15,6 +15,8 @@
       object-fit: contain
       // object-position: middle top
       width: 100%
+      box-sizing: border-box
+      padding: 0 3.2rem
 
   .infoContainer
     margin: 3.2rem
@@ -50,10 +52,25 @@
       border-bottom: 1px dashed variables.$yellow
 
     .extraInfo
-      margin: 3.2rem 0 9.6rem 0
+      margin: 3.2rem 0 12rem 0
 
       .publishedDate + .publisher
         margin-top: 1.6rem
 
+      .attribution
+        margin-top: 1.6rem
+        // margin-top: 6.4rem
+
+.editMaterialButton
+  position: fixed
+  bottom: 6.4rem
+  left: 3.2rem
+
+  @include variables.textButton
+  @include variables.whiteBlurBackground
+
 .errorContainer
   margin: 3.2rem
+
+.button
+  @include variables.textButton

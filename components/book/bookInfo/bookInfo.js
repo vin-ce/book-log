@@ -3,13 +3,18 @@ import Image from "next/image"
 import { useEffect, useState } from "react"
 import styles from "./bookInfo.module.sass"
 import { useStore } from "@/utils/store"
-import { checkHasBookData, fetchMaterialById } from "@/utils/firestore"
-import { formatDateFromSlash } from "@/utils/helpers"
+import { checkHasBookData, fetchMaterialById, fetchUserById } from "@/utils/firestore"
+import { formatDateFromSeconds, formatDateFromSlash } from "@/utils/helpers"
+import MaterialInfoModal from "@/components/modals/materialModals/materialInfoModal"
+import Link from "next/link"
 
-export default function BookInfo({ isMaterial }) {
+export default function BookInfo() {
 
   const [el, setEl] = useState(null)
   const selectedBookId = useStore((state) => state.selectedBookId)
+  const setSelectedBookInfo = useStore((state) => state.setSelectedBookInfo)
+  const setSelectedBookExists = useStore((state) => state.setSelectedBookExists)
+  const isMaterial = useStore((state) => state.isMaterial)
 
   useEffect(() => {
 
@@ -17,14 +22,33 @@ export default function BookInfo({ isMaterial }) {
 
     async function fetchData() {
       let bookData
+      let materialCreator
       if (isMaterial) bookData = await fetchMaterialById(selectedBookId)
       else bookData = await searchBookById(selectedBookId)
 
       if (!bookData) {
         setEl(<div className={styles.errorContainer}>Cannot find book!</div>)
+        setSelectedBookExists(false)
+
       } else {
-        checkHasBookData({ bookId: selectedBookId, bookData })
-        setEl(createBookEl(bookData, isMaterial))
+        setSelectedBookExists(true)
+
+        setSelectedBookInfo(bookData)
+        if (isMaterial) {
+          materialCreator = await fetchUserById(bookData.creatorId)
+
+
+          setEl(
+            <BookEl
+              bookData={bookData}
+              isMaterial={isMaterial}
+              materialCreatorUsername={materialCreator.username}
+            />
+          )
+
+        }
+        else setEl(<BookEl bookData={bookData} isMaterial={isMaterial} />)
+
       }
     }
 
@@ -38,20 +62,24 @@ export default function BookInfo({ isMaterial }) {
   )
 }
 
-function createBookEl(bookData, isMaterial) {
+function BookEl({ bookData, isMaterial, materialCreatorUsername }) {
+  const isAuthorizedForSelectedUser = useStore((state) => state.isAuthorizedForSelectedUser)
+  const isMaterialInfoModal = useStore((state) => state.isMaterialInfoModal)
+  const setIsMaterialInfoModal = useStore((state) => state.setIsMaterialInfoModal)
+
 
   let imageEl
   if (bookData.imageUrl) {
     if (!isMaterial) {
       imageEl = (
         <div className={styles.imageContainer}>
-          <Image src={bookData.imageUrl} alt={"Book cover."} width={480} height={480} priority={true} />
+          <Image src={bookData.imageUrl} alt={"Book cover."} width={400} height={480} priority={true} />
         </div>
       )
     } else {
       imageEl = (
         <div className={styles.imageContainer}>
-          <img src={bookData.imageUrl} alt={"Book cover."} width={480} height={480} />
+          <img src={bookData.imageUrl} alt={"Book cover."} width={400} height={480} />
         </div>
       )
     }
@@ -79,23 +107,42 @@ function createBookEl(bookData, isMaterial) {
   if (bookData.publisher) publisherEl = <div className={styles.publisher}>{bookData.publisher}</div>
 
   return (
-    <div className={styles.bookContainer}>
-      {imageEl}
-      <div className={styles.infoContainer}>
-        <div className={styles.title}>{bookData.title}</div>
-        {subtitleEl}
-        {bookAuthorEl}
-        {linkEl}
-        {bookData.description ?
-          <div className={styles.description} dangerouslySetInnerHTML={{ __html: bookData.description }}></div>
-          : null
-        }
-        <div className={styles.extraInfo}>
-          {pageCountEl}
-          {publishedDateEl}
-          {publisherEl}
+    <>
+      <div className={styles.bookContainer}>
+        {imageEl}
+        <div className={styles.infoContainer}>
+          <div className={styles.title}>{bookData.title}</div>
+          {subtitleEl}
+          {bookAuthorEl}
+          {linkEl}
+          {bookData.description ?
+            <div className={styles.description} dangerouslySetInnerHTML={{ __html: bookData.description }}></div>
+            : null
+          }
+          <div className={styles.extraInfo}>
+            {pageCountEl}
+            {publishedDateEl}
+            {publisherEl}
+            {
+              isMaterial ?
+                <div className={styles.attribution}>
+                  <div>+ by <Link href={`/user/${materialCreatorUsername}`} className={styles.button}>@{materialCreatorUsername}</Link></div>
+                  <div>on {formatDateFromSeconds(bookData.createdTimestamp.seconds)}</div>
+                </div>
+                : null
+            }
+          </div>
         </div>
-      </div>
-    </div>
+        {
+          isMaterial && isAuthorizedForSelectedUser ?
+            <div className={styles.editMaterialButton} onClick={() => setIsMaterialInfoModal(true)}>+ edit material</div>
+            : null
+        }
+      </div >
+      {
+        isMaterialInfoModal ? <MaterialInfoModal type={"update"} /> : null
+      }
+    </>
   )
 }
+

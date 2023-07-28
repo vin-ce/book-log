@@ -206,7 +206,7 @@ export async function fetchBooksWithStatus({ userId }) {
 }
 
 
-async function fetchBookById(bookId) {
+export async function fetchBookById(bookId) {
   const bookSnap = await getDoc(doc(db, "books", bookId))
   if (bookSnap.exists()) return bookSnap.data()
   else return null
@@ -298,7 +298,8 @@ export async function createMaterial({ userId, materialData, status }) {
   const newBookRef = doc(collection(db, "books"))
   await setDoc(newBookRef, {
     ...cleanedMaterialData,
-    id: newBookRef.id
+    id: newBookRef.id,
+    createdTimestamp: serverTimestamp(),
   })
   await updateUserBookStatus({ bookId: newBookRef.id, userId, status })
   return newBookRef.id
@@ -308,6 +309,58 @@ export async function fetchMaterialById(materialId) {
   const materialSnap = await getDoc(doc(db, "books", materialId))
   if (materialSnap.exists()) return materialSnap.data()
 }
+
+export async function deleteUserMaterialData({ materialId, userId, status }) {
+
+  // removes material from status data in user
+  const userRef = doc(db, "users", userId)
+  switch (status) {
+    case "toRead":
+      await updateDoc(userRef, { toRead: arrayRemove(materialId) })
+      break
+    case "reading":
+      await updateDoc(userRef, { reading: arrayRemove(materialId) })
+      break
+    case "read":
+      await updateDoc(userRef, { read: arrayRemove(materialId) })
+      break
+  }
+
+  // remove book from all shelves that contain it
+  const userMaterialRef = doc(db, "books", materialId, "users", userId)
+
+  // const q = query(collection(db, "shelves"), where("creatorId", "==", userId), where("order", "array-contains", materialId))
+  // const shelvesWithBookSnap = await getDocs(q)
+  // shelvesWithBookSnap.forEach((shelf) => {
+  //   console.log("shelf id", shelf.id)
+  //   shelfIdList.push(shelf.id)
+  // })
+
+  const userMaterialDataSnap = await getDoc(userMaterialRef)
+  const shelfIdList = userMaterialDataSnap.data().shelves
+
+  await Promise.all(shelfIdList.map(async (shelfId) => {
+    await removeBookFromShelf({ shelfId, userId, bookId: materialId })
+  }));
+
+  // delete notes from books>users>notes
+
+  const notesSnap = await getDocs(collection(db, "books", materialId, "users", userId, "notes"))
+  const notesIdList = []
+  notesSnap.forEach(note => notesIdList.push(note.id))
+  console.log("notes id list", notesIdList)
+
+  await Promise.all(shelfIdList.map(async (noteId) => {
+    await deleteNote({ userId, bookId: materialId, noteId })
+  }));
+
+  // delete userBook info from books>users
+  await deleteDoc(userMaterialRef)
+
+}
+
+
+
 
 // ==========
 // SHELF
@@ -630,6 +683,8 @@ export async function createNote({ bookId, userId, tweetId, content, type }) {
       content,
     }
   }
+
+  console.log("book id, userid", bookId, userId)
   const userBookNotesCollectionRef = collection(db, "books", bookId, "users", userId, "notes")
 
   const docRef = await addDoc(userBookNotesCollectionRef, creationData)

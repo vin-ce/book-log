@@ -29,3 +29,10 @@
     text-decoration: underline
     background-color: variables.$yellow
     cursor: default
+
+.buttonsContainer
+  @include variables.modalButtonsContainer(variables.$yellow)
+
+  .deleteButton
+    &:hover
+      background-color: variables.$orange

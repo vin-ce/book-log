@@ -18,12 +18,12 @@ export default function Shelf() {
   const setSelectedShelfInfo = useStore((state) => state.setSelectedShelfInfo)
   const setSelectedShelfBooksData = useStore((state) => state.setSelectedShelfBooksData)
 
+  const setSelectedStatusForShelf = useStore((state) => state.setSelectedStatusForShelf)
+
   const setSelectedUserId = useStore((state) => state.setSelectedUserId)
   const setSelectedUserUsername = useStore((state) => state.setSelectedUserUsername)
 
   const [hasData, setHasData] = useState(true)
-
-  const [selectedStatus, setSelectedStatus] = useState(null)
 
   // reads router / slug info and sets state
   useEffect(() => {
@@ -72,7 +72,7 @@ export default function Shelf() {
 
       }
 
-      setSelectedStatus(status)
+      setSelectedStatusForShelf(status)
 
       if (!shelfBooksData || shelfBooksData.length === 0) return
 
@@ -84,7 +84,7 @@ export default function Shelf() {
       setReady(true)
 
     }
-  }, [ready, router.isReady, router.query.slug, setSelectedShelfBooksData, setSelectedShelfInfo, setSelectedUserId])
+  }, [ready, router.isReady, router.query.slug, setSelectedShelfBooksData, setSelectedShelfInfo, setSelectedStatusForShelf, setSelectedUserId, setSelectedUserUsername])
 
 
   return (
@@ -104,7 +104,7 @@ export default function Shelf() {
               cursor="col-resize"
               className={styles.splitContainer}
             >
-              <StatusShelfInfo status={selectedStatus} />
+              <StatusShelfInfo />
               <ShelfBooks />
             </Split>
             :

@@ -23,6 +23,7 @@ export default function ReadDate() {
     if (userBookReadDate) {
 
       const formattedReadDate = formatDateFromSlash(userBookReadDate)
+      console.log("date", userBookReadDate, formattedReadDate)
 
       if (isAuthorizedForSelectedUser) {
 

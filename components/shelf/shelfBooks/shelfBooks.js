@@ -6,7 +6,7 @@ import Link from "next/link"
 import PinNoteToBookInShelfModal from "@/components/modals/pinNoteToBookInShelfModal/pinNoteToBookInShelfModal"
 import TweetEmbed from "react-tweet-embed"
 import { useFreshRef } from "@/hooks/useFreshRef"
-import { RemoveBookFromShelfModal } from "@/components/modals/deleteModals/deleteModals"
+import RemoveBookFromShelfModal from "@/components/modals/deleteModals/removeBookFromShelfModal/removeBookFromShelfModal"
 
 export default function ShelfBooks() {
   const selectedShelfBooksData = useStore((state) => state.selectedShelfBooksData)
@@ -74,9 +74,11 @@ function BookRow({ bookData }) {
 
   const [isRemoveBookFromShelfModal, setIsRemoveBookFromShelfModal] = useState(false)
 
+  const selectedStatusForShelf = useStore((state) => state.selectedStatusForShelf)
+  const selectedUserUsername = useStore((state) => state.selectedUserUsername)
   const isAuthorizedForSelectedUser = useStore((state) => state.isAuthorizedForSelectedUser)
 
-  let bookLink = `/book/${bookData.id}`
+  let bookLink = `/book/${bookData.id}/${selectedUserUsername}`
   if (bookData.type === "material") bookLink = `/material/${bookData.id}`
 
 
@@ -139,14 +141,19 @@ function BookRow({ bookData }) {
 
   const handleRemoveBookFromShelf = () => setIsRemoveBookFromShelfModal(true)
 
-
   return (
     <>
       <div className={styles.bookRowContainer} ref={bookRowContainerRef}>
         {
           bookData.imageUrl ?
             <div className={styles.imageContainer}>
-              <Image src={bookData.imageUrl} alt={"Book cover."} width={160} height={160} priority={true} />
+              {
+                bookData.type === "material"
+                  ?
+                  <img src={bookData.imageUrl} alt={"Book cover."} width={160} height={160} />
+                  :
+                  <Image src={bookData.imageUrl} alt={"Book cover."} width={160} height={160} priority={true} />
+              }
             </div>
             :
             <div className={styles.imageContainer} />
@@ -192,7 +199,10 @@ function BookRow({ bookData }) {
                     <div className={styles.button} onClick={handleOpenNotesModal}>!</div>
                     : null
                 }
-                <div className={styles.button} onClick={handleRemoveBookFromShelf}>x</div>
+                {
+                  selectedStatusForShelf ? null :
+                    <div className={styles.button} onClick={handleRemoveBookFromShelf}>x</div>
+                }
               </div>
               : null
           }

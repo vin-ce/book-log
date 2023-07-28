@@ -4,7 +4,7 @@ import styles from "./updateShelfModal.module.sass"
 import { updateShelf } from "@/utils/firestore";
 import { useState } from "react";
 import sanitize from "sanitize-html";
-import { DeleteShelfModal } from "../../deleteModals/deleteModals";
+import DeleteShelfModal from "../../deleteModals/deleteShelfModal/deleteShelfModal";
 
 export default function UpdateShelfModal() {
 

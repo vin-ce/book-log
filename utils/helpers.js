@@ -51,9 +51,46 @@ export function formatDateFromSeconds(seconds) {
   return date.toLocaleDateString(undefined, options);
 }
 
-export function extractPartsFromDashDate(date) {
-  const [day, month, year] = date.split('/');
-  return { day, month, year };
+
+export function formatDatePartsToSlash(day, month, year) {
+  if (day && month && year) {
+    return `${day}/${month}/${year}`;
+  } else if (!day && month && year) {
+    return `${month}/${year}`;
+  } else if (!day && !month && year) {
+    return year.toString();
+  } else {
+    return "Invalid date format";
+  }
+}
+
+export function extractPartsFromDashDate(dateString) {
+  const dateParts = dateString.split('/');
+
+  if (dateParts.length === 3) {
+    const day = parseInt(dateParts[0]);
+    const month = parseInt(dateParts[1]);
+    const year = parseInt(dateParts[2]);
+
+    if (!isNaN(day) && !isNaN(month) && !isNaN(year)) {
+      return { day, month, year };
+    }
+  } else if (dateParts.length === 2) {
+    const month = parseInt(dateParts[0]);
+    const year = parseInt(dateParts[1]);
+
+    if (!isNaN(month) && !isNaN(year)) {
+      return { month, year };
+    }
+  } else if (dateParts.length === 1) {
+    const year = parseInt(dateParts[0]);
+
+    if (!isNaN(year)) {
+      return { year };
+    }
+  }
+
+  return null; // Invalid date format or parsing error
 }
 
 // ---
@@ -162,11 +199,17 @@ export function ResetStates({ type }) {
   const setUserBookNotes = useStore(state => state.setUserBookNotes)
   const setSelectedUserUsername = useStore((state) => state.setSelectedUserUsername)
   const setSelectedBookId = useStore((state) => state.setSelectedBookId)
+  const setSelectedBookInfo = useStore((state) => state.setSelectedBookInfo)
+  const setSelectedBookExists = useStore((state) => state.setSelectedBookExists)
   const setSelectedShelfInfo = useStore((state) => state.setSelectedShelfInfo)
+  const setSelectedStatusForShelf = useStore((state) => state.setSelectedStatusForShelf)
   const setSelectedShelfBooksData = useStore((state) => state.setSelectedShelfBooksData)
   const setIsCreateShelfModal = useStore((state) => state.setIsCreateShelfModal)
-  const setIsCreateMaterialModal = useStore((state) => state.setIsCreateMaterialModal)
+  const setIsMaterialInfoModal = useStore((state) => state.setIsMaterialInfoModal)
+  const setSelectedMaterialInfo = useStore((state) => state.setSelectedMaterialInfo)
   const setIsUpdateShelfModal = useStore((state) => state.setIsUpdateShelfModal)
+  const setIsMaterial = useStore((state) => state.setIsMaterial)
+
 
   useEffect(() => {
     // this is not reset in book view
@@ -178,8 +221,12 @@ export function ResetStates({ type }) {
     }
 
     setSelectedUserId(null)
-
     setIsAuthorizedForSelectedUser(false)
+
+    setSelectedBookInfo(null)
+    setSelectedBookExists(null)
+
+    setIsMaterial(false)
 
     setUserBookStatus(null)
     setUserBookReadDate(null)
@@ -189,12 +236,14 @@ export function ResetStates({ type }) {
 
     setSelectedShelfInfo(null)
     setSelectedShelfBooksData(null)
+    setSelectedStatusForShelf(null)
 
     setIsCreateShelfModal(false)
-    setIsCreateMaterialModal(false)
     setIsUpdateShelfModal(false)
+    setIsMaterialInfoModal(false)
 
-  }, [setIsAuthorizedForSelectedUser, setSelectedBookId, setSelectedShelfBooksData, setSelectedShelfInfo, setSelectedUserId, setSelectedUserUsername, setUserBookNotes, setUserBookRating, setUserBookReadDate, setUserBookShelfIdList, setUserBookStatus, type])
+
+  }, [setIsAuthorizedForSelectedUser, setIsMaterialInfoModal, setIsCreateShelfModal, setIsUpdateShelfModal, setSelectedBookId, setSelectedMaterialInfo, setSelectedShelfBooksData, setSelectedShelfInfo, setSelectedStatusForShelf, setSelectedUserId, setSelectedUserUsername, setUserBookNotes, setUserBookRating, setUserBookReadDate, setUserBookShelfIdList, setUserBookStatus, type, setSelectedBookInfo, setSelectedBookExists, setIsMaterial])
 
 
   // sets is authorized

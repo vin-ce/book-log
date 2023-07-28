@@ -36,7 +36,7 @@ export default function ShelfInfo() {
           by
           <span className={styles.creator}>
             <Link href={`/user/${selectedCreatorUsername}`}>
-              {selectedCreatorUsername}
+              @{selectedCreatorUsername}
             </Link>
           </span>
         </div>
@@ -51,7 +51,11 @@ export default function ShelfInfo() {
           <div>+ {formatDateFromSeconds(selectedShelfInfo.createdTimestamp.seconds)}</div>
         </div>
 
-        <div className={styles.shelfSettings} onClick={() => setIsUpdateShelfModal(true)}>+ edit shelf</div>
+        {
+          isAuthorizedForSelectedUser ?
+            <div className={styles.editShelfButton} onClick={() => setIsUpdateShelfModal(true)}>+ edit shelf</div>
+            : null
+        }
 
       </div>
 

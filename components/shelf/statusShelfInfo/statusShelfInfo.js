@@ -2,14 +2,15 @@ import { useStore } from "@/utils/store"
 import styles from "./statusShelfInfo.module.sass"
 import Link from "next/link"
 
-export default function StatusShelfInfo({ status }) {
+export default function StatusShelfInfo() {
 
   const selectedUserUsername = useStore((state) => state.selectedUserUsername)
   const selectedShelfBooksData = useStore((state) => state.selectedShelfBooksData)
+  const selectedStatusForShelf = useStore((state) => state.selectedStatusForShelf)
 
 
-  let statusText = status
-  if (status === "toRead") statusText = "to read"
+  let statusText = selectedStatusForShelf
+  if (selectedStatusForShelf === "toRead") statusText = "to read"
 
   return (
     <div className={styles.panelContainer}>
@@ -17,9 +18,9 @@ export default function StatusShelfInfo({ status }) {
         <div>
           <span className={styles.username}>
             <Link href={`/user/${selectedUserUsername}`}>
-              {selectedUserUsername}
+              @{selectedUserUsername}
             </Link>
-          </span>'s
+          </span>’s
           <span className={styles.name}> {statusText}</span>
         </div>
 
@@ -30,3 +31,4 @@ export default function StatusShelfInfo({ status }) {
     </div>
   )
 }
+

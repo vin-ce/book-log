@@ -4,8 +4,9 @@ $yellow: #f7c81e
 $green: #58893a
 $dark-blue: #272e48
 
-%button
-  cursor: pointer
+@mixin whiteBlurBackground
+  background-color: rgba(255,255,255,0.5)
+  backdrop-filter: blur(4px)
 
 @mixin splitContainer
   display: flex
@@ -54,8 +55,7 @@ $dark-blue: #272e48
   align-items: center
 
   // cursor: pointer
-  background-color: rgba(255,255,255,0.5)
-  backdrop-filter: blur(4px)
+  @include whiteBlurBackground
 
 @mixin modalContainer
   border: 1px solid black

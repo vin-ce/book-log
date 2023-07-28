@@ -1,22 +1,23 @@
-import styles from "./createMaterialModal.module.sass"
+import styles from "./materialInfoModal.module.sass"
 
-import { StandardModal } from "../../modalTemplates"
+import { StandardModal } from "../modalTemplates"
 import { useStore } from "@/utils/store"
-import { useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import sanitize from "sanitize-html"
 import { createMaterial } from "@/utils/firestore"
 import { useRouter } from "next/router"
 import { validateDate } from "@/utils/helpers"
+import DeleteMaterialModal from "../deleteModals/deleteMaterialModal/deleteMaterialModal"
 
-export default function CreateMaterialModal() {
-
+export default function MaterialInfoModal({ type }) {
 
   const loggedInUser = useStore((state) => state.loggedInUser)
-  const setIsCreateMaterialModal = useStore((state) => state.setIsCreateMaterialModal)
+  const selectedBookInfo = useStore((state) => state.selectedBookInfo)
+  const setIsMaterialInfoModal = useStore((state) => state.setIsMaterialInfoModal)
+
+  const [isDeleteModal, setIsDeleteModal] = useState(false)
 
   const router = useRouter()
-
-
 
   const [titleInput, setTitleInput] = useState('')
   const handleTitleInputChange = (e) => setTitleInput(e.target.value.trimStart())
@@ -57,6 +58,23 @@ export default function CreateMaterialModal() {
   const handleDescriptionInputChange = (e) => setDescriptionInput(e.target.value.trimStart())
 
 
+  // sets inputs if updating data
+  useEffect(() => {
+    if (type === "update" && selectedBookInfo) {
+
+      const data = selectedBookInfo
+      console.log("data", data)
+      if (data.title) setTitleInput(data.title)
+      if (data.authors) setAuthorsInput(data.authors.join(', '))
+      if (data.link) setLinkInput(data.link)
+      if (data.imageUrl) setCoverImageLinkInput(data.imageUrl)
+      if (data.publishedDate) setDateInput(data.publishedDate)
+      if (data.description) setDescriptionInput(data.description)
+    }
+  }, [selectedBookInfo, type])
+
+
+
   const handleCreateMaterial = async () => {
     let isFormInvalid = false
 
@@ -78,8 +96,6 @@ export default function CreateMaterialModal() {
     } else {
       authorsArr = authors.split(',').map(part => part.trim())
     }
-
-    let status = selectedStatus
 
     let link = linkInput
     link.trimEnd()
@@ -127,55 +143,77 @@ export default function CreateMaterialModal() {
     if (isFormInvalid) return
     else {
 
-      const materialId = await createMaterial({
-        userId: loggedInUser.id,
-        materialData: {
-          title,
-          authors: authorsArr,
-          status: selectedStatus,
-          link,
-          imageUrl: coverImageLink,
-          publishedDate: date,
-          description,
-          type: "material",
-        },
-        status: selectedStatus
-      })
+      if (type === "create") {
+        const materialId = await createMaterial({
+          userId: loggedInUser.id,
+          materialData: {
+            title,
+            authors: authorsArr,
+            status: selectedStatus,
+            link,
+            imageUrl: coverImageLink,
+            publishedDate: date,
+            description,
+            type: "material",
+            creatorId: loggedInUser.id,
+          },
+          status: selectedStatus
+        })
 
-      router.push(`/material/${materialId}/${loggedInUser.username}`)
+        router.push(`/material/${materialId}/${loggedInUser.username}`)
+      } else if (type === "update") {
+
+      }
+
     }
   }
 
+
   return (
-    <StandardModal
-      title={"Create Material"}
-      setIsModelOpen={setIsCreateMaterialModal}
-    >
-      <div className={styles.container}>
+    <>
+      <StandardModal
+        title={`${capitalizeFirstLetter(type)} Material`}
+        setIsModelOpen={setIsMaterialInfoModal}
+      >
+        <div className={styles.container}>
 
-        <input ref={titleInputRef} type="text" placeholder="title (*)" onChange={handleTitleInputChange} value={titleInput} className={styles.input} />
+          <input ref={titleInputRef} type="text" placeholder="title (*)" onChange={handleTitleInputChange} value={titleInput} className={styles.input} />
 
-        <input ref={authorsInputRef} type="text" placeholder="author 1, author 2 (*)" onChange={handleAuthorsInput} value={authorsInput} className={styles.input} />
+          <input ref={authorsInputRef} type="text" placeholder="author 1, author 2 (*)" onChange={handleAuthorsInput} value={authorsInput} className={styles.input} />
 
-        <div className={styles.statusContainer}>
-          <div onClick={onClickStatus} className={styles.active} id="create-modal_status_toRead">to read</div>
-          <div onClick={onClickStatus} id="create-modal_status_reading">reading</div>
-          <div onClick={onClickStatus} id="create-modal_status_read">read</div>
+          {
+            type === "create" ?
+              <div className={styles.statusContainer}>
+                <div onClick={onClickStatus} className={styles.active} id="create-modal_status_toRead">to read</div>
+                <div onClick={onClickStatus} id="create-modal_status_reading">reading</div>
+                <div onClick={onClickStatus} id="create-modal_status_read">read</div>
+              </div>
+              : null
+          }
+
+          <input ref={linkInputRef} type="text" placeholder="material link" onChange={handleLinkInputChange} value={linkInput} className={styles.input} />
+
+          <input ref={coverImageLinkInputRef} type="text" placeholder="cover image link" onChange={handleCoverImageLinkInput} value={coverImageLinkInput} className={styles.input} />
+
+
+          <input ref={dateInputRef} type="text" placeholder="date published (dd)/(mm)/(yyyy*)" onChange={handleDateInput} value={dateInput} className={styles.input} />
+
+          <textarea className={styles.textArea} value={descriptionInput} onChange={handleDescriptionInputChange} placeholder={"description"} rows={5} maxLength={500} />
+
+          <div className={styles.buttonsContainer}>
+            <div className={styles.createButton} onClick={handleCreateMaterial}>+ {type}</div>
+            {
+              type === "update" ?
+                <div className={styles.deleteButton} onClick={() => setIsDeleteModal(true)}>x delete</div>
+                : null
+            }
+          </div>
         </div>
-
-        <input ref={linkInputRef} type="text" placeholder="link" onChange={handleLinkInputChange} value={linkInput} className={styles.input} />
-
-        <input ref={coverImageLinkInputRef} type="text" placeholder="cover image link" onChange={handleCoverImageLinkInput} value={coverImageLinkInput} className={styles.input} />
-
-
-        <input ref={dateInputRef} type="text" placeholder="date published (dd)/(mm)/(yyyy*)" onChange={handleDateInput} value={dateInput} className={styles.input} />
-
-        <textarea className={styles.textArea} value={descriptionInput} onChange={handleDescriptionInputChange} placeholder={"description"} rows={5} maxLength={500} />
-
-        <div className={styles.createButton} onClick={handleCreateMaterial}>+ create</div>
-
-      </div>
-    </StandardModal>
+      </StandardModal>
+      {
+        isDeleteModal ? <DeleteMaterialModal setIsDeleteModal={setIsDeleteModal} /> : null
+      }
+    </>
   )
 }
 
@@ -210,4 +248,9 @@ function splitDateBySlash(date) {
     return null
   };
 
+}
+
+function capitalizeFirstLetter(str) {
+  if (!str || typeof str !== 'string') return str;
+  return str.charAt(0).toUpperCase() + str.slice(1);
 }

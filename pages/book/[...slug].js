@@ -5,15 +5,17 @@ import styles from "./book.module.sass"
 import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
 import { useStore } from "@/utils/store"
+import { ResetStates } from "@/utils/helpers"
 
 // router solution:
 // https://github.com/vercel/next.js/discussions/11484#:~:text=Jun%202%2C%202022-,Here%27s,-my%20workaround.%20In
 
-export default function Book({ isMaterial }) {
+export default function Book() {
 
   const setSelectedUserUsername = useStore((state) => state.setSelectedUserUsername)
   const setSelectedBookId = useStore((state) => state.setSelectedBookId)
   const loggedInUser = useStore((state) => state.loggedInUser)
+  const isMaterial = useStore((state) => state.isMaterial)
 
   const [ready, setReady] = useState(false)
   const router = useRouter()
@@ -40,14 +42,15 @@ export default function Book({ isMaterial }) {
       let username = router.query.slug[1]
 
       if (!username && loggedInUser) {
-        router.replace(`/book/${bookId}/${loggedInUser.username}`)
+        if (isMaterial) router.replace(`/material/${bookId}/${loggedInUser.username}`)
+        else router.replace(`/book/${bookId}/${loggedInUser.username}`)
         // this is set here because above userEffect is not going to run again
         // and it's required for userBookInfo to refresh 
         setSelectedUserUsername(loggedInUser.username)
       }
     }
 
-  }, [loggedInUser, router, setSelectedUserUsername])
+  }, [isMaterial, loggedInUser, router, setSelectedUserUsername])
 
   return ready && (
     <main>
@@ -64,8 +67,9 @@ export default function Book({ isMaterial }) {
         className={styles.splitContainer}
       >
         <BookInfo isMaterial={isMaterial} />
-        <UserBookInfo />
+        <UserBookInfo isMaterial={isMaterial} />
       </Split>
+      <ResetStates />
     </main>
   )
 }

@@ -1,9 +1,25 @@
 import { create } from "zustand"
 
 export const useStore = create((set) => ({
+
+  // LOGGED IN USER
   loggedInUser: null,
   setLoggedInUser: (userData) => set({ loggedInUser: userData }),
   setLoggedOut: () => set({ loggedInUser: null }),
+
+
+  // SELECTED USER
+
+  selectedUserUsername: null,
+  setSelectedUserUsername: (username) => set({ selectedUserUsername: username }),
+
+  selectedUserId: null,
+  setSelectedUserId: (id) => set({ selectedUserId: id }),
+
+  isAuthorizedForSelectedUser: false,
+  setIsAuthorizedForSelectedUser: (bool) => set({ isAuthorizedForSelectedUser: bool }),
+
+  // SEARCH DATA
 
   // {
   //   searchResults: []
@@ -14,17 +30,25 @@ export const useStore = create((set) => ({
   searchData: null,
   setSearchResultData: (data) => set({ searchData: data }),
 
-  isAuthorizedForSelectedUser: false,
-  setIsAuthorizedForSelectedUser: (bool) => set({ isAuthorizedForSelectedUser: bool }),
-
-  selectedUserUsername: null,
-  setSelectedUserUsername: (username) => set({ selectedUserUsername: username }),
-
-  selectedUserId: null,
-  setSelectedUserId: (id) => set({ selectedUserId: id }),
-
+  // SELECTED BOOK 
   selectedBookId: null,
   setSelectedBookId: (id) => set({ selectedBookId: id }),
+
+  selectedBookExists: null,
+  setSelectedBookExists: (bool) => set({ selectedBookExists: bool }),
+
+  selectedBookInfo: null,
+  setSelectedBookInfo: (data) => set({ selectedBookInfo: data }),
+
+  // MATERIAL
+
+  isMaterial: null,
+  setIsMaterial: (bool) => set({ isMaterial: bool }),
+
+  isMaterialInfoModal: false,
+  setIsMaterialInfoModal: (bool) => set({ isMaterialInfoModal: bool }),
+
+  // USER BOOK
 
   userBookStatus: null,
   setUserBookStatus: (status) => set({ userBookStatus: status }),
@@ -42,6 +66,8 @@ export const useStore = create((set) => ({
   userBookNotes: null,
   setUserBookNotes: (arr) => set({ userBookNotes: arr }),
 
+  // USER BOOK MODALS
+
   isAddBookToShelfModal: false,
   setIsAddBookToShelfModal: (bool) => set({ isAddBookToShelfModal: bool }),
 
@@ -56,15 +82,13 @@ export const useStore = create((set) => ({
   isCreateTextNoteModal: false,
   setIsCreateTextNoteModal: (bool) => set({ isCreateTextNoteModal: bool }),
 
+  // SHELF
+
   userAllShelves: null,
   setUserAllShelves: (data) => set({ userAllShelves: data }),
 
   isCreateShelfModal: false,
   setIsCreateShelfModal: (bool) => set({ isCreateShelfModal: bool }),
-
-  isCreateMaterialModal: false,
-  setIsCreateMaterialModal: (bool) => set({ isCreateMaterialModal: bool }),
-
 
   selectedShelfInfo: null,
   setSelectedShelfInfo: (data) => set({ selectedShelfInfo: data }),
@@ -75,5 +99,7 @@ export const useStore = create((set) => ({
   isUpdateShelfModal: false,
   setIsUpdateShelfModal: (bool) => set({ isUpdateShelfModal: bool }),
 
+  selectedStatusForShelf: null,
+  setSelectedStatusForShelf: (status) => set({ selectedStatusForShelf: status }),
 
 }))

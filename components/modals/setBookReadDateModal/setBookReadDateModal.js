@@ -3,7 +3,7 @@ import { useStore } from "@/utils/store"
 import { useEffect, useState } from "react"
 import { updateUserBookRating, updateUserBookReadDate } from "@/utils/firestore"
 import { StandardModal } from "../modalTemplates"
-import { extractPartsFromDashDate, validateDate } from "@/utils/helpers"
+import { extractPartsFromDashDate, formatDatePartsToSlash, validateDate } from "@/utils/helpers"
 
 export default function SetBookReadDateModal() {
 
@@ -67,7 +67,7 @@ export default function SetBookReadDateModal() {
       setMonthPlaceholder('is')
       setYearPlaceholder('invalid')
     } else {
-      const readDate = `${dayInput}/${monthInput}/${yearInput}`
+      const readDate = formatDatePartsToSlash(dayInput, monthInput, yearInput)
       // set app state
       setUserBookReadDate(readDate)
       // update in firebase
@@ -101,3 +101,4 @@ const checkIsNumberOrBlank = (input) => {
   const numberOrBlankRegex = /^(\d+)?$/;
   return numberOrBlankRegex.test(input)
 }
+

@@ -12,11 +12,8 @@
   @include variables.modalTextArea
 
 .buttonsContainer
-  display: flex
-
-  .update
-    @include variables.modalButton(variables.$yellow)
-    border-right: 1px solid black
+  @include variables.modalButtonsContainer(variables.$yellow)
 
   .delete
-    @include variables.modalButton(variables.$orange)
+    &:hover
+      background-color: variables.$orange
