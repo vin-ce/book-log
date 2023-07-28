@@ -3,7 +3,7 @@ import Image from "next/image"
 import { useEffect, useState } from "react"
 import styles from "./bookInfo.module.sass"
 import { useStore } from "@/utils/store"
-import { checkHasBookData, fetchMaterialById, fetchUserById } from "@/utils/firestore"
+import { fetchMaterialById, fetchUserById } from "@/utils/firestore"
 import { formatDateFromSeconds, formatDateFromSlash } from "@/utils/helpers"
 import MaterialInfoModal from "@/components/modals/materialModals/materialInfoModal"
 import Link from "next/link"
@@ -21,6 +21,7 @@ export default function BookInfo() {
     if (selectedBookId) fetchData()
 
     async function fetchData() {
+
       let bookData
       let materialCreator
       if (isMaterial) bookData = await fetchMaterialById(selectedBookId)
@@ -52,7 +53,7 @@ export default function BookInfo() {
       }
     }
 
-  }, [isMaterial, selectedBookId])
+  }, [isMaterial, selectedBookId, setSelectedBookExists, setSelectedBookInfo])
 
 
   return (

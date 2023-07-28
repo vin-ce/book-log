@@ -69,7 +69,9 @@ export default function Book() {
         <BookInfo isMaterial={isMaterial} />
         <UserBookInfo isMaterial={isMaterial} />
       </Split>
-      <ResetStates />
+      {
+        !isMaterial ? <ResetStates /> : null
+      }
     </main>
   )
 }

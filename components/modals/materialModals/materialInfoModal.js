@@ -4,7 +4,7 @@ import { StandardModal } from "../modalTemplates"
 import { useStore } from "@/utils/store"
 import { useEffect, useRef, useState } from "react"
 import sanitize from "sanitize-html"
-import { createMaterial } from "@/utils/firestore"
+import { createMaterial, updateMaterial } from "@/utils/firestore"
 import { useRouter } from "next/router"
 import { validateDate } from "@/utils/helpers"
 import DeleteMaterialModal from "../deleteModals/deleteMaterialModal/deleteMaterialModal"
@@ -14,6 +14,7 @@ export default function MaterialInfoModal({ type }) {
   const loggedInUser = useStore((state) => state.loggedInUser)
   const selectedBookInfo = useStore((state) => state.selectedBookInfo)
   const setIsMaterialInfoModal = useStore((state) => state.setIsMaterialInfoModal)
+  const setSelectedBookInfo = useStore((state) => state.setSelectedBookInfo)
 
   const [isDeleteModal, setIsDeleteModal] = useState(false)
 
@@ -162,7 +163,25 @@ export default function MaterialInfoModal({ type }) {
 
         router.push(`/material/${materialId}/${loggedInUser.username}`)
       } else if (type === "update") {
+        let materialData = {
+          title,
+          authors: authorsArr,
+          status: selectedStatus,
+          link,
+          imageUrl: coverImageLink,
+          publishedDate: date,
+          description,
+          type: "material",
+          creatorId: loggedInUser.id,
+        }
 
+        updateMaterial({
+          materialId: selectedBookInfo.id,
+          materialData,
+        })
+
+        setIsMaterialInfoModal(false)
+        router.reload()
       }
 
     }

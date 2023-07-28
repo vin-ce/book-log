@@ -40,7 +40,7 @@ export default function UserBookInfo() {
   // sets data
   useEffect(() => {
 
-    initEl()
+    if (!isUserData) initEl()
 
     async function initEl() {
 
@@ -72,7 +72,8 @@ export default function UserBookInfo() {
       }
     }
 
-  }, [ready, selectedBookId, selectedUserId, selectedUserUsername, setReady, setSelectedUserId, setUserBookNotes, setUserBookRating, setUserBookReadDate, setUserBookShelfIdList, setUserBookStatus])
+    // don't expand out dependencies otherwise it will call init a bunch of times unnecessarily
+  }, [selectedUserUsername])
 
   const router = useRouter()
 

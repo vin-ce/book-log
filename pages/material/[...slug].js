@@ -1,5 +1,6 @@
 import { useStore } from "@/utils/store";
 import Book from "../book/[...slug]";
+import { ResetStates } from "@/utils/helpers";
 
 export default function Material() {
 
@@ -7,5 +8,10 @@ export default function Material() {
   const setIsMaterial = useStore((state) => state.setIsMaterial)
   if (!isMaterial) setIsMaterial(true)
 
-  return <Book />
+  return (
+    <>
+      <Book />
+      <ResetStates />
+    </>
+  )
 }

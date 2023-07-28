@@ -305,6 +305,14 @@ export async function createMaterial({ userId, materialData, status }) {
   return newBookRef.id
 }
 
+export async function updateMaterial({ materialId, materialData }) {
+  const cleanedMaterialData = removeEmptyProperties(materialData)
+  const materialRef = doc(db, "books", materialId)
+  await updateDoc(materialRef, {
+    ...cleanedMaterialData,
+  })
+}
+
 export async function fetchMaterialById(materialId) {
   const materialSnap = await getDoc(doc(db, "books", materialId))
   if (materialSnap.exists()) return materialSnap.data()
@@ -329,28 +337,21 @@ export async function deleteUserMaterialData({ materialId, userId, status }) {
   // remove book from all shelves that contain it
   const userMaterialRef = doc(db, "books", materialId, "users", userId)
 
-  // const q = query(collection(db, "shelves"), where("creatorId", "==", userId), where("order", "array-contains", materialId))
-  // const shelvesWithBookSnap = await getDocs(q)
-  // shelvesWithBookSnap.forEach((shelf) => {
-  //   console.log("shelf id", shelf.id)
-  //   shelfIdList.push(shelf.id)
-  // })
-
   const userMaterialDataSnap = await getDoc(userMaterialRef)
   const shelfIdList = userMaterialDataSnap.data().shelves
 
-  await Promise.all(shelfIdList.map(async (shelfId) => {
-    await removeBookFromShelf({ shelfId, userId, bookId: materialId })
-  }));
+  if (shelfIdList) {
+    await Promise.all(shelfIdList.map(async (shelfId) => {
+      await removeBookFromShelf({ shelfId, userId, bookId: materialId })
+    }));
+  }
 
   // delete notes from books>users>notes
-
   const notesSnap = await getDocs(collection(db, "books", materialId, "users", userId, "notes"))
   const notesIdList = []
   notesSnap.forEach(note => notesIdList.push(note.id))
-  console.log("notes id list", notesIdList)
 
-  await Promise.all(shelfIdList.map(async (noteId) => {
+  await Promise.all(notesIdList.map(async (noteId) => {
     await deleteNote({ userId, bookId: materialId, noteId })
   }));
 
