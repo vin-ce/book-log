@@ -96,9 +96,11 @@ export default function UserBookInfo() {
               (
                 <>
                   <div className={styles.contentContainer}>
-                    <Link href={`/user/${selectedUserUsername}`}>
-                      <div className={styles.name}>@{selectedUserUsername}</div>
-                    </Link>
+                    <div className={styles.name}>
+                      <Link href={`/user/${selectedUserUsername}`}>
+                        @{selectedUserUsername}
+                      </Link>
+                    </div>
                     <div className={styles.statusShelvesContainer}>
                       <UserBookStatus />
                       <UserBookShelves />

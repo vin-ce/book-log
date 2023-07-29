@@ -101,7 +101,7 @@ function NoteTemplate({ children, createdTimestampSeconds, id, pinned, extraButt
           }
           {
             isAuthorizedForSelectedUser ?
-              <div id={`${id}-dot`} className={[styles.dot, styles.active].join(' ')} onClick={toggleOptions} />
+              <div id={`${id}-dot`} className={[styles.dot, styles.authorized, styles.active].join(' ')} onClick={toggleOptions} />
               :
               <div id={`${id}-dot`} className={styles.dot} />
           }

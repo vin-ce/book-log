@@ -27,16 +27,17 @@ export function LogInOutButtons() {
 
 
 function LogInButton() {
-  return <div className={styles.button} onClick={initLogIn}>log in</div>
+  const router = useRouter()
+  const handleLogin = () => router.push('/login')
+  return <div className={styles.button} onClick={handleLogin}>log in</div>
 }
 
 function LogOutButton() {
   const router = useRouter()
 
   const logOut = async () => {
-    const isSuccess = await initLogOut()
-    if (isSuccess) router.push('/')
-    else router.push('/?unauthorized')
+    await initLogOut()
+    router.push('/login')
   }
 
   return <div className={styles.button} onClick={logOut}>log out</div>

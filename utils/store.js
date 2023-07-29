@@ -19,6 +19,9 @@ export const useStore = create((set) => ({
   isAuthorizedForSelectedUser: false,
   setIsAuthorizedForSelectedUser: (bool) => set({ isAuthorizedForSelectedUser: bool }),
 
+  isUserSettingsModal: null,
+  setIsUserSettingsModal: (bool) => set({ isUserSettingsModal: bool }),
+
   // SEARCH DATA
 
   // {
@@ -41,9 +44,6 @@ export const useStore = create((set) => ({
   setSelectedBookInfo: (data) => set({ selectedBookInfo: data }),
 
   // MATERIAL
-
-  isMaterial: null,
-  setIsMaterial: (bool) => set({ isMaterial: bool }),
 
   isMaterialInfoModal: false,
   setIsMaterialInfoModal: (bool) => set({ isMaterialInfoModal: bool }),

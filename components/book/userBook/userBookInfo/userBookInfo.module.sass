@@ -5,12 +5,14 @@
 
 .contentContainer
   margin: 3.2rem
+  .name
+    @include variables.textButton
+    color: variables.$orange
+    font-weight: bold
+    margin-bottom: 1.6rem
 
-.name
-  @include variables.textButton
-  color: variables.$orange
-  font-weight: bold
-  margin-bottom: 1.6rem
+    a
+      color: variables.$orange
 
 .statusShelvesContainer
   display: flex

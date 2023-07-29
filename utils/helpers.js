@@ -205,7 +205,6 @@ export function ResetStates({ type }) {
   const setSelectedStatusForShelf = useStore((state) => state.setSelectedStatusForShelf)
   const setSelectedShelfBooksData = useStore((state) => state.setSelectedShelfBooksData)
   const setIsMaterialInfoModal = useStore((state) => state.setIsMaterialInfoModal)
-  const setIsMaterial = useStore((state) => state.setIsMaterial)
   const setIsShelfInfoModal = useStore((state) => state.setIsShelfInfoModal)
 
 
@@ -224,7 +223,6 @@ export function ResetStates({ type }) {
     setSelectedBookInfo(null)
     setSelectedBookExists(null)
 
-    setIsMaterial(false)
 
     setUserBookStatus(null)
     setUserBookReadDate(null)
@@ -239,7 +237,7 @@ export function ResetStates({ type }) {
     setIsShelfInfoModal(false)
     setIsMaterialInfoModal(false)
 
-  }, [setIsAuthorizedForSelectedUser, setIsMaterial, setIsMaterialInfoModal, setIsShelfInfoModal, setSelectedBookExists, setSelectedBookId, setSelectedBookInfo, setSelectedShelfBooksData, setSelectedShelfInfo, setSelectedStatusForShelf, setSelectedUserId, setSelectedUserUsername, setUserBookNotes, setUserBookRating, setUserBookReadDate, setUserBookShelfIdList, setUserBookStatus, type])
+  }, [setIsAuthorizedForSelectedUser, setIsMaterialInfoModal, setIsShelfInfoModal, setSelectedBookExists, setSelectedBookId, setSelectedBookInfo, setSelectedShelfBooksData, setSelectedShelfInfo, setSelectedStatusForShelf, setSelectedUserId, setSelectedUserUsername, setUserBookNotes, setUserBookRating, setUserBookReadDate, setUserBookShelfIdList, setUserBookStatus, type])
 
 
   // sets is authorized

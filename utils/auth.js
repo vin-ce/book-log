@@ -1,12 +1,12 @@
 import { getAuth, signInWithPopup, signOut, GoogleAuthProvider } from "firebase/auth";
-import { createUser } from "./firestore";
+import { checkIfEmailIsInvited, createUser } from "./firestore";
 
 const auth = getAuth();
 const provider = new GoogleAuthProvider();
 
 export async function initLogIn() {
   return await signInWithPopup(auth, provider)
-    .then((result) => {
+    .then(async (result) => {
       // This gives you a Google Access Token. You can use it to access the Google API.
       // const credential = GoogleAuthProvider.credentialFromResult(result);
       // const token = credential.accessToken;
@@ -19,6 +19,12 @@ export async function initLogIn() {
         email: user.email,
         profileImageURL: user.photoURL,
         id: user.uid
+      }
+
+      const isInvited = await checkIfEmailIsInvited(user.email)
+      if (!isInvited) {
+        initLogOut()
+        return false
       }
 
       createUser(userData)

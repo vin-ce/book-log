@@ -9,7 +9,7 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>home</title>
+        <title>messy table</title>
       </Head>
       <main >
         <Split

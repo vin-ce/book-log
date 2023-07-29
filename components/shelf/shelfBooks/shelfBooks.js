@@ -79,7 +79,7 @@ function BookRow({ bookData }) {
   const isAuthorizedForSelectedUser = useStore((state) => state.isAuthorizedForSelectedUser)
 
   let bookLink = `/book/${bookData.id}/${selectedUserUsername}`
-  if (bookData.type === "material") bookLink = `/material/${bookData.id}`
+  if (bookData.type === "material") bookLink = `/material/${bookData.id}/${selectedUserUsername}`
 
 
   // init set pinned note data into state

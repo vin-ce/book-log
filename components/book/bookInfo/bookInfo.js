@@ -3,19 +3,18 @@ import Image from "next/image"
 import { useEffect, useState } from "react"
 import styles from "./bookInfo.module.sass"
 import { useStore } from "@/utils/store"
-import { fetchMaterialById, fetchUserById } from "@/utils/firestore"
+import { fetchBookById, fetchUserById } from "@/utils/firestore"
 import { formatDateFromSeconds, formatDateFromSlash } from "@/utils/helpers"
 import MaterialInfoModal from "@/components/modals/materialInfoModal/materialInfoModal"
 import Link from "next/link"
 import DeleteMaterialModal from "@/components/modals/deleteModals/deleteUserMaterialModal/deleteUserMaterialModal"
 
-export default function BookInfo() {
+export default function BookInfo({ isMaterial }) {
 
   const [el, setEl] = useState(null)
   const selectedBookId = useStore((state) => state.selectedBookId)
   const setSelectedBookInfo = useStore((state) => state.setSelectedBookInfo)
   const setSelectedBookExists = useStore((state) => state.setSelectedBookExists)
-  const isMaterial = useStore((state) => state.isMaterial)
 
   useEffect(() => {
 
@@ -24,9 +23,10 @@ export default function BookInfo() {
     async function fetchData() {
 
       let bookData
-      let materialCreator
-      if (isMaterial) bookData = await fetchMaterialById(selectedBookId)
-      else bookData = await searchBookById(selectedBookId)
+
+      bookData = await fetchBookById(selectedBookId)
+      if (!bookData && !isMaterial) bookData = await searchBookById(selectedBookId)
+
 
       if (!bookData) {
         setEl(<div className={styles.errorContainer}>Cannot find book!</div>)
@@ -37,8 +37,7 @@ export default function BookInfo() {
 
         setSelectedBookInfo(bookData)
         if (isMaterial) {
-          materialCreator = await fetchUserById(bookData.creatorId)
-
+          let materialCreator = await fetchUserById(bookData.creatorId)
 
           setEl(
             <BookEl
@@ -70,6 +69,8 @@ function BookEl({ bookData, isMaterial, materialCreatorUsername }) {
   const setIsMaterialInfoModal = useStore((state) => state.setIsMaterialInfoModal)
   const loggedInUser = useStore((state) => state.loggedInUser)
   const [isDeleteModal, setIsDeleteModal] = useState(false)
+
+  const userBookStatus = useStore((state) => state.userBookStatus)
 
   let imageEl
   if (bookData.imageUrl) {
@@ -135,8 +136,10 @@ function BookEl({ bookData, isMaterial, materialCreatorUsername }) {
                 : null
             }
           </div>
+
           {
-            isAuthorizedForSelectedUser && bookData ?
+            // userBookStatus signals whether or not there is book data under user
+            isAuthorizedForSelectedUser && userBookStatus ?
               <div className={styles.button} onClick={() => setIsDeleteModal(true)}>x delete all your book data</div>
               : null
           }
@@ -144,8 +147,10 @@ function BookEl({ bookData, isMaterial, materialCreatorUsername }) {
 
         .
         {
-          isMaterial && bookData.creatorId === loggedInUser.id ?
-            <div className={styles.editMaterialButton} onClick={() => setIsMaterialInfoModal(true)}>+ edit material</div>
+          bookData && loggedInUser ?
+            isMaterial && bookData.creatorId === loggedInUser.id ?
+              <div className={styles.editMaterialButton} onClick={() => setIsMaterialInfoModal(true)}>+ edit material</div>
+              : null
             : null
         }
       </div >

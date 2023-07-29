@@ -89,6 +89,12 @@ function generateRandomString() {
   return randomString;
 }
 
+export async function updateUserUsername({ userId, username }) {
+  await updateDoc(doc(db, "users", userId), {
+    username
+  })
+}
+
 export async function fetchUserById(userId) {
 
   const docSnap = await getDoc(doc(db, "users", userId))
@@ -115,6 +121,13 @@ export async function fetchUserByUsername(username) {
   } else {
     return null
   }
+}
+
+
+export async function checkIfEmailIsInvited(email) {
+  const docSnap = await getDoc(doc(db, "admin", "authorizedUserEmails"))
+  console.log("doc snap", docSnap.data(), email, docSnap.data().emails.includes(email))
+  return docSnap.data().emails.includes(email)
 }
 
 // =========
@@ -313,11 +326,6 @@ export async function updateMaterial({ materialId, materialData }) {
     ...cleanedMaterialData,
   })
   return
-}
-
-export async function fetchMaterialById(materialId) {
-  const materialSnap = await getDoc(doc(db, "books", materialId))
-  if (materialSnap.exists()) return materialSnap.data()
 }
 
 export async function deleteUserMaterialData({ materialId, userId, status }) {

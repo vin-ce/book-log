@@ -5,6 +5,8 @@ import { useStore } from "../utils/store"
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { fetchUserById } from "../utils/firestore"
 import Head from "next/head";
+import { useRouter } from "next/router";
+import { useState } from "react";
 
 const auth = getAuth()
 
@@ -17,6 +19,10 @@ export default function MyApp({ Component, pageProps }) {
   const setLoggedInUser = useStore((state) => state.setLoggedInUser)
   const setLoggedOut = useStore((state) => state.setLoggedOut)
 
+  const router = useRouter()
+
+  const [ready, setReady] = useState(false)
+
   // tracks global log in / out state
   onAuthStateChanged(auth, async (user) => {
     if (user) {
@@ -25,10 +31,15 @@ export default function MyApp({ Component, pageProps }) {
         setLoggedInUser({ ...userData })
       }
     }
-    else setLoggedOut()
+    else {
+      setLoggedOut()
+      if (router.pathname === "/") router.push('/login')
+    }
+
+    if (!ready) setReady(true)
   });
 
-  return (
+  return ready && (
     <>
       <Head>
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />

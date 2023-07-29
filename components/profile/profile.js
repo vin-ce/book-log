@@ -6,8 +6,9 @@ import { Divider } from "../parts/parts"
 import ShelvesIndex from "./shelvesIndex/shelvesIndex"
 import Link from "next/link"
 import MaterialInfoModal from "../modals/materialInfoModal/materialInfoModal"
+import UserSettingsModal from "../modals/userSettingsModal/userSettingsModal"
 
-export default function Profile({ userId }) {
+export default function Profile() {
 
   const [booksWithStatusData, setBooksWithStatusData] = useState(null)
 
@@ -17,6 +18,9 @@ export default function Profile({ userId }) {
 
   const isMaterialInfoModal = useStore(state => state.isMaterialInfoModal)
   const setIsMaterialInfoModal = useStore(state => state.setIsMaterialInfoModal)
+
+  const isUserSettingsModal = useStore(state => state.isUserSettingsModal)
+  const setIsUserSettingsModal = useStore(state => state.setIsUserSettingsModal)
 
 
   useEffect(() => {
@@ -53,7 +57,11 @@ export default function Profile({ userId }) {
     <>
       <div className={styles.container}>
         <div className={styles.header}>
-          <div className={styles.name}>@{selectedUserUsername}</div>
+          {
+            isAuthorizedForSelectedUser ?
+              <div className={[styles.name, styles.button].join(" ")} onClick={() => setIsUserSettingsModal(true)}>@{selectedUserUsername}</div>
+              : null
+          }
           {
             isAuthorizedForSelectedUser ? <div className={styles.button} onClick={() => setIsMaterialInfoModal(true)}>+ create material</div> : null
           }
@@ -74,6 +82,10 @@ export default function Profile({ userId }) {
       {
         isMaterialInfoModal ? <MaterialInfoModal type={"create"} /> : null
       }
+      {
+        isUserSettingsModal ? <UserSettingsModal /> : null
+      }
+
     </>
   )
 }

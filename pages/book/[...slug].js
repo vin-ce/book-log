@@ -11,12 +11,11 @@ import Head from "next/head"
 // router solution:
 // https://github.com/vercel/next.js/discussions/11484#:~:text=Jun%202%2C%202022-,Here%27s,-my%20workaround.%20In
 
-export default function Book() {
+export default function Book({ isMaterial }) {
 
   const setSelectedUserUsername = useStore((state) => state.setSelectedUserUsername)
   const setSelectedBookId = useStore((state) => state.setSelectedBookId)
   const loggedInUser = useStore((state) => state.loggedInUser)
-  const isMaterial = useStore((state) => state.isMaterial)
 
   // for title head
   const selectedUserUsername = useStore((state) => state.selectedUserUsername)
