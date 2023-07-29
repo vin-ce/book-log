@@ -1,10 +1,10 @@
 import { useStore } from "@/utils/store";
 import { StandardModal } from "@/components/modals/modalTemplates";
-import styles from "./deleteMaterialModal.module.sass"
+import styles from "./deleteUserMaterialModal.module.sass"
 import { deleteUserMaterialData } from "@/utils/firestore"
 import { useRouter } from "next/router";
 
-export default function DeleteMaterialModal({ setIsDeleteModal }) {
+export default function DeleteUserMaterialModal({ setIsDeleteModal }) {
 
   const selectedBookInfo = useStore((state) => state.selectedBookInfo)
   const userBookStatus = useStore((state) => state.userBookStatus)
@@ -24,7 +24,7 @@ export default function DeleteMaterialModal({ setIsDeleteModal }) {
 
   return (
     <StandardModal
-      title={"Delete Material?"}
+      title={"Delete Your Book Data?"}
       setIsModelOpen={setIsDeleteModal}
     >
       <div className={styles.options}>

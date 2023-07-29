@@ -6,17 +6,13 @@ import { useEffect, useRef, useState } from "react"
 import sanitize from "sanitize-html"
 import { createMaterial, updateMaterial } from "@/utils/firestore"
 import { useRouter } from "next/router"
-import { validateDate } from "@/utils/helpers"
-import DeleteMaterialModal from "../deleteModals/deleteMaterialModal/deleteMaterialModal"
+import { capitalizeFirstLetter, validateDate } from "@/utils/helpers"
 
 export default function MaterialInfoModal({ type }) {
 
   const loggedInUser = useStore((state) => state.loggedInUser)
   const selectedBookInfo = useStore((state) => state.selectedBookInfo)
   const setIsMaterialInfoModal = useStore((state) => state.setIsMaterialInfoModal)
-  const setSelectedBookInfo = useStore((state) => state.setSelectedBookInfo)
-
-  const [isDeleteModal, setIsDeleteModal] = useState(false)
 
   const router = useRouter()
 
@@ -144,38 +140,30 @@ export default function MaterialInfoModal({ type }) {
     if (isFormInvalid) return
     else {
 
+      let materialData = {
+        title,
+        authors: authorsArr,
+        status: selectedStatus,
+        link,
+        imageUrl: coverImageLink,
+        publishedDate: date,
+        description,
+        type: "material",
+        creatorId: loggedInUser.id,
+      }
+
       if (type === "create") {
         const materialId = await createMaterial({
           userId: loggedInUser.id,
-          materialData: {
-            title,
-            authors: authorsArr,
-            status: selectedStatus,
-            link,
-            imageUrl: coverImageLink,
-            publishedDate: date,
-            description,
-            type: "material",
-            creatorId: loggedInUser.id,
-          },
+          materialData,
           status: selectedStatus
         })
 
         router.push(`/material/${materialId}/${loggedInUser.username}`)
-      } else if (type === "update") {
-        let materialData = {
-          title,
-          authors: authorsArr,
-          status: selectedStatus,
-          link,
-          imageUrl: coverImageLink,
-          publishedDate: date,
-          description,
-          type: "material",
-          creatorId: loggedInUser.id,
-        }
 
-        updateMaterial({
+      } else if (type === "update") {
+
+        await updateMaterial({
           materialId: selectedBookInfo.id,
           materialData,
         })
@@ -221,17 +209,9 @@ export default function MaterialInfoModal({ type }) {
 
           <div className={styles.buttonsContainer}>
             <div className={styles.createButton} onClick={handleCreateMaterial}>+ {type}</div>
-            {
-              type === "update" ?
-                <div className={styles.deleteButton} onClick={() => setIsDeleteModal(true)}>x delete</div>
-                : null
-            }
           </div>
         </div>
       </StandardModal>
-      {
-        isDeleteModal ? <DeleteMaterialModal setIsDeleteModal={setIsDeleteModal} /> : null
-      }
     </>
   )
 }
@@ -269,7 +249,3 @@ function splitDateBySlash(date) {
 
 }
 
-function capitalizeFirstLetter(str) {
-  if (!str || typeof str !== 'string') return str;
-  return str.charAt(0).toUpperCase() + str.slice(1);
-}

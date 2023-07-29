@@ -136,7 +136,7 @@ export async function checkHasBookData({ bookId, bookData }) {
 
 function removeEmptyProperties(obj) {
   Object.keys(obj).forEach(key => {
-    if (obj[key] === undefined || obj[key] === null || obj[key] === '') {
+    if (obj[key] === undefined || obj[key] === null) {
       delete obj[key];
     }
   });
@@ -308,9 +308,11 @@ export async function createMaterial({ userId, materialData, status }) {
 export async function updateMaterial({ materialId, materialData }) {
   const cleanedMaterialData = removeEmptyProperties(materialData)
   const materialRef = doc(db, "books", materialId)
+  console.log("udate", cleanedMaterialData)
   await updateDoc(materialRef, {
     ...cleanedMaterialData,
   })
+  return
 }
 
 export async function fetchMaterialById(materialId) {

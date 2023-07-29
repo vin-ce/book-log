@@ -5,15 +5,15 @@ import { useStore } from "@/utils/store"
 import styles from "./shelvesIndex.module.sass"
 import { useEffect, useState } from "react"
 import Link from "next/link"
-import CreateShelfModal from "@/components/modals/shelfModals/createShelfModal/createShelfModal"
+import ShelfInfoModal from "@/components/modals/shelfInfoModal/shelfInfoModal"
 
 export default function ShelvesIndex() {
   const selectedUserId = useStore((state) => state.selectedUserId)
   const userAllShelves = useStore((state) => state.userAllShelves)
   const setUserAllShelves = useStore((state) => state.setUserAllShelves)
 
-  const isCreateShelfModal = useStore((state) => state.isCreateShelfModal)
-  const setIsCreateShelfModal = useStore((state) => state.setIsCreateShelfModal)
+  const isShelfInfoModal = useStore((state) => state.isShelfInfoModal)
+  const setIsShelfInfoModal = useStore((state) => state.setIsShelfInfoModal)
 
   const isAuthorizedForSelectedUser = useStore(state => state.isAuthorizedForSelectedUser)
 
@@ -65,7 +65,7 @@ export default function ShelvesIndex() {
         <div className={styles.header}>
           <div className={styles.label}>shelves:</div>
           {
-            isAuthorizedForSelectedUser ? <div className={styles.button} onClick={() => setIsCreateShelfModal(true)}>+ create shelf</div> : null
+            isAuthorizedForSelectedUser ? <div className={styles.button} onClick={() => setIsShelfInfoModal(true)}>+ create shelf</div> : null
           }
         </div>
         <div className={styles.indexContainer}>
@@ -75,7 +75,7 @@ export default function ShelvesIndex() {
         </div>
       </div>
       {
-        isCreateShelfModal ? <CreateShelfModal /> : null
+        isShelfInfoModal ? <ShelfInfoModal type="create" /> : null
       }
     </>
   )

@@ -87,8 +87,8 @@ export const useStore = create((set) => ({
   userAllShelves: null,
   setUserAllShelves: (data) => set({ userAllShelves: data }),
 
-  isCreateShelfModal: false,
-  setIsCreateShelfModal: (bool) => set({ isCreateShelfModal: bool }),
+  isShelfInfoModal: false,
+  setIsShelfInfoModal: (bool) => set({ isShelfInfoModal: bool }),
 
   selectedShelfInfo: null,
   setSelectedShelfInfo: (data) => set({ selectedShelfInfo: data }),
@@ -96,8 +96,6 @@ export const useStore = create((set) => ({
   selectedShelfBooksData: null,
   setSelectedShelfBooksData: (books) => set({ selectedShelfBooksData: books }),
 
-  isUpdateShelfModal: false,
-  setIsUpdateShelfModal: (bool) => set({ isUpdateShelfModal: bool }),
 
   selectedStatusForShelf: null,
   setSelectedStatusForShelf: (status) => set({ selectedStatusForShelf: status }),

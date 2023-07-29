@@ -5,8 +5,9 @@ import styles from "./bookInfo.module.sass"
 import { useStore } from "@/utils/store"
 import { fetchMaterialById, fetchUserById } from "@/utils/firestore"
 import { formatDateFromSeconds, formatDateFromSlash } from "@/utils/helpers"
-import MaterialInfoModal from "@/components/modals/materialModals/materialInfoModal"
+import MaterialInfoModal from "@/components/modals/materialInfoModal/materialInfoModal"
 import Link from "next/link"
+import DeleteMaterialModal from "@/components/modals/deleteModals/deleteUserMaterialModal/deleteUserMaterialModal"
 
 export default function BookInfo() {
 
@@ -67,7 +68,8 @@ function BookEl({ bookData, isMaterial, materialCreatorUsername }) {
   const isAuthorizedForSelectedUser = useStore((state) => state.isAuthorizedForSelectedUser)
   const isMaterialInfoModal = useStore((state) => state.isMaterialInfoModal)
   const setIsMaterialInfoModal = useStore((state) => state.setIsMaterialInfoModal)
-
+  const loggedInUser = useStore((state) => state.loggedInUser)
+  const [isDeleteModal, setIsDeleteModal] = useState(false)
 
   let imageEl
   if (bookData.imageUrl) {
@@ -133,13 +135,24 @@ function BookEl({ bookData, isMaterial, materialCreatorUsername }) {
                 : null
             }
           </div>
+          {
+            isAuthorizedForSelectedUser && bookData ?
+              <div className={styles.button} onClick={() => setIsDeleteModal(true)}>x delete all your book data</div>
+              : null
+          }
         </div>
+
+        .
         {
-          isMaterial && isAuthorizedForSelectedUser ?
+          isMaterial && bookData.creatorId === loggedInUser.id ?
             <div className={styles.editMaterialButton} onClick={() => setIsMaterialInfoModal(true)}>+ edit material</div>
             : null
         }
       </div >
+      {/* this delete modal is  */}
+      {
+        isDeleteModal ? <DeleteMaterialModal setIsDeleteModal={setIsDeleteModal} /> : null
+      }
       {
         isMaterialInfoModal ? <MaterialInfoModal type={"update"} /> : null
       }

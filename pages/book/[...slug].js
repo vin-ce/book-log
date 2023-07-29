@@ -52,27 +52,31 @@ export default function Book() {
 
   }, [isMaterial, loggedInUser, router, setSelectedUserUsername])
 
-  return ready && (
-    <main>
-      <Split
-        sizes={[5, 95]}
-        minSize={[464, 480]}
-        expandToMin={true}
-        gutterSize={2}
-        gutterAlign="center"
-        snapOffset={30}
-        dragInterval={1}
-        direction="horizontal"
-        cursor="col-resize"
-        className={styles.splitContainer}
-      >
-        <BookInfo isMaterial={isMaterial} />
-        <UserBookInfo isMaterial={isMaterial} />
-      </Split>
+  return (
+    <>
+      {ready && (
+        <main>
+          <Split
+            sizes={[5, 95]}
+            minSize={[464, 480]}
+            expandToMin={true}
+            gutterSize={2}
+            gutterAlign="center"
+            snapOffset={30}
+            dragInterval={1}
+            direction="horizontal"
+            cursor="col-resize"
+            className={styles.splitContainer}
+          >
+            <BookInfo isMaterial={isMaterial} />
+            <UserBookInfo isMaterial={isMaterial} />
+          </Split>
+        </main>
+      )}
       {
         !isMaterial ? <ResetStates /> : null
       }
-    </main>
+    </>
   )
 }
 

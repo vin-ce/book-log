@@ -195,13 +195,15 @@ function BookRow({ bookData }) {
             isAuthorizedForSelectedUser ?
               <div className={styles.bottomButtonsContainer}>
                 {
-                  bookData.notes ?
-                    <div className={styles.button} onClick={handleOpenNotesModal}>!</div>
-                    : null
-                }
-                {
                   selectedStatusForShelf ? null :
-                    <div className={styles.button} onClick={handleRemoveBookFromShelf}>x</div>
+                    <>
+                      {
+                        bookData.notes ?
+                          <div className={styles.button} onClick={handleOpenNotesModal}>!</div>
+                          : null
+                      }
+                      <div className={styles.button} onClick={handleRemoveBookFromShelf}>x</div>
+                    </>
                 }
               </div>
               : null

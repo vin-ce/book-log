@@ -5,7 +5,7 @@ import { fetchBooksWithStatus } from "@/utils/firestore"
 import { Divider } from "../parts/parts"
 import ShelvesIndex from "./shelvesIndex/shelvesIndex"
 import Link from "next/link"
-import MaterialInfoModal from "../modals/materialModals/materialInfoModal"
+import MaterialInfoModal from "../modals/materialInfoModal/materialInfoModal"
 
 export default function Profile({ userId }) {
 

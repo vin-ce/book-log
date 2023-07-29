@@ -36,6 +36,7 @@ function LogOutButton() {
   const logOut = async () => {
     const isSuccess = await initLogOut()
     if (isSuccess) router.push('/')
+    else router.push('/?unauthorized')
   }
 
   return <div className={styles.button} onClick={logOut}>log out</div>
