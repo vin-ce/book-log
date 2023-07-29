@@ -6,6 +6,7 @@ import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
 import { useStore } from "@/utils/store"
 import { ResetStates } from "@/utils/helpers"
+import Head from "next/head"
 
 // router solution:
 // https://github.com/vercel/next.js/discussions/11484#:~:text=Jun%202%2C%202022-,Here%27s,-my%20workaround.%20In
@@ -16,6 +17,10 @@ export default function Book() {
   const setSelectedBookId = useStore((state) => state.setSelectedBookId)
   const loggedInUser = useStore((state) => state.loggedInUser)
   const isMaterial = useStore((state) => state.isMaterial)
+
+  // for title head
+  const selectedUserUsername = useStore((state) => state.selectedUserUsername)
+  const selectedBookInfo = useStore((state) => state.selectedBookInfo)
 
   const [ready, setReady] = useState(false)
   const router = useRouter()
@@ -54,6 +59,13 @@ export default function Book() {
 
   return (
     <>
+      <Head>
+        <title>
+          {
+            selectedBookInfo ? `${selectedBookInfo.title} — messy table` : null
+          }
+        </title>
+      </Head>
       {ready && (
         <main>
           <Split

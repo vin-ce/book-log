@@ -7,6 +7,7 @@ import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
 import { useStore } from "@/utils/store"
 import { fetchShelf, fetchBooksInShelf, fetchUserById } from "@/utils/firestore"
+import Head from "next/head"
 
 export default function Shelf() {
 
@@ -54,6 +55,11 @@ export default function Shelf() {
 
   return (
     <>
+      <Head>
+        <title>
+          {selectedShelfInfo ? `${selectedShelfInfo.name} — messy table` : null}
+        </title>
+      </Head>
       {
         ready ?
           selectedShelfInfo ?

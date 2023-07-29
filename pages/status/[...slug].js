@@ -8,6 +8,7 @@ import { useEffect, useState } from "react"
 import { useStore } from "@/utils/store"
 import { fetchBooksOfStatus, fetchUserByUsername } from "@/utils/firestore"
 import StatusShelfInfo from "@/components/shelf/statusShelfInfo/statusShelfInfo"
+import Head from "next/head"
 
 export default function Shelf() {
 
@@ -18,9 +19,11 @@ export default function Shelf() {
   const setSelectedShelfInfo = useStore((state) => state.setSelectedShelfInfo)
   const setSelectedShelfBooksData = useStore((state) => state.setSelectedShelfBooksData)
 
+  const selectedStatusForShelf = useStore((state) => state.selectedStatusForShelf)
   const setSelectedStatusForShelf = useStore((state) => state.setSelectedStatusForShelf)
 
   const setSelectedUserId = useStore((state) => state.setSelectedUserId)
+  const selectedUserUsername = useStore((state) => state.selectedUserUsername)
   const setSelectedUserUsername = useStore((state) => state.setSelectedUserUsername)
 
   const [hasData, setHasData] = useState(true)
@@ -89,6 +92,15 @@ export default function Shelf() {
 
   return (
     <>
+      <Head>
+        {
+          selectedUserUsername ?
+            <title>
+              @{selectedUserUsername}’s {statusToText(selectedStatusForShelf)} — messy table
+            </title>
+            : null
+        }
+      </Head>
       {
         ready ?
           hasData ?
@@ -116,4 +128,15 @@ export default function Shelf() {
       <ResetStates type={"full"} />
     </>
   )
+}
+
+function statusToText(status) {
+  switch (status) {
+    case "toRead":
+      return "to read"
+    case "reading":
+      return "reading"
+    case "read":
+      return "read"
+  }
 }

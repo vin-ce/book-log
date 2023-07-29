@@ -6,12 +6,14 @@ import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
 
 import styles from "./user.module.sass"
+import Head from "next/head"
 
 export default function User() {
 
   const [ready, setReady] = useState(false)
   const router = useRouter()
 
+  const selectedUserUsername = useStore((state) => state.selectedUserUsername)
   const setSelectedUserUsername = useStore((state) => state.setSelectedUserUsername)
   const setSelectedUserId = useStore((state) => state.setSelectedUserId)
 
@@ -32,12 +34,17 @@ export default function User() {
   }, [ready, router, setSelectedUserId, setSelectedUserUsername])
 
   return (
-    <div className={styles.background}>
-      <div className={styles.container}>
-        {ready ? <Profile /> : <div>user not found</div>}
-        <ResetStates type={"full"} />
+    <>
+      <Head>
+        <title>@{selectedUserUsername}</title>
+      </Head>
+      <div className={styles.background}>
+        <div className={styles.container}>
+          {ready ? <Profile /> : <div>user not found</div>}
+          <ResetStates type={"full"} />
+        </div>
       </div>
-    </div>
+    </>
   )
 
 }
