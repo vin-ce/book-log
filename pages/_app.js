@@ -1,4 +1,5 @@
 import Layout from "@/components/layout"
+import "./globals.sass"
 
 import { useStore } from "../utils/store"
 import { getAuth, onAuthStateChanged } from "firebase/auth";
@@ -6,6 +7,7 @@ import { fetchUserById } from "../utils/firestore"
 import Head from "next/head";
 
 const auth = getAuth()
+
 
 export default function MyApp({ Component, pageProps }) {
 
