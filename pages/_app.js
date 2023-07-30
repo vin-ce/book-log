@@ -19,8 +19,6 @@ export default function MyApp({ Component, pageProps }) {
   const setLoggedInUser = useStore((state) => state.setLoggedInUser)
   const setLoggedOut = useStore((state) => state.setLoggedOut)
 
-  const router = useRouter()
-
   const [ready, setReady] = useState(false)
 
   // tracks global log in / out state
@@ -33,7 +31,6 @@ export default function MyApp({ Component, pageProps }) {
     }
     else {
       setLoggedOut()
-      if (router.pathname === "/") router.push('/login')
     }
 
     if (!ready) setReady(true)

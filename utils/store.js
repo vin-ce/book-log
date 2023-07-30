@@ -7,6 +7,8 @@ export const useStore = create((set) => ({
   setLoggedInUser: (userData) => set({ loggedInUser: userData }),
   setLoggedOut: () => set({ loggedInUser: null }),
 
+  finishInitialAuthCheck: false,
+  setFinishInitialAuthCheck: (bool) => set({ loggedInUser: bool }),
 
   // SELECTED USER
 
