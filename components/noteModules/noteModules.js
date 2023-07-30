@@ -148,6 +148,9 @@ export function TextNote({ content, createdTimestampSeconds, id, pinned }) {
   const selectedUserId = useStore((state) => state.selectedUserId)
   const selectedBookId = useStore((state) => state.selectedBookId)
 
+  const userBookNotes = useStore((state) => state.userBookNotes)
+  const setUserBookNotes = useStore((state) => state.setUserBookNotes)
+
   const handleOnTextChange = (e) => {
     setTextContent(sanitizeHtml(e.target.value))
   }
@@ -161,6 +164,13 @@ export function TextNote({ content, createdTimestampSeconds, id, pinned }) {
     setButtonsEl(null)
 
     await editTextNote({ bookId: selectedBookId, userId: selectedUserId, noteId: id, content: textContent.current })
+
+    // find note in notesData
+    // update content in state
+    const index = userBookNotes.findIndex(note => note.id === id)
+    const userBookNotesCopy = [...userBookNotes]
+    userBookNotesCopy[index].content = textContent.current
+    setUserBookNotes(userBookNotesCopy)
   }
 
   const onClickEdit = () => {

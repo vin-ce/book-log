@@ -36,7 +36,7 @@ export default function MyApp({ Component, pageProps }) {
     if (!ready) setReady(true)
   });
 
-  return ready && (
+  return (
     <>
       <Head>
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
@@ -46,10 +46,16 @@ export default function MyApp({ Component, pageProps }) {
         <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5" />
         <meta name="msapplication-TileColor" content="#da532c" />
         <meta name="theme-color" content="#ffffff" />
+        <title>messy table</title>
       </Head>
-      <Layout>
-        <Component {...pageProps} />
-      </Layout>
+      {
+        ready
+          ?
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
+          : null
+      }
     </>
   )
 }
