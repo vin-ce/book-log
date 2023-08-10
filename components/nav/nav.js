@@ -9,10 +9,10 @@ export default function Nav() {
 
   const router = useRouter()
   const onClickHome = () => {
-    if (router.pathname !== "/room" && router.pathname !== "/room/[id]") {
+    if (router.pathname !== "/rooms" && router.pathname !== "/rooms/[id]") {
       router.push('/')
     } else {
-      router.push('/room')
+      router.push('/rooms')
     }
   }
 

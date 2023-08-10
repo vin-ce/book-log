@@ -46,7 +46,7 @@ export default function RoomInfo() {
     removeRoomFromUser({ roomId: selectedRoomInfo.roomId, userId: loggedInUser.id })
     setIsUserInRoom(false)
 
-    router.push('/room')
+    router.push('/rooms')
   }
 
   return (

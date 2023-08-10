@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import styles from "./roomHome.module.sass"
+import styles from "./roomsHome.module.sass"
 import { useStore } from "@/utils/store"
 import RoomWrapper from "./wrapper/wrapper"
 import UserSettingsModal from "@/components/modals/userSettingsModal/userSettingsModal"
@@ -9,7 +9,7 @@ import { fetchRoomsOfUser } from "@/utils/realtime"
 import { formatDateFromSeconds } from "@/utils/helpers"
 import { useRouter } from "next/router"
 
-export default function Room() {
+export default function Rooms() {
 
   const loggedInUser = useStore((state) => state.loggedInUser)
   const isUserSettingsModal = useStore(state => state.isUserSettingsModal)
@@ -36,7 +36,7 @@ export default function Room() {
       roomsData.forEach(roomData => {
         elArr.push(
           <div key={roomData.roomId} className={styles.room}>
-            <span className={styles.button} onClick={() => router.push(`/room/${roomData.roomId}`)}>{roomData.name}</span>
+            <span className={styles.button} onClick={() => router.push(`/rooms/${roomData.roomId}`)}>{roomData.name}</span>
             <span className={styles.date}>* {formatDateFromSeconds(roomData.lastUpdatedTimestamp)}</span>
           </div>
         )

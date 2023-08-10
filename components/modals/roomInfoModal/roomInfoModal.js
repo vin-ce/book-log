@@ -90,7 +90,7 @@ export default function RoomInfoModal({ type, setIsRoomInfoModal }) {
           roomData,
         })
 
-        router.push(`/room/${roomId}`)
+        router.push(`/rooms/${roomId}`)
 
       } else if (type === "update") {
 

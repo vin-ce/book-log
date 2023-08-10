@@ -27,7 +27,7 @@ export function LogInOutButtons() {
 export function LogInButton() {
   const router = useRouter()
   const handleLogin = () => {
-    if (router.pathname === "/room" || router.pathname === "/room/[id]") {
+    if (router.pathname === "/rooms" || router.pathname === "/rooms/[id]") {
       initLogIn({ isRoomUser: true })
     } else {
       router.push('/login')
@@ -41,7 +41,7 @@ export function LogOutButton() {
 
   const logOut = async () => {
     await initLogOut()
-    if (router.pathname === "/room" || router.pathname === "/room/[id]") {
+    if (router.pathname === "/rooms" || router.pathname === "/rooms/[id]") {
       router.reload()
     } else {
       router.push('/login')

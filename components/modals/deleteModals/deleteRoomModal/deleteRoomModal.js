@@ -14,7 +14,7 @@ export default function DeleteRoomModal({ setIsDeleteModal }) {
     await deleteRoom(selectedRoomInfo.roomId)
     // close modal
     setIsDeleteModal(false)
-    router.push("/room")
+    router.push("/rooms")
   }
 
   return (

@@ -58,7 +58,7 @@ export default function UserSettingsModal() {
       // close modal
       setIsUserSettingsModal(false)
 
-      if (router.pathname !== "/room") {
+      if (router.pathname !== "/rooms") {
         // update url
         router.push(`/user/${username}`)
       }

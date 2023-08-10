@@ -50,7 +50,7 @@ export default function MyApp({ Component, pageProps }) {
       // and the user visits a page that's not a room page
       // check if user is invited to use rest of app
       // if not, log out user
-      if (router.pathname !== "/room" && router.pathname !== "/room/[id]") {
+      if (router.pathname !== "/rooms" && router.pathname !== "/rooms/[id]") {
         if (loggedInUser.isRoomUser) {
           const isInvited = await checkIfEmailIsInvited(loggedInUser.email)
           if (!isInvited) initLogOut()
