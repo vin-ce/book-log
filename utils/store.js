@@ -102,4 +102,22 @@ export const useStore = create((set) => ({
   selectedStatusForShelf: null,
   setSelectedStatusForShelf: (status) => set({ selectedStatusForShelf: status }),
 
+
+  // ROOM
+
+  selectedRoomInfo: null,
+  setSelectedRoomInfo: (data) => set({ selectedRoomInfo: data }),
+
+  selectedRoomNotes: null,
+  setSelectedRoomNotes: (notes) => set({ selectedRoomNotes: notes }),
+
+  isRoomAdmin: false,
+  setIsRoomAdmin: (bool) => set({ isRoomAdmin: bool }),
+
+  activeLiveCursorUserId: null,
+  setActiveLiveCursorUserId: (id) => set({ activeLiveCursorUserId: id }),
+
+  // isCreateRoomTextNoteModal: false,
+  // setIsCreateRoomTextNoteModal: (bool) => set({ isCreateRoomTextNoteModal: bool }),
+
 }))

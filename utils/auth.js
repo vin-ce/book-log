@@ -1,10 +1,10 @@
 import { getAuth, signInWithPopup, signOut, GoogleAuthProvider } from "firebase/auth";
-import { checkIfEmailIsInvited, createUser } from "./firestore";
+import { checkIfEmailIsInvited, createUser, fetchUserById } from "./firestore";
 
 const auth = getAuth();
 const provider = new GoogleAuthProvider();
 
-export async function initLogIn() {
+export async function initLogIn({ isRoomUser }) {
   return await signInWithPopup(auth, provider)
     .then(async (result) => {
       // This gives you a Google Access Token. You can use it to access the Google API.
@@ -18,18 +18,32 @@ export async function initLogIn() {
         displayName: user.displayName,
         email: user.email,
         profileImageURL: user.photoURL,
-        id: user.uid
+        id: user.uid,
+        isRoomUser: false,
       }
 
-      const isInvited = await checkIfEmailIsInvited(user.email)
-      if (!isInvited) {
-        initLogOut()
-        return false
+      // if not logging in from room
+      // check if invited
+      if (!isRoomUser) {
+        const isInvited = await checkIfEmailIsInvited(user.email)
+        if (!isInvited) {
+          initLogOut()
+          return false
+        }
+      }
+      const foundUser = await fetchUserById(user.uid)
+      if (foundUser) {
+
+        return true
+
+      } else {
+        if (isRoomUser) userData.isRoomUser = true
+        console.log("room user", userData)
+
+        await createUser(userData)
+        return true
       }
 
-      createUser(userData)
-
-      return true
 
     }).catch((error) => {
       // Handle Errors here.

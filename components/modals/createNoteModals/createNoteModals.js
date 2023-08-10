@@ -4,6 +4,7 @@ import { StandardModal } from "../modalTemplates"
 import { useEffect, useRef, useState } from "react"
 import { createNote } from "@/utils/firestore"
 import sanitizeHtml from "sanitize-html"
+import { createRoomNote } from "@/utils/realtime"
 
 export function CreateTweetNoteModal() {
   const setIsCreateTweetNoteModal = useStore((state) => state.setIsCreateTweetNoteModal)
@@ -86,7 +87,7 @@ export function CreateTextNoteModal() {
     setNumOfChar(inputString.length)
   }
 
-  const handleCreateTweetNote = async () => {
+  const handleCreateTextNote = async () => {
     let inputString = sanitizeHtml(textInput)
 
     const textNoteData = await createNote({ bookId: selectedBookId, userId: selectedUserId, content: inputString, type: "text" })
@@ -106,7 +107,48 @@ export function CreateTextNoteModal() {
       <div className={styles.createTextNoteContainer}>
         <textarea className={styles.textArea} value={textInput} onChange={handleInputChange} placeholder={"Write a note..."} rows={10} maxLength={500} />
         <div className={styles.footer}>
-          <div className={styles.createButton} onClick={handleCreateTweetNote}>+ create</div>
+          <div className={styles.createButton} onClick={handleCreateTextNote}>+ create</div>
+          <div className={styles.characterCount}>{numOfChar}/500</div>
+        </div>
+      </div>
+    </StandardModal>
+  )
+}
+
+export function CreateRoomTextNoteModal({ sectionId, setIsModal }) {
+  const selectedRoomInfo = useStore((state) => state.selectedRoomInfo)
+  const loggedInUser = useStore((state) => state.loggedInUser)
+
+  // const setIsCreateRoomTextNoteModal = useStore((state) => state.setIsCreateRoomTextNoteModal)
+
+  const [textInput, setTextInput] = useState('')
+  const [numOfChar, setNumOfChar] = useState(0)
+
+  const handleInputChange = (e) => {
+    e.preventDefault()
+    let inputString = e.target.value
+    setTextInput(inputString)
+    setNumOfChar(inputString.length)
+  }
+
+  const handleCreateTextNote = async () => {
+    let inputString = sanitizeHtml(textInput)
+
+    await createRoomNote({ userId: loggedInUser.id, roomId: selectedRoomInfo.roomId, sectionId, type: "text", content: inputString, })
+
+    setIsModal(false)
+  }
+
+  return (
+    <StandardModal
+      title={"Create Text Note"}
+      setIsModelOpen={setIsModal}
+      modalClass={styles.modal}
+    >
+      <div className={styles.createTextNoteContainer}>
+        <textarea className={styles.textArea} value={textInput} onChange={handleInputChange} placeholder={"Write a note..."} rows={10} maxLength={500} />
+        <div className={styles.footer}>
+          <div className={styles.createButton} onClick={handleCreateTextNote}>+ create</div>
           <div className={styles.characterCount}>{numOfChar}/500</div>
         </div>
       </div>

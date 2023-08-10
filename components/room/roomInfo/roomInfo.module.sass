@@ -1,0 +1,58 @@
+@use "@/components/variables"
+
+// .panelContainer
+//   @include variables.panelContainer
+
+.roomInfoContainer
+  margin-bottom: 3.2rem
+
+  .imageContainer
+    background-color: black
+    width: 100%
+
+    img
+      object-fit: contain
+      // object-position: middle top
+      width: 100%
+      box-sizing: border-box
+      padding: 0 3.2rem
+
+  // .infoContainer
+  //   margin: 3.2rem
+  //   max-width: 400px
+
+  .description, .extraInfo
+    margin: 1.6rem 3.2rem
+
+  .header
+    margin: 0 3.2rem
+    padding-top: 1.6rem
+
+    display: flex
+    justify-content: space-between
+
+    .name
+      font-weight: bold
+      color: variables.$orange
+
+  .description
+    padding: 1.6rem 0
+    border-top: 1px dashed variables.$yellow
+    border-bottom: 1px dashed variables.$yellow
+
+  .extraInfo
+
+    .publishedDate + .publisher
+      margin-top: 1.6rem
+
+    .attribution
+      margin-top: 1.6rem
+
+.buttonsContainer
+  display: flex
+
+  .button + .button
+    margin-left: 1.6rem
+
+.button
+  @include variables.textButton

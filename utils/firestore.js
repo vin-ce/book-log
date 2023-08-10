@@ -1,21 +1,10 @@
-import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
+
+
 import { getFirestore, collection, setDoc, doc, getDoc, getDocs, where, query, updateDoc, serverTimestamp, arrayUnion, arrayRemove, orderBy, limit, deleteDoc, startAfter, getCountFromServer, addDoc } from "firebase/firestore";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyCLz-Bk7coVNRtQO8cUyEKGjSPGcTxeLws",
-  authDomain: "book-log-392519.firebaseapp.com",
-  projectId: "book-log-392519",
-  storageBucket: "book-log-392519.appspot.com",
-  messagingSenderId: "177953137158",
-  appId: "1:177953137158:web:70d8543c535b506cbe9987"
-};
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-
-// Initialize Cloud Firestore and get a reference to the service
-const db = getFirestore(app);
+import { firebaseApp } from "./firebaseConfig";
+import { removeEmptyProperties } from "./helpers";
+const db = getFirestore(firebaseApp);
 
 
 // =========
@@ -32,11 +21,8 @@ export async function createUser(userData) {
     const username = await createUsername(userData.displayName)
 
     await setDoc(doc(db, "users", userData.id), {
-      displayName: userData.displayName,
+      ...userData,
       username: username,
-      email: userData.email,
-      profileImageURL: userData.profileImageURL,
-      id: userData.id,
       createdTimestamp: serverTimestamp(),
 
       // keeps track of bookId status
@@ -144,16 +130,6 @@ export async function checkHasBookData({ bookId, bookData }) {
   // if has users but no book data
   if (hasUsers && !bookSnap.data()) addBookData({ bookId, bookData })
   else return
-}
-
-
-function removeEmptyProperties(obj) {
-  Object.keys(obj).forEach(key => {
-    if (obj[key] === undefined || obj[key] === null) {
-      delete obj[key];
-    }
-  });
-  return obj
 }
 
 export async function addBookData({ bookId, bookData }) {

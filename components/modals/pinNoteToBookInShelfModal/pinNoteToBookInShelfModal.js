@@ -7,36 +7,30 @@ import { pinBookNoteInShelf, unpinBookNoteInShelf } from "@/utils/firestore"
 
 export default function PinNoteToBookInShelfModal({ setIsPinNoteToBookInShelfModal, bookData, pinnedNoteData, setPinnedNoteData }) {
 
-  const selectedUserId = useStore((state) => state.selectedUserId)
   const selectedShelfInfo = useStore((state) => state.selectedShelfInfo)
-
-  const [test, setTest] = useState(true)
-
-  console.log("pinned note data", pinnedNoteData)
-
-  const handleUpdatePinnedNote = async ({ type, id }) => {
-
-    if (type === "remove") {
-
-      // UPDATE IN FIREBASE
-      await unpinBookNoteInShelf({ bookId: bookData.id, shelfId: selectedShelfInfo.id })
-      setPinnedNoteData(null)
-
-    } else if (type === "add") {
-
-      const newPinnedNoteData = bookData.notes.find(note => note.id === id)
-
-      // UPDATE IN FIREBASE
-      await pinBookNoteInShelf({ bookId: bookData.id, shelfId: selectedShelfInfo.id, noteData: newPinnedNoteData })
-      setPinnedNoteData(newPinnedNoteData)
-
-    }
-    setTest(!test)
-  }
 
   const [notesElArr, setNotesElArr] = useState(null)
 
   useEffect(() => {
+
+    const handleUpdatePinnedNote = async ({ type, id }) => {
+
+      if (type === "remove") {
+
+        // UPDATE IN FIREBASE
+        await unpinBookNoteInShelf({ bookId: bookData.id, shelfId: selectedShelfInfo.id })
+        setPinnedNoteData(null)
+
+      } else if (type === "add") {
+
+        const newPinnedNoteData = bookData.notes.find(note => note.id === id)
+
+        // UPDATE IN FIREBASE
+        await pinBookNoteInShelf({ bookId: bookData.id, shelfId: selectedShelfInfo.id, noteData: newPinnedNoteData })
+        setPinnedNoteData(newPinnedNoteData)
+
+      }
+    }
 
     const elArr = []
 
@@ -82,7 +76,7 @@ export default function PinNoteToBookInShelfModal({ setIsPinNoteToBookInShelfMod
     console.log("re setting", elArr)
     setNotesElArr(elArr)
 
-  }, [bookData.notes, pinnedNoteData, test])
+  }, [bookData.notes, pinnedNoteData])
 
 
 

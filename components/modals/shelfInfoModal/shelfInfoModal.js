@@ -43,7 +43,6 @@ export default function ShelfInfoModal({ type }) {
       setNameInput(selectedShelfInfo.name)
       setDescriptionInput(selectedShelfInfo.description)
     }
-
   }, [])
 
   const handleCreateUpdateShelf = async () => {

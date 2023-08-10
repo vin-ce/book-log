@@ -1,6 +1,5 @@
-import styles from "./deleteNoteModal.module.sass"
 import { useStore } from "@/utils/store";
-import { StandardModal } from "../../modalTemplates";
+import { DeleteModal } from "../../modalTemplates";
 import { deleteNote } from "@/utils/firestore"
 
 export default function DeleteNoteModal({ setIsDeleteModal, id }) {
@@ -27,17 +26,11 @@ export default function DeleteNoteModal({ setIsDeleteModal, id }) {
     setIsDeleteModal(false)
   }
 
-  const onClickCancel = () => setIsDeleteModal(false)
-
   return (
-    <StandardModal
+    <DeleteModal
       title={"Delete Note?"}
       setIsModelOpen={setIsDeleteModal}
-    >
-      <div className={styles.options}>
-        <div className={styles.yes} onClick={onClickYes}>yes</div>
-        <div className={styles.cancel} onClick={onClickCancel}>cancel</div>
-      </div>
-    </StandardModal>
+      onClickYes={onClickYes}
+    />
   )
 }

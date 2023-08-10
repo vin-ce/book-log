@@ -1,0 +1,18 @@
+@use "@/components/variables"
+.container
+  display: flex
+  flex-direction: column
+  width: 32rem
+
+.input
+  @include variables.modalInput
+
+.textArea
+  @include variables.modalTextArea
+
+.buttonsContainer
+  @include variables.modalButtonsContainer(variables.$yellow)
+
+  .deleteButton
+    &:hover
+      background-color: variables.$orange

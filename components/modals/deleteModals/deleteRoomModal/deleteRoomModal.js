@@ -1,27 +1,25 @@
-
 import { useStore } from "@/utils/store";
 import { DeleteModal } from "@/components/modals/modalTemplates";
-import { deleteShelf } from "@/utils/firestore"
 import { useRouter } from "next/router";
+import { deleteRoom } from "@/utils/realtime";
 
-export default function DeleteShelfModal({ setIsDeleteModal }) {
+export default function DeleteRoomModal({ setIsDeleteModal }) {
 
-  const selectedShelfInfo = useStore((state) => state.selectedShelfInfo)
+  const selectedRoomInfo = useStore((state) => state.selectedRoomInfo)
 
   const router = useRouter()
 
   const onClickYes = async () => {
     // delete from firebase
-    await deleteShelf(selectedShelfInfo.id)
+    await deleteRoom(selectedRoomInfo.roomId)
     // close modal
     setIsDeleteModal(false)
-    router.push("/")
+    router.push("/room")
   }
-
 
   return (
     <DeleteModal
-      title={"Delete Shelf?"}
+      title={"Delete Room?"}
       setIsModelOpen={setIsDeleteModal}
       onClickYes={onClickYes}
     />

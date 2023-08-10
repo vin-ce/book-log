@@ -3,10 +3,11 @@ import "./globals.sass"
 
 import { useStore } from "../utils/store"
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { fetchUserById } from "../utils/firestore"
+import { checkIfEmailIsInvited, fetchUserById } from "../utils/firestore"
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { initLogOut } from "@/utils/auth";
 
 const auth = getAuth()
 
@@ -35,6 +36,29 @@ export default function MyApp({ Component, pageProps }) {
 
     if (!ready) setReady(true)
   });
+
+
+
+
+  const router = useRouter()
+
+  useEffect(() => {
+    if (loggedInUser) checkRoomUser()
+
+    async function checkRoomUser() {
+      // if this user created and logged in from room
+      // and the user visits a page that's not a room page
+      // check if user is invited to use rest of app
+      // if not, log out user
+      if (router.pathname !== "/room" && router.pathname !== "/room/[id]") {
+        if (loggedInUser.isRoomUser) {
+          const isInvited = await checkIfEmailIsInvited(loggedInUser.email)
+          if (!isInvited) initLogOut()
+        }
+      }
+
+    }
+  }, [loggedInUser, router.pathname])
 
   return (
     <>

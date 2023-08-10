@@ -185,6 +185,16 @@ export function capitalizeFirstLetter(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
+
+export function removeEmptyProperties(obj) {
+  Object.keys(obj).forEach(key => {
+    if (obj[key] === undefined || obj[key] === null) {
+      delete obj[key];
+    }
+  });
+  return obj
+}
+
 // ==========
 // RESET
 
@@ -206,6 +216,9 @@ export function ResetStates({ type }) {
   const setSelectedShelfBooksData = useStore((state) => state.setSelectedShelfBooksData)
   const setIsMaterialInfoModal = useStore((state) => state.setIsMaterialInfoModal)
   const setIsShelfInfoModal = useStore((state) => state.setIsShelfInfoModal)
+  const setSelectedRoomInfo = useStore((state) => state.setSelectedRoomInfo)
+  const setSelectedRoomNotes = useStore((state) => state.setSelectedRoomNotes)
+  const setIsRoomAdmin = useStore((state) => state.setIsRoomAdmin)
 
 
   useEffect(() => {
@@ -237,7 +250,11 @@ export function ResetStates({ type }) {
     setIsShelfInfoModal(false)
     setIsMaterialInfoModal(false)
 
-  }, [setIsAuthorizedForSelectedUser, setIsMaterialInfoModal, setIsShelfInfoModal, setSelectedBookExists, setSelectedBookId, setSelectedBookInfo, setSelectedShelfBooksData, setSelectedShelfInfo, setSelectedStatusForShelf, setSelectedUserId, setSelectedUserUsername, setUserBookNotes, setUserBookRating, setUserBookReadDate, setUserBookShelfIdList, setUserBookStatus, type])
+    setSelectedRoomInfo(null)
+    setSelectedRoomNotes(null)
+    setIsRoomAdmin(false)
+
+  }, [setIsAuthorizedForSelectedUser, setIsMaterialInfoModal, setIsRoomAdmin, setIsShelfInfoModal, setSelectedBookExists, setSelectedBookId, setSelectedBookInfo, setSelectedRoomInfo, setSelectedRoomNotes, setSelectedShelfBooksData, setSelectedShelfInfo, setSelectedStatusForShelf, setSelectedUserId, setSelectedUserUsername, setUserBookNotes, setUserBookRating, setUserBookReadDate, setUserBookShelfIdList, setUserBookStatus, type])
 
 
   // sets is authorized

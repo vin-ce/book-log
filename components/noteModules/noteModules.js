@@ -10,6 +10,7 @@ import { addPinnedNote, editTextNote, removePinnedNote } from "@/utils/firestore
 import { useFreshRef } from "@/hooks/useFreshRef"
 import DeleteNoteModal from "../modals/deleteModals/deleteNoteModal/deleteNoteModal"
 import { formatDateFromSeconds } from "@/utils/helpers"
+import DeleteRoomNoteModal from "../modals/deleteModals/deleteRoomNoteModal/deleteRoomNoteModal"
 
 
 function NoteTemplate({ children, createdTimestampSeconds, id, pinned, extraButtons, externalButtonsElRef, setExternalButtonsEl }) {
@@ -285,6 +286,69 @@ export function ShelfTextNote({ content, createdTimestampSeconds, id, pinned, ha
     >
       {content}
     </ShelfNoteTemplate>
+  )
+}
+
+
+// ===============
+// ROOM NOTES
+
+function RoomNoteTemplate({ children, sectionId, noteId, createdTimestampSeconds, isAuthorized }) {
+
+  let [hasButtons, setHasButtons] = useState(null)
+  let [isDeleteModal, setIsDeleteModal] = useState(false)
+
+
+  const toggleOptions = () => {
+    if (!isAuthorized) return
+    setHasButtons(!hasButtons)
+  }
+
+  const onClickDelete = () => setIsDeleteModal(true)
+
+  let dotClasses = styles.dot
+  if (isAuthorized) dotClasses = [dotClasses, styles.authorized].join(' ')
+
+  return (
+    <>
+      <div className={styles.container}>
+        <div className={styles.header}>
+          {hasButtons ?
+            <div className={styles.date}>{formatDateFromSeconds(createdTimestampSeconds)}</div> : null
+          }
+
+          <div className={dotClasses} onClick={toggleOptions} />
+
+          {hasButtons ?
+            <div className={styles.noteButtonsContainer}>
+              <span className={styles.button} onClick={onClickDelete}>x</span>
+            </div>
+            : null}
+        </div>
+
+        {children}
+
+      </div>
+
+      {
+        isDeleteModal ? <DeleteRoomNoteModal setIsDeleteModal={setIsDeleteModal} sectionId={sectionId} noteId={noteId} /> : null
+      }
+    </>
+
+  )
+}
+
+export function RoomTextNote({ content, createdTimestampSeconds, sectionId, noteId, isAuthorized }) {
+
+  return (
+    <RoomNoteTemplate
+      sectionId={sectionId}
+      noteId={noteId}
+      createdTimestampSeconds={createdTimestampSeconds}
+      isAuthorized={isAuthorized}
+    >
+      {content}
+    </RoomNoteTemplate>
   )
 }
 

@@ -1,7 +1,6 @@
 
 import { useStore } from "@/utils/store";
-import { StandardModal } from "@/components/modals/modalTemplates";
-import styles from "./removeBookFromShelfModal.module.sass"
+import { DeleteModal } from "@/components/modals/modalTemplates";
 import { removeBookFromShelf } from "@/utils/firestore"
 
 export default function RemoveBookFromShelfModal({ setIsRemoveBookFromShelfModal, bookId }) {
@@ -29,17 +28,11 @@ export default function RemoveBookFromShelfModal({ setIsRemoveBookFromShelfModal
     setIsRemoveBookFromShelfModal(false)
   }
 
-  const onClickCancel = () => setIsRemoveBookFromShelfModal(false)
-
   return (
-    <StandardModal
+    <DeleteModal
       title={"Remove Book From Shelf?"}
       setIsModelOpen={setIsRemoveBookFromShelfModal}
-    >
-      <div className={styles.options}>
-        <div className={styles.yes} onClick={onClickYes}>yes</div>
-        <div className={styles.cancel} onClick={onClickCancel}>cancel</div>
-      </div>
-    </StandardModal>
+      onClickYes={onClickYes}
+    />
   )
 }

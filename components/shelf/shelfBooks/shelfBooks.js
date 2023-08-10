@@ -187,7 +187,7 @@ function BookRow({ bookData }) {
           {
             isExpandContractRow ?
               <div className={styles.button} onClick={toggleExpandRow}>
-                {isRowExpanded.current ? `-` : `+`}
+                {isRowExpanded.current ? `↑` : `↓`}
               </div>
               : null
           }

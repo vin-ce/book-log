@@ -18,3 +18,10 @@
 
 .button
   @include variables.textButton
+
+.options
+  @include variables.modalButtonsContainer(variables.$orange)
+
+  .cancel
+    &:hover
+      background-color: variables.$yellow

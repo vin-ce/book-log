@@ -145,7 +145,7 @@ function BookEl({ bookData, isMaterial, materialCreatorUsername }) {
           }
         </div>
 
-        .
+
         {
           bookData && loggedInUser ?
             isMaterial && bookData.creatorId === loggedInUser.id ?

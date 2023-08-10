@@ -1,0 +1,45 @@
+@use "@/components/variables"
+
+.background
+  background-color: variables.$yellow
+  height: 100vh
+
+  // this padding is required to offset .container stuff
+  padding-bottom: 3.2rem
+
+.container
+  margin: 0 auto
+  max-width: 64rem
+  background-color: white
+  height: 100%
+  padding: 3.2rem
+  padding-bottom: 0
+  border-left: 1px solid black
+  border-right: 1px solid black
+
+.name
+  color: variables.$orange
+  font-weight: bold
+
+.button
+  @include variables.textButton
+
+.header
+  display: flex
+  justify-content: space-between
+  margin: 3.2rem 0 1.6rem
+
+  .label
+    font-weight: bold
+
+.date
+  margin-left: 3.2rem
+  color: variables.$yellow
+
+.loginContainer
+  display: flex
+  justify-content: center
+  align-items: center
+
+  height: 90vh
+  width: 100vw

@@ -1,0 +1,20 @@
+@use "@/components/variables"
+
+.container
+  background-color: variables.$dark-blue
+  color: white
+  position: fixed
+  top: 1.6rem
+  left: 3.2rem
+  text-align: center
+  justify-content: center
+
+  cursor: pointer
+  width: fit-content
+  user-select: none
+
+  &::before
+    content: "["
+
+  &::after
+    content: "]"

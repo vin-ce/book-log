@@ -1,0 +1,30 @@
+@use "@/components/variables"
+
+.background
+  background-color: variables.$dark-blue
+
+  // height: 100vh
+
+  // this padding is required to offset .container stuff
+  // padding-bottom: 3.2rem
+
+.container
+  margin: 0 auto
+  width: 80rem
+
+  background-color: white
+  height: 100%
+  min-height: 100vh
+  // padding: 3.2rem
+  // padding-bottom: 3.2rem
+  border-left: 1px solid black
+  border-right: 1px solid black
+
+  // to ground liveCursorController
+  position: relative
+
+.button
+  @include variables.textButton
+
+.errorContainer
+  margin: 3.2rem
