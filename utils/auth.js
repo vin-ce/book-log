@@ -38,7 +38,6 @@ export async function initLogIn({ isRoomUser }) {
 
       } else {
         if (isRoomUser) userData.isRoomUser = true
-        console.log("room user", userData)
 
         await createUser(userData)
         return true

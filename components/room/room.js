@@ -21,7 +21,6 @@ export default function Room() {
     const sectionsRef = ref(realtimeDB, `sections/${selectedRoomInfo.roomId}`)
     onValue(sectionsRef, snap => {
       const data = snap.val()
-      console.log('sections data', data)
 
       if (data) {
         // Extract objects into an array

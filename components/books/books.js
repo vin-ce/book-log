@@ -70,7 +70,6 @@ function createPaginationControls({ paginationData, setSearchResultData, searchS
     paginationData.page++
     paginationData.startIndex += MAX_RESULTS
 
-    console.log("initial", searchStringRef.current)
     const resultsData = await searchBookByText({ searchInput: searchStringRef.current, startIndex: paginationData.startIndex, maxResults: MAX_RESULTS })
 
     setSearchResultData(resultsData)

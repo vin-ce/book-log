@@ -28,7 +28,6 @@ export default function SetBookRatingModal() {
 
     ratingNum.forEach(num => {
       let el
-      console.log("num", num, userBookRating)
       if (num.toString() === userBookRating) {
         el = <div className={styles.selected}>{num}</div>
 

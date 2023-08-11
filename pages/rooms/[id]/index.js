@@ -29,7 +29,7 @@ export default function RoomPage() {
       if (data) {
         setSelectedRoomInfo(data.roomInfo)
         setSelectedRoomNotes(data.notes)
-        console.log("data", loggedInUser, data)
+
         if (loggedInUser && data.roomInfo.creatorId === loggedInUser.id) setIsRoomAdmin(true)
       }
       setReady(true)
@@ -53,7 +53,6 @@ export default function RoomPage() {
               <div className={styles.container} >
                 <RoomInfo />
                 <Room />
-
               </div>
             </div>
 

@@ -36,7 +36,7 @@ export default function LiveCursor({ mouseMoveFuncRef }) {
 
           // update live cursor user
           if (data.userId !== activeCursorId.current) {
-            console.log("new", isUserActiveCursor.current)
+
             setActiveCursorId(data.userId)
             if (loggedInUser) {
               if (data.userId === loggedInUser.id) {
@@ -109,7 +109,6 @@ export default function LiveCursor({ mouseMoveFuncRef }) {
   // sets cursor styles
   useEffect(() => {
     // if there is a active cursor + there is cursor data + user is not active user
-    console.log(activeCursorId.current, cursorPos, isUserActiveCursor.current)
     if (activeCursorId.current && cursorPos && !isUserActiveCursor.current) {
       // set cursor position styles
       cursorRef.current.style.transform = `translate(${cursorPos.x}px, ${cursorPos.y}px)`

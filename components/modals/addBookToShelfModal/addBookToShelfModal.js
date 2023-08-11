@@ -83,8 +83,6 @@ export default function AddBookToShelfModal() {
     if (type === "init") {
       ({ shelvesData, newLastVisible, totalNumOfShelves } = await fetchShelvesPaginated({ userId: selectedUserId, page: paginationData.current.page }))
 
-      // console.log('shelves', shelvesData)
-      // if (shelvesData) 
       updateShelfListElAndData({ type })
 
     } else {

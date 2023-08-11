@@ -7,17 +7,78 @@ import { useStore } from "@/utils/store"
 import { fetchUserById } from "@/utils/firestore"
 import { RoomTextNote } from "@/components/noteModules/noteModules"
 import DeleteRoomSectionModal from "@/components/modals/deleteModals/deleteRoomSectionModal/deleteRoomSectionModal"
+import { useFreshRef } from "@/hooks/useFreshRef"
 
 export default function RoomSection({ id, name }) {
+
+  const [notes, setNotes] = useState(null)
+
+
+  // ==============================
+  // EXPAND / COLLAPSE SECTION
+
+  const [isExpanded, setIsExpanded] = useFreshRef(false)
+
+  const [isSetUp, setIsSetUp] = useState(false)
+  useEffect(() => {
+    if (notes && !isSetUp) {
+      setIsSetUp(true)
+      // keeps track of if section is expanded or not
+      const sectionExpandRef = ref(realtimeDB, `sectionOpenState/${selectedRoomInfo.roomId}/${id}`)
+      onValue(sectionExpandRef, snap => {
+        const isExpand = snap.val()
+        toggleExpandCollapse(isExpand)
+      })
+    }
+
+    // every time the notes change
+    // update height
+    if (notes) {
+      if (!isExpanded.current) triggerToggleExpandCollapse(true)
+      else expand()
+    }
+  }, [isSetUp, notes])
+
+
+  const sectionRef = useRef(null)
+  const contentRef = useRef(null)
+
+  function triggerToggleExpandCollapse(isExpand) {
+    console.log("attempting to update", isExpand, isExpanded.current)
+    updateSectionOpenState({ roomId: selectedRoomInfo.roomId, sectionId: id, state: isExpand })
+  }
+
+  function toggleExpandCollapse(isExpand) {
+    console.log("expanding collapsing", name, isExpand, isExpanded.current)
+
+    if (isExpand) expand()
+    else collapse()
+
+    if (isExpanded.current !== isExpand) setIsExpanded(isExpand)
+
+  }
+
+  function expand() {
+    // 24px is to account for section header
+    sectionRef.current.style.height = `${contentRef.current.offsetHeight + 24}px`
+  }
+
+  function collapse() {
+    sectionRef.current.style.height = "24px"
+  }
+
+
+
+  // ======================
+  // CREATING NOTES EL
+
   const selectedRoomInfo = useStore((state) => state.selectedRoomInfo)
   const loggedInUser = useStore((state) => state.loggedInUser)
   const isRoomAdmin = useStore((state) => state.isRoomAdmin)
 
-  const [isExpanded, setIsExpanded] = useState(true)
   const [isDeleteSectionModal, setIsDeleteSectionModal] = useState(false)
 
   const [isCreateNoteModal, setIsCreateNoteModal] = useState(false)
-  const [notes, setNotes] = useState([])
 
 
   // {
@@ -25,13 +86,12 @@ export default function RoomSection({ id, name }) {
   // }
   const usernames = useRef({})
 
-  // CREATING NOTES EL
   useEffect(() => {
 
     const roomNotesRef = ref(realtimeDB, `notes/${selectedRoomInfo.roomId}/${id}`)
     onValue(roomNotesRef, async snap => {
       const data = snap.val()
-      console.log("full data", data)
+
       // if there is data
       if (data) {
         // sort notes by name
@@ -94,31 +154,12 @@ export default function RoomSection({ id, name }) {
         )
       }
     })
-
-
-
-    // keeps track of if section is expanded or not
-    const sectionExpandRef = ref(realtimeDB, `sectionOpenState/${selectedRoomInfo.roomId}/${id}`)
-    onValue(sectionExpandRef, snap => {
-      const data = snap.val()
-      setIsExpanded(data)
-    })
-
   }, [])
 
 
-
-  const handleExpandCollapse = () => {
-    // update in db
-    updateSectionOpenState({ roomId: selectedRoomInfo.roomId, sectionId: id, state: !isExpanded })
-
-    // update in state
-    setIsExpanded(!isExpanded)
-  }
-
   return (
     <>
-      <div className={styles.container}>
+      <div className={styles.container} ref={sectionRef}>
         <div className={styles.header}>
           <div className={styles.name}>{name}</div>
           <div className={styles.buttonsContainer}>
@@ -132,11 +173,11 @@ export default function RoomSection({ id, name }) {
                 <div className={styles.button} onClick={() => setIsCreateNoteModal(true)}>+ note</div>
                 : null
             }
-            <div className={styles.button} onClick={handleExpandCollapse}>{isExpanded ? "↑" : "↓"}
+            <div className={styles.button} onClick={() => triggerToggleExpandCollapse(!isExpanded.current)}>{isExpanded.current ? "↑" : "↓"}
             </div>
           </div>
         </div>
-        <div className={styles.notesContainer}>
+        <div className={styles.notesContainer} ref={contentRef}>
           {notes}
         </div>
       </div>

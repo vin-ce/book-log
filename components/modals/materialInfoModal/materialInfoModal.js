@@ -60,7 +60,6 @@ export default function MaterialInfoModal({ type }) {
     if (type === "update" && selectedBookInfo) {
 
       const data = selectedBookInfo
-      console.log("data", data)
       if (data.title) setTitleInput(data.title)
       if (data.authors) setAuthorsInput(data.authors.join(', '))
       if (data.link) setLinkInput(data.link)
@@ -233,7 +232,6 @@ function splitDateBySlash(date) {
 
   if (dateParts.length === 3) {
     const [day, month, year] = dateParts;
-    console.log("date parts", day, month, year)
     return { day, month, year }
   } else if (dateParts.length === 2) {
     const [part1, part2] = dateParts;

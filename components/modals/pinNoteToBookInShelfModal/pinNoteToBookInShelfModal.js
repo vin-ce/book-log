@@ -37,7 +37,6 @@ export default function PinNoteToBookInShelfModal({ setIsPinNoteToBookInShelfMod
     bookData.notes.forEach((note) => {
 
       let isPinned
-      // console.log('note', )
       if (pinnedNoteData) isPinned = (note.id === pinnedNoteData.id)
 
       switch (note.type) {
@@ -73,7 +72,6 @@ export default function PinNoteToBookInShelfModal({ setIsPinNoteToBookInShelfMod
       }
     })
 
-    console.log("re setting", elArr)
     setNotesElArr(elArr)
 
   }, [bookData.notes, pinnedNoteData])

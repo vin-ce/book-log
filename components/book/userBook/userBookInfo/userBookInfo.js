@@ -53,8 +53,6 @@ export default function UserBookInfo() {
 
           const userBookData = await fetchUserBookInfo({ bookId: selectedBookId, userId: userData.id })
 
-          console.log("user book data", userBookData)
-
           if (userBookData) {
             setUserBookStatus(userBookData.status)
             setUserBookShelfIdList(userBookData.shelves)

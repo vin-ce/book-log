@@ -40,7 +40,6 @@ export async function searchBookById(bookId) {
     .then((res) => {
       const id = res.data.id
       const info = res.data.volumeInfo
-      console.log("search by id res", res.data)
 
       return {
         id,

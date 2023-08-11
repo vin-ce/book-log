@@ -48,7 +48,6 @@ async function createUsername(name) {
     const querySnapshot = await getDocs(q);
 
     let foundDoc;
-    // console.log(doc.id, " => ", doc.data());
     querySnapshot.forEach((doc) => { foundDoc = doc.id });
 
     if (!foundDoc) {
@@ -112,7 +111,6 @@ export async function fetchUserByUsername(username) {
 
 export async function checkIfEmailIsInvited(email) {
   const docSnap = await getDoc(doc(db, "admin", "authorizedUserEmails"))
-  console.log("doc snap", docSnap.data(), email, docSnap.data().emails.includes(email))
   return docSnap.data().emails.includes(email)
 }
 
@@ -297,7 +295,6 @@ export async function createMaterial({ userId, materialData, status }) {
 export async function updateMaterial({ materialId, materialData }) {
   const cleanedMaterialData = removeEmptyProperties(materialData)
   const materialRef = doc(db, "books", materialId)
-  console.log("udate", cleanedMaterialData)
   await updateDoc(materialRef, {
     ...cleanedMaterialData,
   })
@@ -558,7 +555,6 @@ export async function fetchUserBookInfo({ bookId, userId }) {
         tempNotesData.splice(newIndex, 0, pinnedNoteData)
       })
       notesData = tempNotesData
-      console.log("notes pinned", bookData.pinnedNotes, notesData)
     }
 
     return {
@@ -671,7 +667,6 @@ export async function createNote({ bookId, userId, tweetId, content, type }) {
     }
   }
 
-  console.log("book id, userid", bookId, userId)
   const userBookNotesCollectionRef = collection(db, "books", bookId, "users", userId, "notes")
 
   const docRef = await addDoc(userBookNotesCollectionRef, creationData)

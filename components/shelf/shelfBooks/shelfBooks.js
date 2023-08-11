@@ -16,17 +16,7 @@ export default function ShelfBooks() {
       <div className={styles.container}>
         {
           selectedShelfBooksData.length !== 0 ?
-            <>
-              {/* <div className={styles.header}>
-                <div className={styles.sortContainer}>
-                  <span className={styles.label}>sort:</span>
-                  <span className={styles.button}>rating desc</span>
-                </div>
-                <div className={styles.button}>+ edit shelf</div>
-              </div> */}
-
-              <BookList />
-            </>
+            <BookList />
             :
             <div className={styles.error}>~+#+~</div>
         }
@@ -43,7 +33,7 @@ function BookList() {
 
   useEffect(() => {
     if (selectedShelfBooksData.length !== 0) {
-      // console.log('data', selectedShelfBooksData)
+
       let rowsArr = []
       selectedShelfBooksData.forEach(bookData => {
         rowsArr.push(
@@ -123,6 +113,7 @@ function BookRow({ bookData }) {
   }
 
   const [isExpandContractRow, setIsExpandContractRow] = useState(false)
+
   useEffect(() => {
 
     if (pinnedNoteEl && pinnedNoteRef.current)
