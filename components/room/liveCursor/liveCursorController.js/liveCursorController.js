@@ -23,7 +23,7 @@ export default function LiveCursorController() {
     else toggleLiveCursorUser({ roomId: selectedRoomInfo.roomId, userId: loggedInUser.id, type: "on" })
   }
 
-  return (
+  return loggedInUser && (
     <div className={styles.container} onClick={handleSetActive}>
       {
         isActive ? "x" : "⁂"
