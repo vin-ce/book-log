@@ -14,7 +14,7 @@ export default function Login() {
     if (isLoggingIn.current) return
 
     isLoggingIn.current = true
-    const isSuccess = await initLogIn()
+    const isSuccess = await initLogIn({ isRoomUser: false })
 
     isLoggingIn.current = false
     if (isSuccess) router.push('/')

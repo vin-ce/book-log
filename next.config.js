@@ -17,6 +17,12 @@ const nextConfig = {
         port: '',
         pathname: '/books/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'm.media-amazon.com',
+        port: '',
+        pathname: '/images/**',
+      },
     ],
   },
 }
